@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>TabibDZ — Rendez-vous</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/shared-ui.css">
+<style>
+:root {
+  --green: #00B870;
+  --green-dark: #008F56;
+  --green-pale: #E8F8F1;
+  --green-glow: rgba(0,184,112,.15);
+  --ink: #0A120E;
+  --ink-2: #1C2E24;
+  --ink-3: #5A7268;
+  --ink-4: #A3B8AF;
+  --surface: #FFFFFF;
+  --bg: #F3F7F5;
+  --sidebar-bg: #0D1F17;
+  --border: #E0EBE5;
+  --r: 12px;
+  --ease: cubic-bezier(.4,0,.2,1);
+  --sh: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.04);
+  --font-body: 'DM Sans', sans-serif;
+  --font-display: 'Syne', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; height: 100%; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.rdv-flow-page .navbar,
+.rdv-flow-page .nav-drawer,
+.rdv-flow-page .burger {
+  display: none !important;
+}
+
+/* ─── NAVBAR ──────────────────────────────────── */
+.navbar {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(255,255,255,.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 48px;
+  height: 66px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.logo {
+  font-family: var(--font-display);
+  font-size: 22px; font-weight: 800;
+  letter-spacing: -0.5px; color: var(--ink);
+  text-decoration: none;
+}
+.logo span { color: var(--green); }
+.nav-links { display: flex; gap: 34px; align-items: center; }
+.nav-links a {
+  font-size: 14px; font-weight: 500;
+  color: var(--ink-3); text-decoration: none;
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--green); }
+.nav-actions { display: flex; gap: 10px; align-items: center; }
+.nav-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  font-size: 14px; font-weight: 500;
+  padding: 9px 20px; border-radius: 50px;
+  border: 1.5px solid var(--border);
+  background: var(--surface); color: var(--ink);
+  text-decoration: none; cursor: pointer; font-family: var(--font-body);
+  transition: all .2s;
+}
+.nav-btn:hover { background: var(--green-pale); border-color: var(--green); color: var(--green-dark); }
+.nav-btn-primary {
+  background: var(--green); border-color: var(--green); color: #fff;
+  box-shadow: 0 4px 16px rgba(0,184,112,.3);
+}
+.nav-btn-primary:hover { background: var(--green-dark); border-color: var(--green-dark); transform: translateY(-1px); }
+
+/* ── BURGER ── */
+.burger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 40px; height: 40px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  cursor: pointer;
+  gap: 5px; flex-shrink: 0;
+}
+.burger span {
+  display: block; width: 18px; height: 2px;
+  background: var(--ink); border-radius: 2px;
+  transition: all 0.25s ease;
+}
+.burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.burger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Mobile drawer */
+.nav-drawer {
+  display: none;
+  position: fixed;
+  top: 66px; left: 0; right: 0;
+  background: rgba(255,255,255,0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 20px 20px 28px;
+  z-index: 199;
+  flex-direction: column;
+  gap: 0;
+  box-shadow: 0 8px 32px rgba(10,26,16,.08);
+  transform: translateY(-8px);
+  opacity: 0;
+  transition: opacity 0.22s ease;
+}
+.nav-drawer.open { display: flex; opacity: 1; transform: translateY(0); }
+.nav-drawer a {
+  display: block; padding: 13px 4px;
+  font-size: 15px; font-weight: 500;
+  color: var(--ink-3);
+  border-bottom: 1px solid var(--border);
+  transition: color 0.15s; text-decoration: none;
+}
+.nav-drawer a:last-of-type { border-bottom: none; }
+.nav-drawer a:hover { color: var(--green); }
+.nav-drawer-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+.nav-drawer-actions .nav-btn { width: 100%; justify-content: center; padding: 12px 20px; font-size: 15px; }
+
+/* ─── LAYOUT ─────────────────────────────────── */
+.layout {
+  display: flex;
+  width: 100%;
+  flex: 1;
+}
+
+/* ─── SIDEBAR ────────────────────────────────── */
+.sidebar {
+  width: 380px;
+  flex-shrink: 0;
+  background: var(--sidebar-bg);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  padding: 40px 36px;
+  box-shadow: 4px 0 24px rgba(0,0,0,.12);
+}
+
+/* subtle texture overlay */
+.sidebar::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 140% 60% at 110% 20%, rgba(0,184,112,.18) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 80% at -20% 100%, rgba(0,184,112,.08) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+.sb-logo {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -.03em;
+  position: relative; z-index: 1;
+  margin-bottom: 40px;
+}
+.sb-logo span { color: var(--green); }
+
+/* progress steps */
+.sb-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 2cm;
+  margin-bottom: 36px;
+  position: relative; z-index: 1;
+}
+.sb-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  position: relative;
+}
+.sb-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 13px;
+  top: 28px;
+  width: 1px;
+  height: 32px;
+  background: rgba(255,255,255,.08);
+}
+.sb-step + .sb-step { margin-top: 20px; }
+.sb-step-num {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .68rem; font-weight: 700;
+  border: 1.5px solid rgba(255,255,255,.12);
+  color: rgba(255,255,255,.3);
+  background: rgba(255,255,255,.04);
+  transition: all .25s var(--ease);
+}
+.sb-step.active .sb-step-num {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
+  box-shadow: 0 0 0 5px rgba(0,184,112,.2);
+}
+.sb-step.done .sb-step-num {
+  background: rgba(0,184,112,.15);
+  border-color: rgba(0,184,112,.3);
+  color: var(--green);
+}
+.sb-step-text { padding-top: 3px; }
+.sb-step-label {
+  font-size: .72rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: rgba(255,255,255,.25);
+}
+.sb-step.active .sb-step-label { color: var(--green); }
+.sb-step.done .sb-step-label { color: rgba(0,184,112,.6); }
+.sb-step-name {
+  font-size: .85rem; font-weight: 500;
+  color: rgba(255,255,255,.3);
+  margin-top: 1px;
+}
+.sb-step.active .sb-step-name { color: rgba(255,255,255,.9); }
+.sb-step.done .sb-step-name { color: rgba(255,255,255,.4); }
+
+/* divider */
+.sb-divider {
+  height: 1px;
+  background: rgba(255,255,255,.06);
+  margin-bottom: 28px;
+  position: relative; z-index: 1;
+}
+
+/* doctor card in sidebar */
+.sb-doc {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: var(--r);
+  padding: 20px;
+  position: relative; z-index: 1;
+  margin-bottom: 16px;
+  flex-shrink: 0;
+}
+.sb-doc-top {
+  display: flex; align-items: center; gap: 11px;
+  margin-bottom: 12px;
+}
+.sb-doc-avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: rgba(0,184,112,.12);
+  border: 1.5px solid rgba(0,184,112,.2);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--green); flex-shrink: 0;
+}
+.sb-doc-name {
+  font-family: var(--font-display);
+  font-size: 1rem; font-weight: 700; color: #fff; line-height: 1.2;
+  letter-spacing: -.02em;
+}
+.sb-doc-spec {
+  font-size: .7rem; color: rgba(255,255,255,.4);
+  margin-top: 1px;
+}
+.sb-doc-row {
+  display: flex; align-items: flex-start; gap: 8px;
+  font-size: .72rem; color: rgba(255,255,255,.35);
+  line-height: 1.5;
+}
+.sb-doc-row + .sb-doc-row { margin-top: 5px; }
+.sb-doc-row svg { flex-shrink: 0; margin-top: 1px; color: rgba(255,255,255,.2); }
+.sb-badges {
+  display: flex; gap: 5px; margin-top: 10px; flex-wrap: wrap;
+}
+.sb-badge {
+  font-size: .6rem; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; padding: 3px 8px; border-radius: 999px;
+}
+.sb-badge.green {
+  background: rgba(0,184,112,.18);
+  color: var(--green);
+  border: 1px solid rgba(0,184,112,.25);
+}
+.sb-badge.ghost {
+  background: rgba(255,255,255,.04);
+  color: rgba(255,255,255,.3);
+  border: 1px solid rgba(255,255,255,.08);
+}
+
+/* selected slot recap */
+.sb-slot {
+  background: rgba(0,184,112,.08);
+  border: 1px solid rgba(0,184,112,.18);
+  border-radius: var(--r);
+  padding: 14px 16px;
+  position: relative; z-index: 1;
+  margin-bottom: 20px;
+  flex-shrink: 0;
+}
+.sb-slot-label {
+  font-size: .62rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .09em; color: rgba(0,184,112,.7);
+  margin-bottom: 6px;
+}
+.sb-slot-date {
+  font-family: var(--font-display);
+  font-size: 1rem; font-weight: 700; color: #fff;
+  letter-spacing: -.02em;
+  text-transform: capitalize; min-height: 1.2em;
+}
+.sb-slot-time {
+  display: inline-flex; align-items: center; gap: 5px;
+  margin-top: 5px; font-size: .75rem; font-weight: 600;
+  color: var(--green);
+}
+.sb-slot-empty {
+  font-size: .82rem; color: rgba(255,255,255,.2);
+  font-style: italic; font-weight: 300;
+}
+
+/* CTA button */
+.sb-cta {
+  margin-top: auto;
+  position: relative; z-index: 1;
+}
+.btn-cta {
+  width: 100%; padding: 15px 24px;
+  border-radius: 999px;
+  background: var(--green);
+  border: none; cursor: pointer;
+  font-family: var(--font-body);
+  font-size: .92rem; font-weight: 700; color: #fff;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: all .2s var(--ease);
+  box-shadow: 0 4px 20px rgba(0,184,112,.35);
+  position: relative; overflow: hidden;
+}
+.btn-cta::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,.12) 0%, transparent 50%);
+}
+.btn-cta:hover {
+  background: #00D680;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 28px rgba(0,184,112,.45);
+}
+.btn-cta:hover svg { transform: translateX(4px); }
+.btn-cta svg { transition: transform .2s var(--ease); position: relative; }
+.btn-cta:disabled {
+  opacity: .4; cursor: not-allowed; transform: none;
+  box-shadow: none;
+}
+.btn-back {
+  width: 100%; padding: 9px;
+  border-radius: 999px; background: transparent;
+  border: 1px solid rgba(255,255,255,.08);
+  font-family: var(--font-body);
+  font-size: .78rem; font-weight: 500;
+  color: rgba(255,255,255,.3);
+  cursor: pointer; margin-top: 8px;
+  transition: all .2s var(--ease);
+}
+.btn-back:hover {
+  background: rgba(255,255,255,.04);
+  color: rgba(255,255,255,.6);
+}
+
+/* ─── MAIN ───────────────────────────────────── */
+.main {
+  flex: 1;
+  width: min(100%, 980px);
+  margin: 0 auto;
+  padding: 40px 64px 32px;
+  overflow-y: auto;
+  border-left: 1px solid #E6EEE9;
+}
+
+/* section title */
+.section-eyebrow {
+  font-size: .65rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .12em;
+  color: var(--green-dark);
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 6px;
+}
+.section-eyebrow::before {
+  content: ''; width: 16px; height: 2px;
+  background: var(--green); border-radius: 2px;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: 1.9rem; font-weight: 800; color: var(--ink); line-height: 1.04;
+  letter-spacing: -.04em;
+}
+.section-sub {
+  font-size: .81rem; color: var(--ink-3); margin-top: 4px;
+  font-weight: 400; line-height: 1.55;
+}
+.agenda-inline-error {
+  margin-top: 14px;
+  font-size: .86rem;
+}
+
+/* ─── MODE SELECTOR ──────────────────────────── */
+.mode-section {
+  margin-bottom: 28px;
+  animation: fadeUp .4s var(--ease) both;
+}
+
+.mode-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.mode-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 18px;
+  padding: 16px 18px;
+  cursor: pointer;
+  transition: all .22s var(--ease);
+  position: relative;
+  overflow: hidden;
+}
+.mode-card::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--green-pale) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity .22s var(--ease);
+}
+.mode-card:hover { border-color: #c0ddd2; box-shadow: var(--sh); }
+.mode-card.active {
+  border-color: var(--green);
+  box-shadow: 0 0 0 4px var(--green-glow), var(--sh);
+}
+.mode-card.active::after { opacity: 1; }
+
+.mode-card-top {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 8px; position: relative; z-index: 1;
+}
+.mode-icon {
+  width: 30px; height: 30px; border-radius: 8px;
+  background: var(--green-pale);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--green-dark);
+}
+.mode-radio {
+  width: 16px; height: 16px; border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: #fff;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s var(--ease); flex-shrink: 0;
+}
+.mode-radio::after {
+  content: ''; width: 7px; height: 7px;
+  border-radius: 50%; background: #fff;
+  transform: scale(0); transition: transform .2s var(--ease);
+}
+.mode-card.active .mode-radio {
+  border-color: var(--green);
+  background: var(--green);
+}
+.mode-card.active .mode-radio::after { transform: scale(1); }
+
+.mode-name {
+  font-size: .85rem; font-weight: 700; color: var(--ink);
+  position: relative; z-index: 1;
+}
+.mode-desc {
+  font-size: .71rem; color: var(--ink-3); line-height: 1.35;
+  margin-top: 2px; font-weight: 400;
+  position: relative; z-index: 1;
+}
+.mode-tag {
+  display: inline-block; margin-top: 6px;
+  font-size: .58rem; font-weight: 700; letter-spacing: .07em;
+  text-transform: uppercase; padding: 2px 8px; border-radius: 999px;
+  background: var(--green-pale); color: var(--green-dark);
+  position: relative; z-index: 1;
+}
+
+.mode-hint {
+  display: none;
+}
+
+/* ─── CALENDAR SECTION ───────────────────────── */
+.cal-section {
+  animation: fadeUp .4s .07s var(--ease) both;
+}
+
+.cal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 14px; margin-bottom: 14px;
+}
+.cal-week-label {
+  font-size: .82rem; font-weight: 600; color: var(--ink-2);
+}
+.cal-nav {
+  display: flex; gap: 6px;
+}
+.cal-nav-btn {
+  width: 30px; height: 30px; border-radius: 8px;
+  background: var(--surface); border: 1px solid var(--border);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  color: var(--ink-3); font-size: 1rem;
+  transition: all .18s var(--ease);
+}
+.cal-nav-btn:hover {
+  background: var(--green-pale); border-color: var(--green);
+  color: var(--green-dark);
+}
+
+/* calendar grid */
+.cal-grid {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--sh);
+}
+
+/* day headers */
+.cal-days-row {
+  display: grid;
+  grid-template-columns: 68px repeat(6, 1fr);
+  border-bottom: 1px solid var(--border);
+}
+.cal-days-spacer {
+  border-right: 1px solid var(--border);
+}
+.cal-day-header {
+  padding: 10px 8px;
+  text-align: center;
+  border-right: 1px solid var(--border-2);
+}
+.cal-day-header:last-child { border-right: none; }
+.cal-day-name {
+  font-size: .58rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .08em; color: var(--ink-4); margin-bottom: 3px;
+}
+.cal-day-num {
+  width: 24px; height: 24px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: .8rem; font-weight: 600; color: var(--ink-2);
+}
+.cal-day-num.today {
+  background: var(--green);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0,184,112,.4);
+}
+
+/* period rows */
+.cal-period-row {
+  display: grid;
+  grid-template-columns: 68px repeat(6, 1fr);
+  border-bottom: 1px solid var(--border-2);
+}
+.cal-period-row:last-child { border-bottom: none; }
+.cal-period-label {
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 3px;
+  padding: 12px 8px;
+  border-right: 1px solid var(--border);
+  font-size: .58rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .08em; color: var(--ink-4);
+}
+.cal-period-label svg { color: var(--ink-4); opacity: .6; }
+
+.cal-cell {
+  padding: 6px 5px;
+  border-right: 1px solid var(--border-2);
+  display: flex; flex-direction: column; gap: 5px;
+  min-height: 60px;
+}
+.cal-cell:last-child { border-right: none; }
+
+.slot {
+  padding: 5px 4px;
+  border-radius: 7px;
+  text-align: center;
+  font-size: .72rem; font-weight: 600;
+  cursor: pointer;
+  transition: all .18s var(--ease);
+  border: 1.5px solid transparent;
+  line-height: 1;
+}
+.slot.free {
+  background: var(--green-pale);
+  color: var(--green-dark);
+  border-color: rgba(0,184,112,.15);
+}
+.slot.free:hover {
+  background: var(--green);
+  color: #fff; border-color: var(--green);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(0,184,112,.3);
+}
+.slot.selected {
+  background: var(--green);
+  color: #fff; border-color: var(--green);
+  box-shadow: 0 3px 12px rgba(0,184,112,.35);
+  transform: translateY(-1px);
+}
+.slot.busy {
+  background: transparent; color: var(--border);
+  border-color: transparent; cursor: default;
+  font-size: .67rem; letter-spacing: .03em;
+}
+
+/* legend */
+.cal-legend {
+  display: flex; gap: 18px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--border-2);
+  background: var(--bg);
+}
+.agenda-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 18px;
+}
+.agenda-back-btn,
+.agenda-continue-btn {
+  min-width: 156px;
+  padding: 12px 22px;
+  border-radius: 14px;
+  font-family: var(--font-body);
+  font-size: .9rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all .18s var(--ease);
+}
+.agenda-back-btn {
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: var(--ink-3);
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(10,26,16,.04);
+}
+.agenda-back-btn:hover {
+  border-color: #c9ddd3;
+  background: #fbfdfc;
+  color: var(--ink-2);
+}
+.agenda-continue-btn {
+  border: none;
+  background: var(--green);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0,184,112,.25);
+}
+.agenda-continue-btn:hover {
+  background: #00c479;
+  box-shadow: 0 8px 24px rgba(0,184,112,.28);
+}
+.agenda-back-btn svg,
+.agenda-continue-btn svg {
+  width: 15px;
+  height: 15px;
+  transition: transform .18s var(--ease);
+}
+.agenda-back-btn:hover svg { transform: translateX(-2px); }
+.agenda-continue-btn:hover svg { transform: translateX(3px); }
+.agenda-continue-btn:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+.legend-item {
+  display: flex; align-items: center; gap: 6px;
+  font-size: .68rem; color: var(--ink-3);
+}
+.legend-dot {
+  width: 8px; height: 8px; border-radius: 3px;
+}
+.legend-dot.free { background: var(--green-pale); border: 1.5px solid rgba(0,184,112,.25); }
+.legend-dot.busy { background: transparent; border: 1.5px solid var(--border); }
+.legend-dot.selected { background: var(--green); }
+
+/* ─── ANIMATIONS ─────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse {
+  0%,100% { opacity: .5; }
+  50% { opacity: 1; }
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE — TABLET (960px)
+═══════════════════════════════════════ */
+@media (max-width: 960px) {
+  /* Nav */
+  .navbar { padding: 0 20px; height: 60px; }
+  .nav-links, .nav-actions { display: none; }
+  .burger { display: flex; }
+  .nav-drawer { top: 60px; }
+
+  /* Layout: sidebar → compact header strip */
+  .layout { flex-direction: column; }
+  .sidebar {
+    width: 100%; height: auto; position: static;
+    padding: 16px 20px 0;
+    flex-direction: row; flex-wrap: wrap; gap: 10px;
+    align-items: center;
+  }
+  .sidebar::before { display: none; }
+  .sb-logo { width: 100%; margin-bottom: 0; font-size: 1.1rem; }
+
+  /* Steps row */
+  .sb-steps {
+    flex-direction: row; gap: 10px;
+    margin-top: 0; margin-bottom: 0;
+    width: 100%;
+  }
+  .sb-step {
+    flex: 1; background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 10px; padding: 8px 10px;
+  }
+  .sb-step:not(:last-child)::after { display: none; }
+  .sb-step.active { background: rgba(0,184,112,.14); border-color: rgba(0,184,112,.28); }
+  .sb-step-text { display: flex; align-items: center; gap: 6px; }
+  .sb-step-label { font-size: .58rem; }
+  .sb-step-name { font-size: .76rem; margin-top: 0; }
+
+  /* Hide sidebar-only elements */
+  .sb-doc, .sb-slot, .sb-divider { display: none; }
+
+  /* CTA button → hidden here, shown in mobile-bottom-bar */
+  .sb-cta { display: none; }
+  .agenda-actions { display: none; }
+
+  /* Main */
+  .main { width: 100%; max-width: none; padding: 24px 20px 100px; border-left: none; }
+
+  /* Mode grid: side by side */
+  .mode-grid { grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+
+  /* Calendar: show 4 days */
+  .cal-days-row, .cal-period-row { grid-template-columns: 56px repeat(4, 1fr); }
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE — MOBILE (600px)
+═══════════════════════════════════════ */
+@media (max-width: 600px) {
+  /* ── Navbar ── */
+  .navbar { padding: 0 14px; height: 54px; }
+  .nav-drawer { top: 54px; }
+
+  /* ── Sidebar strip: ultra compact ── */
+  .sidebar { padding: 10px 14px 0; gap: 8px; }
+  .sb-logo { font-size: 1rem; margin-bottom: 0; }
+  .sb-steps { gap: 6px; }
+  .sb-step { padding: 7px 9px; border-radius: 9px; }
+  .sb-step-num { width: 20px; height: 20px; font-size: .58rem; }
+  .sb-step-label { display: none; } /* hide label, keep name */
+  .sb-step-name { font-size: .72rem; }
+  .sb-step-text { gap: 5px; }
+
+  /* ── Main ── */
+  .main { padding: 18px 14px 110px; }
+  .section-title { font-size: 1.45rem; }
+  .section-sub { font-size: .78rem; }
+
+  /* ── Mode cards: side by side on mobile too ── */
+  .mode-grid { grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+  .mode-card { padding: 12px 10px; border-radius: 14px; }
+  .mode-icon { width: 26px; height: 26px; border-radius: 7px; }
+  .mode-icon svg { width: 14px; height: 14px; }
+  .mode-name { font-size: .8rem; }
+  .mode-desc { font-size: .66rem; }
+  .mode-tag { font-size: .54rem; }
+
+  /* ── Calendar: 3 days view ── */
+  .cal-days-row, .cal-period-row { grid-template-columns: 48px repeat(3, 1fr); }
+  .cal-day-name { font-size: .55rem; }
+  .cal-day-num { font-size: .78rem; width: 22px; height: 22px; }
+  .cal-period-label { font-size: .55rem; gap: 2px; padding: 10px 5px; }
+  .cal-period-label svg { width: 11px; height: 11px; }
+  .cal-cell { padding: 5px 4px; min-height: 50px; gap: 4px; }
+  .slot { font-size: .7rem; padding: 6px 3px; border-radius: 6px; }
+  .slot.busy { font-size: .62rem; }
+  .cal-week-label { font-size: .76rem; }
+  .cal-nav-btn { width: 28px; height: 28px; border-radius: 7px; }
+  .cal-header { margin-top: 10px; margin-bottom: 10px; }
+  .legend-item { font-size: .65rem; }
+
+  /* ── Mobile bottom CTA bar ── */
+  .mobile-bottom-bar { display: flex; }
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE — SMALL (400px)
+═══════════════════════════════════════ */
+@media (max-width: 400px) {
+  .main { padding: 14px 12px 110px; }
+  .mode-grid { gap: 6px; }
+  .mode-card { padding: 10px 8px; border-radius: 12px; }
+  .mode-desc { display: none; } /* too cramped */
+  .cal-days-row, .cal-period-row { grid-template-columns: 42px repeat(3, 1fr); }
+  .slot { font-size: .65rem; padding: 5px 2px; }
+}
+
+/* ═══════════════════════════════════════
+   MOBILE BOTTOM BAR
+═══════════════════════════════════════ */
+.mobile-bottom-bar {
+  display: none; /* hidden on desktop, shown via media query */
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 300;
+  background: rgba(255,255,255,.97);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  padding: 10px 14px max(12px, env(safe-area-inset-bottom));
+  flex-direction: column; gap: 6px;
+  box-shadow: 0 -4px 24px rgba(10,26,16,.08);
+}
+.mob-slot-summary {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px;
+  background: rgba(0,184,112,.07);
+  border: 1px solid rgba(0,184,112,.18);
+  border-radius: 10px;
+}
+.mob-slot-ico {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: rgba(0,184,112,.14);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; color: var(--green);
+}
+.mob-slot-ico svg { width: 13px; height: 13px; }
+.mob-slot-text { flex: 1; min-width: 0; }
+.mob-slot-lbl {
+  font-size: .58rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .08em; color: rgba(0,184,112,.7);
+}
+.mob-slot-date {
+  font-size: .78rem; font-weight: 700; color: var(--ink);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.mob-slot-date.empty { color: var(--ink-4); font-weight: 400; font-style: italic; }
+.mob-slot-time {
+  font-size: .7rem; font-weight: 600; color: var(--green); margin-top: 1px;
+}
+.mob-btn-cta {
+  width: 100%; padding: 13px 20px; border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+  font-family: var(--font-body); font-size: .9rem; font-weight: 700;
+  color: #fff; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  box-shadow: 0 4px 18px rgba(0,184,112,.32);
+  transition: all .2s; -webkit-tap-highlight-color: transparent;
+}
+.mob-btn-cta:active { transform: scale(.97); box-shadow: 0 2px 8px rgba(0,184,112,.2); }
+.mob-btn-cta:disabled { opacity: .38; cursor: not-allowed; transform: none; box-shadow: none; }
+.mob-btn-cta svg { width: 15px; height: 15px; }
+
+/* ═══════════════════════════════════════
+   MOBILE CALENDAR (≤600px)
+   Day-tabs scroll + vertical slot list
+═══════════════════════════════════════ */
+.mob-cal { display: none; }
+
+@media (max-width: 600px) {
+  /* hide desktop grid */
+  .cal-grid { display: none !important; }
+  /* show mobile view */
+  .mob-cal { display: block; }
+
+  /* day tabs horizontal scroll */
+  .mob-day-tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+    margin-bottom: 12px;
+  }
+  .mob-day-tabs::-webkit-scrollbar { display: none; }
+
+  .mob-day-tab {
+    flex-shrink: 0;
+    min-width: 54px;
+    padding: 9px 6px 8px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 13px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    -webkit-tap-highlight-color: transparent;
+    transition: all .18s;
+    position: relative;
+  }
+  .mob-day-tab.has-slots { border-color: rgba(0,184,112,.28); }
+  .mob-day-tab.active {
+    border-color: var(--green);
+    background: var(--green-pale);
+    box-shadow: 0 0 0 3px var(--green-glow);
+  }
+  .mob-day-tab:active { transform: scale(.93); }
+
+  .mob-day-name {
+    font-size: .6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    color: var(--ink-4);
+  }
+  .mob-day-tab.active .mob-day-name { color: var(--green-dark); }
+
+  .mob-day-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .88rem;
+    font-weight: 700;
+    color: var(--ink-2);
+  }
+  .mob-day-tab.today .mob-day-num {
+    background: var(--green);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0,184,112,.4);
+  }
+  .mob-day-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--green);
+    opacity: 0;
+    transition: opacity .15s;
+  }
+  .mob-day-tab.has-slots .mob-day-dot { opacity: .5; }
+  .mob-day-tab.active .mob-day-dot   { opacity: 1; }
+
+  /* slots panel */
+  .mob-slots-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--sh);
+  }
+  .mob-period-block { padding: 14px 14px 10px; }
+  .mob-period-block + .mob-period-block {
+    border-top: 1px solid var(--border);
+  }
+  .mob-period-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: .62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--ink-4);
+    margin-bottom: 10px;
+  }
+  .mob-period-label svg { width: 12px; height: 12px; flex-shrink: 0; }
+
+  .mob-slots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+    gap: 8px;
+  }
+  .mob-slot-btn {
+    padding: 11px 4px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: .82rem;
+    font-weight: 600;
+    font-family: var(--font-body);
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: all .15s;
+    min-height: 44px; /* touch target */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .mob-slot-btn.free {
+    background: var(--green-pale);
+    color: var(--green-dark);
+    border-color: rgba(0,184,112,.22);
+  }
+  .mob-slot-btn.free:active {
+    background: var(--green);
+    color: #fff;
+    transform: scale(.95);
+  }
+  .mob-slot-btn.selected {
+    background: var(--green);
+    color: #fff;
+    border-color: var(--green);
+    box-shadow: 0 3px 12px rgba(0,184,112,.35);
+  }
+  .mob-slot-btn.busy {
+    background: transparent;
+    color: var(--border);
+    border-color: transparent;
+    cursor: default;
+    font-size: .72rem;
+  }
+  .mob-slots-empty {
+    font-size: .8rem;
+    color: var(--ink-4);
+    font-style: italic;
+    padding: 2px 0 4px;
+  }
+  .mob-cal-legend {
+    display: flex;
+    gap: 14px;
+    padding: 10px 14px;
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+  }
+
+  /* week nav row */
+  .mob-nav-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    gap: 8px;
+  }
+  .mob-nav-row .cal-week-label {
+    font-size: .78rem;
+    font-weight: 600;
+    color: var(--ink-2);
+    text-align: center;
+    flex: 1;
+  }
+  .mob-nav-row .cal-nav-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    flex-shrink: 0;
+  }
+}
+
+
+/* ── Mobile continue button under calendar ── */
+.mob-continue-wrap { display: none; }
+@media (max-width: 960px) {
+  .mob-continue-wrap {
+    display: block;
+    margin-top: 16px;
+  }
+  .mob-btn-continue {
+    width: 100%; padding: 15px 20px; border-radius: 14px;
+    border: none;
+    background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+    font-family: var(--font-body); font-size: .95rem; font-weight: 700;
+    color: #fff; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    box-shadow: 0 4px 20px rgba(0,184,112,.35);
+    transition: all .2s; -webkit-tap-highlight-color: transparent;
+  }
+  .mob-btn-continue:active { transform: scale(.97); }
+  .mob-btn-continue:disabled { opacity: .38; cursor: not-allowed; transform: none; box-shadow: none; }
+  .mob-btn-continue svg { width: 16px; height: 16px; }
+}
+</style>
+</head>
+<body class="rdv-flow-page">
+
+<!-- ═══ NAVBAR ════════════════════════════════════ -->
+<nav class="navbar">
+  <a href="/tabibdz-homepage.html" class="logo">Tabib<span>DZ</span></a>
+  <div class="nav-links">
+    <a href="/tabibdz-homepage.html">Accueil</a>
+    <a href="/tabibdz-recherche.html">Médecins</a>
+    <a href="/tabibdz-a-propos.html">À propos</a>
+    <a href="/tabibdz-comment-ca-marche.html">Comment ça marche</a>
+    <a href="/tabibdz-contact.html">Contact</a>
+  </div>
+  <div class="nav-actions">
+    <a href="/connexion/?next=%2Ftabibdz-rdv-medecin.html" class="nav-btn">Connexion</a>
+    <a href="/inscription/?next=%2Ftabibdz-rdv-medecin.html" class="nav-btn nav-btn-primary">S'inscrire</a>
+  </div>
+  <button class="burger" id="burger-btn" aria-label="Menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile nav drawer -->
+<div class="nav-drawer" id="nav-drawer" aria-hidden="true">
+  <a href="/tabibdz-homepage.html">Accueil</a>
+  <a href="/tabibdz-recherche.html">Médecins</a>
+  <a href="/tabibdz-a-propos.html">À propos</a>
+  <a href="/tabibdz-comment-ca-marche.html">Comment ça marche</a>
+  <a href="/tabibdz-contact.html">Contact</a>
+  <div class="nav-drawer-actions">
+    <a href="/connexion/?next=%2Ftabibdz-rdv-medecin.html" class="nav-btn">Connexion</a>
+    <a href="/inscription/?next=%2Ftabibdz-rdv-medecin.html" class="nav-btn nav-btn-primary">S'inscrire</a>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- ═══ SIDEBAR ════════════════════════════════ -->
+  <aside class="sidebar">
+
+    <div class="sb-steps">
+      <div class="sb-step active" id="sbStep1">
+        <div class="sb-step-num">1</div>
+        <div class="sb-step-text">
+          <div class="sb-step-label">Étape 1</div>
+          <div class="sb-step-name">Créneau</div>
+        </div>
+      </div>
+      <div class="sb-step" id="sbStep2">
+        <div class="sb-step-num">2</div>
+        <div class="sb-step-text">
+          <div class="sb-step-label">Étape 2</div>
+          <div class="sb-step-name">Informations</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sb-divider"></div>
+
+    <div class="sb-doc">
+      <div class="sb-doc-top">
+        <div class="sb-doc-avatar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 20c1.5-3.2 4.1-5 7-5s5.5 1.8 7 5"/></svg>
+        </div>
+        <div>
+          <div class="sb-doc-name" id="sbDocName">Dr. —</div>
+          <div class="sb-doc-spec" id="sbDocSpec">Spécialité</div>
+        </div>
+      </div>
+      <div class="sb-doc-row">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 2C5.2 2 3 4.2 3 7c0 4 5 8 5 8s5-4 5-8c0-2.8-2.2-5-5-5z"/><circle cx="8" cy="7" r="1.5" fill="currentColor" stroke="none"/></svg>
+        <span id="sbDocAddr">Adresse non renseignée</span>
+      </div>
+      <div class="sb-badges">
+        <span class="sb-badge green" id="sbBadgeCnas" style="display:none">CNAS</span>
+        <span class="sb-badge green" id="sbBadgeCasnos" style="display:none">CASNOS</span>
+        <span class="sb-badge ghost">Vérifié</span>
+      </div>
+    </div>
+
+    <div class="sb-slot">
+      <div class="sb-slot-label">Créneau sélectionné</div>
+      <div class="sb-slot-date" id="sbSlotDate">
+        <span class="sb-slot-empty">Aucun créneau choisi</span>
+      </div>
+      <div id="sbSlotTime"></div>
+    </div>
+
+  </aside>
+
+  <!-- ═══ MAIN ════════════════════════════════════ -->
+  <main class="main">
+
+    <!-- Mode de consultation -->
+    <section class="mode-section">
+      <div class="section-eyebrow">Étape 1 sur 2</div>
+      <h1 class="section-title">Votre rendez-vous</h1>
+      <p class="section-sub">Choisissez le type de consultation, puis sélectionnez un créneau disponible.</p>
+
+      <div class="mode-grid">
+        <button type="button" class="mode-card active" id="modeCabinet" onclick="selectMode('cabinet')">
+          <div class="mode-card-top">
+            <div class="mode-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg>
+            </div>
+            <div class="mode-radio"></div>
+          </div>
+          <div class="mode-name">Au cabinet</div>
+          <div class="mode-desc">Consultation physique dans le cabinet du médecin, parcours habituel.</div>
+          <span class="mode-tag">Présentiel</span>
+        </button>
+
+        <button type="button" class="mode-card" id="modeTele" onclick="selectMode('teleconsultation')">
+          <div class="mode-card-top">
+            <div class="mode-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div class="mode-radio"></div>
+          </div>
+          <div class="mode-name">Téléconsultation</div>
+          <div class="mode-desc">Consultation vidéo en ligne. Joignez analyses ou ordonnances à l'étape suivante.</div>
+          <span class="mode-tag">En ligne</span>
+        </button>
+      </div>
+
+      <div class="mode-hint" id="modeHint">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 7v4M8 5.5v.5"/></svg>
+        <span id="modeHintText">La consultation au cabinet suit exactement le parcours habituel, sans changement.</span>
+      </div>
+    </section>
+
+    <!-- Calendrier -->
+    <section class="cal-section">
+      <div class="section-eyebrow">Disponibilités</div>
+      <div class="section-sub" style="margin-top:4px">Sélectionnez le créneau qui vous convient le mieux.</div>
+
+      <div class="cal-header">
+        <div class="cal-week-label" id="calWeekLabel">—</div>
+        <div class="cal-nav">
+          <button class="cal-nav-btn" onclick="prevWeek()" title="Semaine précédente">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 12L6 8l4-4"/></svg>
+          </button>
+          <button class="cal-nav-btn" onclick="nextWeek()" title="Semaine suivante">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 12l4-4-4-4"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="cal-grid">
+        <div class="cal-days-row" id="calDaysRow">
+          <div class="cal-days-spacer"></div>
+          <!-- day headers injected by JS -->
+        </div>
+        <div class="cal-period-row" id="calMorningRow">
+          <div class="cal-period-label">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+            Matin
+          </div>
+          <!-- cells injected by JS -->
+        </div>
+        <div class="cal-period-row" id="calAfternoonRow">
+          <div class="cal-period-label">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M17.7 7.7A7.1 7.1 0 0 0 7 12a7 7 0 1 0 10.7-5.9"/></svg>
+            Après-midi
+          </div>
+          <!-- cells injected by JS -->
+        </div>
+        <div class="cal-legend">
+          <div class="legend-item"><div class="legend-dot free"></div>Disponible</div>
+          <div class="legend-item"><div class="legend-dot selected"></div>Sélectionné</div>
+          <div class="legend-item"><div class="legend-dot busy"></div>Indisponible</div>
+        </div>
+      </div>
+      <div class="agenda-actions">
+        <button class="agenda-back-btn" id="agendaBtnBack" type="button">
+          <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4L6 9l5 5"/></svg>
+          Retour
+        </button>
+        <button class="agenda-continue-btn" id="agendaBtnContinue" disabled onclick="continueToInfo()">
+          Continuer
+          <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h10M9 4l5 5-5 5"/></svg>
+        </button>
+      </div>
+      <div class="agenda-inline-error tdz-feedback error" id="agendaErrBox">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+        <span id="agendaErrText"></span>
+      </div>
+
+      <!-- MOBILE CALENDAR (≤600px) -->
+      <div class="mob-cal">
+        <div class="mob-nav-row">
+          <button class="cal-nav-btn" onclick="prevWeek()" aria-label="Semaine précédente">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 12L6 8l4-4"/></svg>
+          </button>
+          <span class="cal-week-label" id="mobWeekLabel">—</span>
+          <button class="cal-nav-btn" onclick="nextWeek()" aria-label="Semaine suivante">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 12l4-4-4-4"/></svg>
+          </button>
+        </div>
+        <div class="mob-day-tabs" id="mobDayTabs"></div>
+        <div class="mob-slots-panel">
+          <div class="mob-period-block" id="mobMorningBlock">
+            <div class="mob-period-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2"/></svg>
+              Matin
+            </div>
+            <div class="mob-slots-grid" id="mobMorningSlots"></div>
+          </div>
+          <div class="mob-period-block" id="mobAfternoonBlock">
+            <div class="mob-period-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M17.7 7.7A7.1 7.1 0 0 0 7 12a7 7 0 1 0 10.7-5.9"/></svg>
+              Après-midi
+            </div>
+            <div class="mob-slots-grid" id="mobAfternoonSlots"></div>
+          </div>
+          <div class="mob-cal-legend">
+            <div class="legend-item"><div class="legend-dot free"></div>Disponible</div>
+            <div class="legend-item"><div class="legend-dot selected"></div>Sélectionné</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bouton Continuer mobile (sous le calendrier) -->
+      <div class="mob-continue-wrap">
+        <button class="mob-btn-continue" id="mobBtnContinue2" disabled onclick="continueToInfo()">
+          Continuer
+          <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h10M9 4l5 5-5 5"/></svg>
+        </button>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ═══ MOBILE BOTTOM CTA BAR ════════════════════ -->
+<div class="mobile-bottom-bar" id="mobileBottomBar">
+  <div class="mob-slot-summary">
+    <div class="mob-slot-ico">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="1" y="2" width="14" height="12" rx="2"/><path d="M1 7h14"/><path d="M4.5 1v1.5M11.5 1v1.5"/></svg>
+    </div>
+    <div class="mob-slot-text">
+      <div class="mob-slot-lbl">Créneau</div>
+      <div class="mob-slot-date empty" id="mobSlotDate">Aucun créneau choisi</div>
+      <div class="mob-slot-time" id="mobSlotTime" style="display:none;"></div>
+    </div>
+  </div>
+  <button class="mob-btn-cta" id="mobBtnContinue" disabled onclick="continueToInfo()">
+    Continuer
+    <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h10M9 4l5 5-5 5"/></svg>
+  </button>
+</div>
+
+<script type="module" src="/assets/appointment-slots.js"></script>
+</body>
+</html>

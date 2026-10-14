@@ -1,0 +1,3593 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TabibDZ — Mon Espace Patient</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green:        #15A870;
+      --green-dark:   #0a6e47;
+      --green-light:  #e6f7f1;
+      --green-mid:    #7dd8b5;
+      --green-glow:   rgba(21,168,112,0.20);
+      --green-dim:    rgba(21,168,112,0.08);
+      --green-xdim:   rgba(21,168,112,0.04);
+      --red:          #e53e3e;
+      --red-light:    #fff5f5;
+      --orange:       #c97c0a;
+      --orange-light: #fffbeb;
+      --blue:         #3b82f6;
+      --blue-light:   #eff6ff;
+      --text:         #0d1b2a;
+      --text-muted:   #4a5568;
+      --text-hint:    #9aa4b5;
+      --border:       #e9edf2;
+      --border-hover: #c8d0db;
+      --bg:           #ffffff;
+      --bg-surface:   #f7f9fb;
+      --bg-hover:     #eef1f5;
+      --sidebar-w:    272px;
+      --radius-sm:    10px;
+      --radius-md:    14px;
+      --radius-lg:    18px;
+      --radius-xl:    22px;
+      --shadow-sm:    0 1px 3px rgba(13,27,42,0.06), 0 1px 2px rgba(13,27,42,0.04);
+      --shadow-md:    0 4px 20px rgba(13,27,42,0.09), 0 2px 6px rgba(13,27,42,0.04);
+      --shadow-lg:    0 10px 40px rgba(13,27,42,0.12), 0 4px 16px rgba(13,27,42,0.06);
+      --font:         'Syne', sans-serif;
+      --font-body:    'DM Sans', sans-serif;
+      --transition:   0.16s ease;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--text);
+      background: #f0f3f7;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    a { text-decoration: none; color: inherit; }
+    button { font-family: var(--font-body); cursor: pointer; border: none; background: none; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(21,168,112,0.4); }
+      50%       { box-shadow: 0 0 0 6px rgba(21,168,112,0); }
+    }
+    .fade-up { animation: fadeUp 0.38s ease forwards; }
+    .d1 { animation-delay: 0.04s; opacity: 0; }
+    .d2 { animation-delay: 0.09s; opacity: 0; }
+    .d3 { animation-delay: 0.14s; opacity: 0; }
+    .d4 { animation-delay: 0.19s; opacity: 0; }
+    .d5 { animation-delay: 0.24s; opacity: 0; }
+
+    /* ─── NAVBAR ─────────────────────────────────────── */
+    .navbar {
+      position: sticky; top: 0; z-index: 200;
+      height: 62px;
+      background: rgba(255,255,255,0.97);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 28px;
+      display: flex; align-items: center; justify-content: space-between;
+      box-shadow: 0 1px 0 var(--border), 0 2px 16px rgba(13,27,42,0.05);
+      flex-shrink: 0;
+    }
+    .logo {
+      font-family: var(--font);
+      font-size: 22px; font-weight: 800;
+      letter-spacing: -0.8px;
+      display: flex; align-items: center; gap: 1px;
+      color: var(--text);
+    }
+    .logo em { color: var(--green); font-style: normal; }
+    .logo-badge {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--green);
+      margin-left: 2px; margin-bottom: 12px;
+      animation: pulse 2.2s infinite;
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .mobile-menu-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      background: var(--bg);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition);
+    }
+    .mobile-menu-btn:hover { background: var(--bg-hover); border-color: var(--border-hover); }
+    .mobile-menu-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: var(--text-muted);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+    }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+
+    .nav-notif-btn,
+    .notif-btn {
+      position: relative;
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition);
+      color: #5a7566;
+    }
+    .nav-notif-btn:hover,
+    .notif-btn:hover { background: var(--bg-hover); border-color: var(--border-hover); }
+    .nav-notif-btn svg,
+    .notif-btn svg { width: 18px; height: 18px; color: #5a7566; display: block; flex-shrink: 0; }
+    .nav-notif-btn svg *,
+    .notif-btn svg * { stroke: currentColor !important; fill: none !important; }
+    .nav-notif-badge,
+    .notif-badge {
+      position: absolute; top: -5px; right: -5px;
+      min-width: 18px; height: 18px;
+      border-radius: 99px; padding: 0 4px;
+      background: var(--red); color: #fff;
+      font-family: var(--font); font-size: 10px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid var(--bg);
+    }
+
+    .nav-user-chip,
+    .user-chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 5px 14px 5px 6px;
+      border-radius: 50px;
+      border: 1.5px solid var(--border);
+      background: var(--bg);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .nav-user-chip:hover,
+    .user-chip:hover { background: var(--bg-hover); border-color: var(--border-hover); }
+    .nav-user-avatar,
+    .user-avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: #e8f7f0;
+      color: #0f7a4a;
+      font-family: var(--font); font-size: 12px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+      border: 1.5px solid #6ed4a8;
+    }
+    .nav-user-avatar img,
+    .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .user-name { font-family: var(--font-body); font-size: 14px; font-weight: 500; color: var(--text); }
+    .nav-user-caret,
+    .user-caret { font-size: 11px; color: #5a7566; margin-left: 2px; }
+
+    /* ─── LAYOUT ─────────────────────────────────────── */
+    .layout {
+      display: flex; flex: 1;
+      padding: 24px 28px 32px calc(var(--sidebar-w) + 48px);
+      gap: 24px;
+      align-items: flex-start;
+    }
+
+    /* ─── SIDEBAR ─────────────────────────────────────── */
+    .sidebar {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      position: fixed;
+      left: 20px;
+      top: 74px;
+      height: calc(100vh - 86px);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      overflow: hidden;
+    }
+
+    /* Profile card */
+    .profile-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 0;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      flex-shrink: 0;
+    }
+    .profile-card-banner {
+      height: 38px;
+      background: #f6f8fb;
+      position: relative;
+    }
+    .profile-card-banner::after {
+      content: none;
+    }
+    .profile-card-body { padding: 0 14px 12px; text-align: center; position: relative; z-index: 2; }
+    .profile-avatar {
+      width: 54px; height: 54px; border-radius: 50%;
+      background: #eef2f7;
+      color: var(--text-muted);
+      font-family: var(--font); font-size: 16px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      margin: -24px auto 8px;
+      position: relative;
+      z-index: 3;
+      overflow: hidden;
+      border: 2px solid var(--bg);
+      box-shadow: 0 0 0 1px var(--border), 0 4px 14px rgba(13,27,42,0.08);
+    }
+    .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .profile-name { font-family: var(--font); font-size: 13px; font-weight: 700; color: var(--text); }
+    .profile-sub { font-size: 11px; color: var(--text-hint); margin-top: 1px; }
+    .profile-stats {
+      display: flex;
+      border-top: 1px solid var(--border);
+      margin-top: 10px;
+    }
+    .pstat {
+      flex: 1; padding: 8px 6px; text-align: center;
+    }
+    .pstat + .pstat { border-left: 1px solid var(--border); }
+    .pstat-num { font-family: var(--font); font-size: 15px; font-weight: 800; color: var(--text); }
+    .pstat-lbl { font-size: 10px; color: var(--text-hint); margin-top: 0; }
+
+    /* Nav menu */
+    .nav-menu {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      flex: 1;
+      overflow-y: auto;
+    }
+    .nav-section-label {
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-hint);
+      padding: 10px 12px 4px;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 7px 12px;
+      font-family: var(--font-body); font-size: 13px; font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all var(--transition);
+      position: relative;
+      border-left: 3px solid transparent;
+    }
+    .nav-item:hover { background: var(--bg-hover); color: var(--text); }
+    .nav-item.active {
+      color: var(--green-dark);
+      background: var(--green-dim);
+      font-weight: 600;
+      border-left-color: var(--green);
+    }
+    .nav-item svg {
+      width: 15px; height: 15px; flex-shrink: 0;
+      fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round;
+    }
+    .nav-item .badge-count {
+      margin-left: auto;
+      font-family: var(--font-body); font-size: 10px; font-weight: 700;
+      padding: 1px 6px; border-radius: 99px;
+      background: var(--green); color: #fff;
+    }
+    .nav-divider { height: 1px; background: var(--border); margin: 2px 0; }
+    .nav-item.danger { color: var(--red); }
+    .nav-item.danger svg { stroke: var(--red); }
+    .nav-item.danger:hover { background: var(--red-light); }
+
+    /* ─── MAIN ───────────────────────────────────────── */
+    .main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 18px; }
+    .sidebar-backdrop {
+      position: fixed;
+      inset: 62px 0 0;
+      background: rgba(13, 27, 42, 0.42);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--transition);
+      z-index: 180;
+    }
+
+    /* Page header */
+    .page-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 4px;
+    }
+    .page-title { font-family: var(--font); font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+    .page-sub { font-size: 13.5px; color: var(--text-muted); margin-top: 3px; }
+
+    /* ─── CARDS ──────────────────────────────────────── */
+    .card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .card-title { font-family: var(--font); font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
+    .card-link { font-family: var(--font-body); font-size: 13px; color: var(--green); font-weight: 600; cursor: pointer; transition: opacity var(--transition); }
+    .card-link:hover { opacity: 0.7; }
+
+    /* ─── RDV PROCHAIN ───────────────────────────────── */
+    .rdv-next {
+      background: linear-gradient(140deg, #ecfdf5 0%, #f0fdf8 40%, #f5fbff 100%);
+      border: 1.5px solid rgba(21,168,112,0.25);
+      border-radius: var(--radius-xl);
+      padding: 26px;
+      position: relative; overflow: hidden;
+      box-shadow: 0 2px 20px rgba(21,168,112,0.10);
+    }
+    .rdv-next::before {
+      content: '';
+      position: absolute; top: -60px; right: -60px;
+      width: 240px; height: 240px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(21,168,112,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .rdv-next::after {
+      content: '';
+      position: absolute; bottom: -40px; left: 20px;
+      width: 160px; height: 160px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(59,130,246,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .rdv-next-top {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .rdv-label-row {
+      display: flex; align-items: center; gap: 8px;
+      font-family: var(--font-body); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.09em; text-transform: uppercase; color: var(--green-dark);
+    }
+    .rdv-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s infinite;
+    }
+    .rdv-countdown {
+      font-family: var(--font-body); font-size: 12px; font-weight: 600;
+      color: var(--green-dark);
+      background: rgba(21,168,112,0.12); border: 1px solid rgba(21,168,112,0.25);
+      padding: 4px 12px; border-radius: 99px;
+    }
+    .rdv-body { display: flex; gap: 16px; align-items: flex-start; }
+    .rdv-avatar {
+      width: 56px; height: 56px; border-radius: 16px;
+      background: var(--bg);
+      border: 1.5px solid rgba(21,168,112,0.2);
+      color: var(--green-dark);
+      font-family: var(--font); font-size: 16px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; overflow: hidden;
+      box-shadow: 0 2px 12px rgba(21,168,112,0.14);
+    }
+    .rdv-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .rdv-doc-name { font-family: var(--font); font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
+    .rdv-spec { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+    .rdv-details { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .rdv-detail {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12.5px; color: var(--text-muted);
+      background: rgba(255,255,255,0.75);
+      border: 1px solid rgba(21,168,112,0.14);
+      border-radius: 99px; padding: 5px 12px;
+      backdrop-filter: blur(6px);
+    }
+    .rdv-detail svg { width: 13px; height: 13px; stroke: var(--green); fill: none; stroke-width: 2; stroke-linecap: round; flex-shrink: 0; }
+    .rdv-detail strong { color: var(--text); font-weight: 600; }
+    .rdv-actions { display: flex; gap: 10px; margin-top: 22px; }
+    .btn { font-family: var(--font-body); font-size: 13px; font-weight: 600; border-radius: var(--radius-sm); padding: 10px 18px; transition: all var(--transition); cursor: pointer; display: inline-flex; align-items: center; gap: 7px; }
+    .btn-primary { background: var(--green); color: #fff; border: none; box-shadow: 0 2px 12px var(--green-glow); }
+    .btn-primary:hover { background: var(--green-dark); transform: translateY(-1px); box-shadow: 0 4px 18px var(--green-glow); }
+    .btn-outline { background: var(--bg); color: var(--text-muted); border: 1.5px solid var(--border); }
+    .btn-outline:hover { border-color: var(--green); color: var(--green); background: var(--green-xdim); }
+    .btn-ghost-red { background: rgba(229,62,62,0.06); color: var(--red); border: 1.5px solid rgba(229,62,62,0.2); }
+    .btn-ghost-red:hover { background: rgba(229,62,62,0.12); border-color: var(--red); }
+    .btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; }
+
+    .rdv-empty { text-align: center; padding: 48px 24px; }
+    .rdv-empty-icon {
+      width: 56px; height: 56px; border-radius: 16px;
+      background: var(--bg-surface); border: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+    }
+    .rdv-empty-icon svg { width: 24px; height: 24px; stroke: var(--text-hint); fill: none; stroke-width: 1.5; stroke-linecap: round; }
+    .rdv-empty p { font-size: 14px; color: var(--text-muted); margin-bottom: 18px; }
+
+    /* ─── FILTER TABS ────────────────────────────────── */
+    .filter-bar {
+      display: flex; align-items: center; gap: 6px;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      font-family: var(--font-body); font-size: 12.5px; font-weight: 500;
+      padding: 6px 14px; border-radius: 99px;
+      border: 1.5px solid var(--border);
+      background: var(--bg); color: var(--text-muted);
+      cursor: pointer; transition: all var(--transition);
+    }
+    .filter-btn:hover { border-color: var(--green); color: var(--green); background: var(--green-xdim); }
+    .filter-btn.active { background: var(--green); color: #fff; border-color: var(--green); box-shadow: 0 2px 8px var(--green-glow); }
+    .filter-select {
+      font-family: var(--font-body); font-size: 12.5px;
+      padding: 6px 12px; border-radius: 99px;
+      border: 1.5px solid var(--border); background: var(--bg); color: var(--text-muted);
+      cursor: pointer; outline: none;
+    }
+
+    /* ─── RDV LIST ITEMS ─────────────────────────────── */
+    #rdv-upcoming-list { display: flex; flex-direction: column; gap: 12px; margin-top: 4px; }
+    .rdv-list-item {
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      transition: all var(--transition);
+    }
+    .rdv-list-item:hover { border-color: rgba(21,168,112,0.3); box-shadow: 0 4px 16px rgba(21,168,112,0.07); }
+    .rdv-list-top { display: flex; align-items: flex-start; gap: 14px; }
+    .rdv-list-avatar {
+      width: 46px; height: 46px; border-radius: 13px;
+      background: var(--bg-surface); border: 1px solid var(--border);
+      color: var(--text); font-family: var(--font); font-size: 13px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; overflow: hidden;
+    }
+    .rdv-list-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .rdv-list-body { flex: 1; min-width: 0; }
+    .rdv-list-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .rdv-list-name { font-family: var(--font); font-size: 14.5px; font-weight: 700; color: var(--text); }
+    .rdv-list-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .rdv-list-side { text-align: right; flex-shrink: 0; }
+    .rdv-list-date { font-family: var(--font-body); font-size: 12.5px; font-weight: 600; color: var(--text); }
+    .rdv-list-patient, .rdv-list-motif { font-size: 11.5px; color: var(--text-muted); margin-top: 3px; }
+    .rdv-list-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
+    .rdv-list-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 10px; border-radius: 99px;
+      border: 1px solid var(--border); background: var(--bg-surface);
+      font-size: 11.5px; color: var(--text-muted);
+    }
+    .rdv-list-tag strong { color: var(--text); font-weight: 600; }
+    .rdv-list-tag svg { width: 12px; height: 12px; stroke: var(--green); fill: none; stroke-width: 2; stroke-linecap: round; flex-shrink: 0; }
+    .rdv-list-actions {
+      display: flex; gap: 8px; flex-wrap: wrap;
+      margin-top: 14px; padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .rdv-list-actions .btn { font-size: 12px; padding: 8px 14px; }
+
+    /* ─── HISTORIQUE ─────────────────────────────────── */
+    .historique-list { display: flex; flex-direction: column; gap: 10px; }
+    .histo-item {
+      background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--radius-md);
+      padding: 16px 18px; transition: all var(--transition); position: relative; overflow: hidden;
+    }
+    .histo-item:hover { border-color: var(--border-hover); background: #fafbfc; }
+    .histo-head { display: flex; align-items: flex-start; gap: 14px; }
+    .histo-avatar {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: var(--bg-surface); border: 1px solid var(--border);
+      color: var(--text-muted); font-family: var(--font); font-size: 12px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden;
+    }
+    .histo-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .histo-body { flex: 1; min-width: 0; }
+    .histo-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .histo-name { font-family: var(--font); font-size: 14.5px; font-weight: 700; color: var(--text); }
+    .histo-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .histo-right { display: flex; flex-direction: column; align-items: flex-end; gap: 7px; flex-shrink: 0; min-width: 170px; }
+    .histo-date { font-size: 12px; color: var(--text-hint); font-weight: 500; }
+    .statut-pill { font-family: var(--font-body); font-size: 10.5px; font-weight: 700; padding: 4px 10px; border-radius: 99px; }
+    .statut-termine { background: var(--green-light); color: var(--green-dark); }
+    .statut-annule { background: var(--red-light); color: var(--red); }
+    .statut-reporte { background: var(--orange-light); color: var(--orange); }
+    .histo-meta { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
+    .histo-meta-item {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 10px; border-radius: 99px;
+      border: 1px solid var(--border); background: var(--bg-surface);
+      font-size: 11.5px; color: var(--text-muted);
+    }
+    .histo-meta-item svg { width: 12px; height: 12px; stroke: var(--green); fill: none; stroke-width: 2; stroke-linecap: round; flex-shrink: 0; }
+    .histo-meta-item strong { color: var(--text); font-weight: 600; }
+    .histo-foot {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border);
+    }
+    .histo-context { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .histo-patient, .histo-motif { font-size: 12px; color: var(--text-muted); }
+    .histo-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+    .btn-reprendre {
+      font-family: var(--font-body); font-size: 12px; font-weight: 600;
+      padding: 8px 14px; border-radius: 99px;
+      border: 1.5px solid var(--border); background: var(--bg);
+      color: var(--text-muted); transition: all var(--transition);
+    }
+    .btn-reprendre:hover { border-color: var(--green); color: var(--green); background: var(--green-xdim); }
+    .histo-pagination { display: flex; justify-content: center; margin-top: 16px; gap: 6px; }
+    .page-btn {
+      width: 34px; height: 34px; border-radius: 9px;
+      border: 1.5px solid var(--border); background: var(--bg);
+      font-family: var(--font-body); font-size: 13px; font-weight: 600; color: var(--text-muted);
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      transition: all var(--transition);
+    }
+    .page-btn:hover { border-color: var(--green); color: var(--green); background: var(--green-xdim); }
+    .page-btn.active { background: var(--green); border-color: var(--green); color: #fff; box-shadow: 0 2px 8px var(--green-glow); }
+
+    /* ─── FAVORIS ─────────────────────────────────────── */
+    .favoris-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .favori-card {
+      border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 18px;
+      display: flex; flex-direction: column; gap: 12px;
+      transition: all var(--transition); position: relative; overflow: hidden;
+      background: var(--bg);
+    }
+    .favori-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: transparent; transition: background var(--transition);
+    }
+    .favori-card:hover { border-color: rgba(21,168,112,0.3); box-shadow: 0 6px 24px rgba(21,168,112,0.09); transform: translateY(-2px); }
+    .favori-card:hover::before { background: linear-gradient(90deg, var(--green), #34d399); }
+    .favori-top { display: flex; align-items: center; gap: 12px; }
+    .favori-avatar {
+      width: 44px; height: 44px; border-radius: 13px;
+      background: var(--blue-light); color: #1d4ed8;
+      font-family: var(--font); font-size: 12px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; overflow: hidden; box-shadow: var(--shadow-sm);
+    }
+    .favori-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .favori-name { font-family: var(--font); font-size: 13.5px; font-weight: 700; color: var(--text); }
+    .favori-spec { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+    .favori-meta { display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+    .favori-loc { color: var(--text-muted); }
+    .favori-note { color: var(--orange); font-family: var(--font-body); font-weight: 700; background: var(--orange-light); padding: 2px 8px; border-radius: 99px; border: 1px solid #fde68a; }
+    .favori-actions { display: flex; gap: 8px; }
+    .btn-fav-rdv {
+      flex: 1; padding: 9px; border-radius: var(--radius-sm);
+      border: none; background: var(--green); color: #fff;
+      font-family: var(--font-body); font-size: 12.5px; font-weight: 600;
+      transition: all var(--transition); box-shadow: 0 2px 8px var(--green-glow);
+    }
+    .btn-fav-rdv:hover { background: var(--green-dark); transform: translateY(-1px); }
+    .btn-fav-del {
+      width: 36px; height: 36px; border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border); background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      transition: all var(--transition);
+    }
+    .btn-fav-del:hover { border-color: var(--red); background: var(--red-light); }
+    .btn-fav-del svg { width: 14px; height: 14px; stroke: var(--text-hint); fill: none; stroke-width: 1.7; stroke-linecap: round; }
+    .btn-fav-del:hover svg { stroke: var(--red); }
+
+    /* ─── MESSAGES ───────────────────────────────────── */
+    .messages-shell { position: relative; min-height: 560px; }
+    .messages-panel {
+      border: 1.5px solid var(--border); border-radius: var(--radius-lg);
+      background: var(--bg); box-shadow: var(--shadow-sm);
+      display: flex; flex-direction: column; min-height: 560px; max-height: 680px; overflow: hidden;
+    }
+    .messages-panel.hidden { display: none; }
+    .messages-panel-head {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 18px 20px 14px; border-bottom: 1px solid var(--border);
+    }
+    .messages-panel-head h3 { font-family: var(--font); font-size: 15px; font-weight: 700; color: var(--text); }
+    .messages-panel-head p { font-size: 12px; color: var(--text-hint); margin-top: 3px; }
+    .messages-list { display: flex; flex-direction: column; gap: 8px; padding: 12px; overflow: auto; flex: 1; }
+    .message-convo {
+      border: 1.5px solid var(--border); border-radius: var(--radius-md); background: var(--bg);
+      padding: 12px 14px; display: grid; gap: 8px; cursor: pointer;
+      transition: all var(--transition); flex: 0 0 auto;
+    }
+    .message-convo:hover { border-color: var(--green-mid); background: var(--green-xdim); }
+    .message-convo.active { border-color: var(--green); background: var(--green-light); }
+    .message-convo-top, .message-convo-meta { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+    .message-convo-id { display: flex; gap: 10px; min-width: 0; }
+    .message-convo-avatar {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: var(--green-light); color: var(--green-dark);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font); font-size: 13px; font-weight: 800;
+      overflow: hidden; flex-shrink: 0;
+    }
+    .message-convo-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .message-convo-name { font-family: var(--font); font-size: 13px; font-weight: 700; color: var(--text); }
+    .message-convo-sub, .message-convo-preview { font-size: 11.5px; color: var(--text-muted); }
+    .message-convo-time { font-size: 11px; color: var(--text-hint); white-space: nowrap; }
+    .message-unread {
+      min-width: 20px; height: 20px; padding: 0 6px;
+      border-radius: 99px; background: var(--green); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-body); font-size: 11px; font-weight: 700;
+    }
+    .messages-thread { display: flex; flex-direction: column; min-height: 560px; }
+    .messages-thread-head {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 16px 20px 14px; border-bottom: 1px solid var(--border);
+      background: linear-gradient(135deg, #f0fdf8 0%, #eff6ff 100%);
+    }
+    .messages-thread-head-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .messages-thread-id { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .messages-thread-avatar {
+      width: 44px; height: 44px; border-radius: 13px;
+      background: var(--green-light); color: var(--green-dark);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font); font-size: 15px; font-weight: 800;
+      overflow: hidden; flex-shrink: 0;
+    }
+    .messages-thread-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .messages-thread-name { font-family: var(--font); font-size: 14px; font-weight: 700; color: var(--text); }
+    .messages-thread-sub { font-size: 12px; color: var(--text-muted); }
+    .messages-thread-rule {
+      font-size: 11px; color: var(--green-dark);
+      background: var(--green-light); border: 1px solid var(--green-mid);
+      border-radius: 99px; padding: 5px 12px;
+    }
+    .btn-messages-back {
+      width: 38px; height: 38px; border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border); background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: var(--shadow-sm); transition: all var(--transition);
+    }
+    .btn-messages-back svg { width: 17px; height: 17px; stroke: var(--text-muted); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .btn-messages-back:hover { border-color: var(--green); color: var(--green); }
+    .messages-thread-body {
+      flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 10px;
+      overflow: auto; background: var(--bg-surface);
+    }
+    .message-row { display: flex; }
+    .message-row.mine { justify-content: flex-end; }
+    .message-bubble {
+      max-width: 75%; padding: 11px 14px; border-radius: 16px;
+      background: var(--bg); border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+    }
+    .message-row.mine .message-bubble {
+      background: linear-gradient(135deg, #17b476 0%, #0d9466 100%);
+      color: #fff; border-color: transparent;
+      box-shadow: 0 4px 16px rgba(21,168,112,0.20);
+    }
+    .message-bubble p { font-size: 13px; line-height: 1.55; white-space: pre-wrap; word-break: break-word; }
+    .message-bubble time { display: block; margin-top: 6px; font-size: 10.5px; opacity: 0.7; }
+    .message-attachments { display: grid; gap: 8px; margin-top: 8px; }
+    .message-bubble p + .message-attachments { margin-top: 10px; }
+    .message-attachment-image {
+      display: block; width: min(220px, 100%); max-width: 100%;
+      border-radius: 14px; border: 1px solid rgba(13,27,42,0.08);
+      box-shadow: var(--shadow-sm);
+    }
+    .message-audio-player { width: min(240px, 100%); max-width: 100%; }
+    .message-file-link {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; border-radius: 14px;
+      background: rgba(255,255,255,0.78); border: 1px solid rgba(13,27,42,0.08);
+      color: inherit;
+    }
+    .message-row.mine .message-file-link {
+      background: rgba(255,255,255,0.14);
+      border-color: rgba(255,255,255,0.22);
+      color: #fff;
+    }
+    .message-file-icon {
+      width: 34px; height: 34px; border-radius: 12px;
+      background: rgba(21,168,112,0.10); color: var(--green-dark);
+      display: inline-flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .message-row.mine .message-file-icon {
+      background: rgba(255,255,255,0.16);
+      color: #fff;
+    }
+    .message-file-icon svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; }
+    .message-file-name { font-size: 12.5px; font-weight: 600; line-height: 1.35; word-break: break-word; }
+    .message-file-meta { font-size: 11px; opacity: 0.72; margin-top: 2px; }
+    .messages-compose {
+      border-top: 1px solid var(--border); padding: 14px 18px;
+      display: grid; gap: 10px; background: var(--bg);
+    }
+    .messages-compose textarea {
+      min-height: 90px; resize: vertical;
+      border-radius: var(--radius-sm); border: 1.5px solid var(--border);
+      background: var(--bg-surface); padding: 11px 14px;
+      font-family: var(--font-body); font-size: 14px; color: var(--text);
+      outline: none; transition: all var(--transition);
+    }
+    .messages-compose textarea:focus { border-color: var(--green); box-shadow: 0 0 0 3px var(--green-dim); background: var(--bg); }
+    .messages-attachment-preview[hidden] { display: none !important; }
+    .messages-attachment-preview { display: block; }
+    .messages-attachment-card {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 12px; border-radius: 14px;
+      background: var(--bg-surface); border: 1px solid var(--border);
+    }
+    .messages-attachment-thumb {
+      width: 54px; height: 54px; border-radius: 14px;
+      overflow: hidden; flex-shrink: 0;
+      background: #eef6f2; border: 1px solid rgba(21,168,112,0.16);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .messages-attachment-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .messages-attachment-thumb audio { width: 160px; max-width: 100%; }
+    .messages-attachment-thumb svg { width: 18px; height: 18px; stroke: var(--green-dark); fill: none; stroke-width: 1.8; stroke-linecap: round; }
+    .messages-attachment-meta { min-width: 0; flex: 1; }
+    .messages-attachment-title { font-size: 12.5px; font-weight: 700; color: var(--text); word-break: break-word; }
+    .messages-attachment-sub { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
+    .messages-attachment-remove {
+      width: 34px; height: 34px; border-radius: 12px;
+      border: 1px solid var(--border); background: var(--bg);
+      display: inline-flex; align-items: center; justify-content: center;
+      color: var(--text-muted); flex-shrink: 0;
+    }
+    .messages-attachment-remove:hover { border-color: rgba(229,62,62,0.25); color: var(--red); background: var(--red-light); }
+    .messages-attachment-remove svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; }
+    .messages-compose-foot { display: grid; gap: 10px; }
+    .messages-compose-tools { display: flex; flex-wrap: wrap; gap: 8px; }
+    .messages-tool-btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 9px 12px; border-radius: 999px;
+      border: 1px solid var(--border); background: var(--bg); color: var(--text-muted);
+      font-size: 12.5px; font-weight: 600; transition: all var(--transition);
+    }
+    .messages-tool-btn:hover { border-color: rgba(21,168,112,0.35); color: var(--green-dark); background: var(--green-xdim); }
+    .messages-tool-btn.recording {
+      border-color: rgba(229,62,62,0.25);
+      background: rgba(229,62,62,0.08);
+      color: var(--red);
+    }
+    .messages-tool-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; }
+    .messages-compose-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .messages-compose-note { font-size: 12px; color: var(--text-hint); flex: 1; }
+    .btn-message-send {
+      padding: 10px 18px; border: none; border-radius: var(--radius-sm);
+      background: var(--green); color: #fff;
+      font-family: var(--font-body); font-size: 13px; font-weight: 600;
+      box-shadow: 0 2px 10px var(--green-glow); transition: all var(--transition);
+    }
+    .btn-message-send:hover { background: var(--green-dark); }
+    .btn-message-send:disabled,
+    .messages-tool-btn:disabled,
+    .messages-attachment-remove:disabled {
+      opacity: 0.55; cursor: not-allowed; pointer-events: none;
+    }
+    .messages-empty { flex: 1; display: flex; align-items: center; justify-content: center; padding: 28px; text-align: center; color: var(--text-muted); }
+    .messages-empty-inner { max-width: 340px; display: grid; gap: 10px; justify-items: center; }
+    .messages-empty-icon {
+      width: 56px; height: 56px; border-radius: 18px; border: 1px solid var(--border); background: var(--bg-surface);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .messages-empty-icon svg { width: 24px; height: 24px; stroke: var(--text-hint); fill: none; stroke-width: 1.6; stroke-linecap: round; }
+
+    /* ─── PROFIL FORM ────────────────────────────────── */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: 1/-1; }
+    .form-label { font-family: var(--font-body); font-size: 12px; font-weight: 600; color: var(--text-muted); letter-spacing: 0.01em; }
+    .form-input {
+      padding: 10px 13px; border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+      font-family: var(--font-body); font-size: 14px; color: var(--text); background: var(--bg);
+      transition: all var(--transition); outline: none;
+    }
+    .form-input:focus { border-color: var(--green); box-shadow: 0 0 0 3px var(--green-dim); }
+    .form-input:disabled { background: var(--bg-surface); color: var(--text-muted); cursor: not-allowed; }
+    select.form-input { cursor: pointer; }
+    .form-divider { grid-column: 1/-1; border: none; border-top: 1px solid var(--border); margin: 4px 0; }
+    .form-section-title {
+      grid-column: 1/-1; font-family: var(--font-body); font-size: 11px; font-weight: 600;
+      color: var(--text-hint); text-transform: uppercase; letter-spacing: 0.09em;
+      display: flex; align-items: center; gap: 10px; margin-top: 4px;
+    }
+    .form-section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .photo-row {
+      display: flex; align-items: center; gap: 18px; grid-column: 1/-1;
+      padding-bottom: 20px; border-bottom: 1px solid var(--border);
+    }
+    .photo-big {
+      width: 74px; height: 74px; border-radius: 50%;
+      background: linear-gradient(135deg, #a7f3d0, #34d399); color: var(--green-dark);
+      font-family: var(--font); font-size: 22px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; flex-shrink: 0;
+      border: 3px solid var(--bg); box-shadow: 0 0 0 2.5px var(--green-mid), 0 4px 14px rgba(21,168,112,0.18);
+    }
+    .photo-big img { width: 100%; height: 100%; object-fit: cover; }
+    .photo-info p { font-family: var(--font); font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+    .photo-info span { font-size: 12px; color: var(--text-hint); }
+    .btn-photo {
+      margin-top: 10px; padding: 7px 15px; border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border); background: var(--bg);
+      font-family: var(--font-body); font-size: 12.5px; font-weight: 600; color: var(--text-muted);
+      transition: all var(--transition); cursor: pointer; display: inline-flex; align-items: center;
+    }
+    .btn-photo:hover { border-color: var(--green); color: var(--green); background: var(--green-xdim); }
+    .form-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--border); }
+    .btn-cancel {
+      padding: 10px 22px; border-radius: var(--radius-sm); border: 1.5px solid var(--border);
+      background: var(--bg); font-family: var(--font-body); font-size: 14px; font-weight: 600; color: var(--text-muted); transition: all var(--transition);
+    }
+    .btn-cancel:hover { background: var(--bg-hover); color: var(--text); }
+    .btn-save {
+      padding: 10px 24px; border-radius: var(--radius-sm); border: none; background: var(--green); color: #fff;
+      font-family: var(--font-body); font-size: 14px; font-weight: 600; transition: all var(--transition);
+      box-shadow: 0 2px 12px var(--green-glow);
+    }
+    .btn-save:hover { background: var(--green-dark); transform: translateY(-1px); }
+
+    /* ─── FAMILLE ────────────────────────────────────── */
+    .family-shell { display: grid; gap: 16px; }
+    .family-browse-view { display: grid; gap: 16px; }
+    .family-shell.family-editor-open .family-browse-view { display: none; }
+    .family-hero {
+      background: linear-gradient(140deg, #ecfdf5 0%, #f0fdf8 40%, #f0f7ff 100%);
+      border: 1.5px solid rgba(21,168,112,0.2);
+      box-shadow: 0 2px 16px rgba(21,168,112,0.06);
+    }
+    .family-toolbar { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+    .family-browse-view > .family-toolbar { margin-bottom: 12px; }
+    .family-hero-copy { max-width: 580px; }
+    .family-hero-sub { margin-top: 6px; font-size: 13.5px; line-height: 1.65; color: var(--text-muted); }
+    .family-add-btn { padding: 10px 18px; border-radius: 99px; flex-shrink: 0; }
+    .family-summary { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; margin-top: 16px; }
+    .family-stat {
+      padding: 14px 16px; border-radius: 14px;
+      border: 1px solid rgba(21,168,112,0.12);
+      background: rgba(255,255,255,0.85);
+    }
+    .family-stat-num { font-family: var(--font); font-size: 22px; font-weight: 800; color: var(--text); }
+    .family-stat-lbl { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .family-list { display: grid; gap: 10px; }
+    .family-empty-state { text-align: center; padding: 40px 24px; color: var(--text-muted); }
+    .family-empty-state h4 { font-family: var(--font); font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .family-empty-state p { font-size: 13.5px; line-height: 1.65; }
+    .family-member-card {
+      border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 16px 18px;
+      display: flex; gap: 14px; align-items: flex-start;
+      background: var(--bg); transition: all var(--transition);
+    }
+    .family-member-card:hover { border-color: var(--border-hover); background: #fafbfc; }
+    .family-member-avatar {
+      width: 44px; height: 44px; border-radius: 13px;
+      background: var(--blue-light); color: var(--blue);
+      font-family: var(--font); font-size: 12px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .family-member-name { font-family: var(--font); font-size: 14px; font-weight: 700; color: var(--text); }
+    .family-member-relation { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .family-member-actions { margin-left: auto; display: flex; gap: 8px; }
+    .family-editor-card { display: none; }
+    .family-shell.family-editor-open .family-editor-card { display: block; }
+    .family-editor-head p { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+    /* ─── NOTIFICATIONS ──────────────────────────────── */
+    .notif-list { display: flex; flex-direction: column; }
+    .notif-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 18px;
+      padding: 16px 0; border-bottom: 1px solid var(--border);
+    }
+    .notif-row:last-child { border-bottom: none; }
+    .notif-row-title { font-family: var(--font-body); font-size: 14px; font-weight: 600; color: var(--text); }
+    .notif-row-sub { font-size: 12.5px; color: var(--text-muted); margin-top: 3px; line-height: 1.5; }
+    .toggle-wrap { flex-shrink: 0; }
+    .toggle { position: relative; display: inline-block; width: 44px; height: 24px; cursor: pointer; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-track {
+      position: absolute; inset: 0;
+      border-radius: 99px; background: var(--border-hover);
+      transition: background 0.2s ease;
+      border: 1.5px solid transparent;
+    }
+    .toggle-track::after {
+      content: '';
+      position: absolute; top: 2px; left: 2px;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+      transition: transform 0.2s ease;
+    }
+    .toggle input:checked + .toggle-track { background: var(--green); border-color: var(--green); }
+    .toggle input:checked + .toggle-track::after { transform: translateX(20px); }
+    .notif-info-box {
+      margin-top: 20px; padding: 13px 16px;
+      background: var(--bg-surface); border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      font-size: 13px; color: var(--text-muted);
+    }
+
+    /* ─── SÉCURITÉ ───────────────────────────────────── */
+    .security-grid { display: grid; grid-template-columns: 1fr; gap: 18px; max-width: 520px; }
+    .input-password-wrap { position: relative; }
+    .input-password-wrap .form-input { width: 100%; padding-right: 44px; }
+    .toggle-pwd {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; padding: 4px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .toggle-pwd svg { width: 18px; height: 18px; stroke: var(--text-hint); fill: none; stroke-width: 1.7; stroke-linecap: round; }
+    .toggle-pwd:hover svg { stroke: var(--text-muted); }
+    .pwd-strength { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+    .pwd-bar { flex: 1; height: 4px; border-radius: 99px; background: var(--border); overflow: hidden; }
+    .pwd-bar-fill { height: 100%; border-radius: 99px; width: 0%; transition: width 0.3s ease, background 0.3s ease; }
+    .danger-zone {
+      background: rgba(229,62,62,0.04);
+      border: 1.5px solid rgba(229,62,62,0.18);
+    }
+
+    /* ─── SECTION SECTIONS ───────────────────────────── */
+    .section-content { display: none; }
+    .section-content.active { display: block; }
+
+    /* ─── TOAST ──────────────────────────────────────── */
+    .toast-container {
+      position: fixed; bottom: 28px; right: 28px; z-index: 9999;
+      display: flex; flex-direction: column; gap: 10px; pointer-events: none;
+    }
+    .toast {
+      min-width: 280px; max-width: 360px;
+      padding: 13px 18px; border-radius: var(--radius-md);
+      display: flex; align-items: center; gap: 12px;
+      font-family: var(--font-body); font-size: 13.5px; font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      pointer-events: auto;
+      animation: fadeUp 0.3s ease;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .toast-success { background: var(--green-dark); color: #fff; }
+    .toast-error   { background: var(--red); color: #fff; }
+    .toast-info    { background: var(--text); color: #fff; }
+    .toast-icon { width: 18px; height: 18px; flex-shrink: 0; }
+    .toast-icon svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+
+    /* ─── MODAL ──────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(13,27,42,0.5); backdrop-filter: blur(4px);
+      z-index: 500; display: none; align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--bg); border-radius: var(--radius-xl);
+      padding: 28px; width: 100%; max-width: 480px;
+      box-shadow: var(--shadow-lg); border: 1px solid var(--border);
+      animation: fadeUp 0.26s ease;
+    }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .modal-title { font-family: var(--font); font-size: 16px; font-weight: 700; color: var(--text); }
+    .modal-close {
+      width: 32px; height: 32px; border-radius: 9px;
+      border: 1.5px solid var(--border); background: var(--bg);
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      transition: all var(--transition);
+    }
+    .modal-close svg { width: 16px; height: 16px; stroke: var(--text-muted); fill: none; stroke-width: 2; stroke-linecap: round; }
+    .modal-close:hover { border-color: var(--red); background: var(--red-light); }
+    .modal-close:hover svg { stroke: var(--red); }
+    .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--border); }
+    .btn-modal-cancel { padding: 10px 20px; border-radius: var(--radius-sm); border: 1.5px solid var(--border); background: var(--bg); font-family: var(--font-body); font-size: 13.5px; font-weight: 600; color: var(--text-muted); transition: all var(--transition); }
+    .btn-modal-cancel:hover { background: var(--bg-hover); }
+    .btn-modal-confirm { padding: 10px 20px; border-radius: var(--radius-sm); border: none; background: var(--green); color: #fff; font-family: var(--font-body); font-size: 13.5px; font-weight: 600; box-shadow: 0 2px 10px var(--green-glow); transition: all var(--transition); }
+    .btn-modal-confirm:hover { background: var(--green-dark); }
+
+    @media (max-width: 1180px) {
+      :root { --sidebar-w: 248px; }
+      .layout {
+        padding: 20px 20px 28px calc(var(--sidebar-w) + 36px);
+        gap: 18px;
+      }
+      .page-header,
+      .card-header,
+      .rdv-body,
+      .histo-row,
+      .histo-foot,
+      .family-member-card,
+      .notif-row {
+        gap: 14px;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .navbar {
+        height: auto;
+        min-height: 62px;
+        padding: 10px 16px;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .nav-right {
+        width: 100%;
+        justify-content: flex-end;
+      }
+      .layout {
+        display: block;
+        padding: 16px 16px 28px;
+      }
+      .sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+        overflow: visible;
+        margin-bottom: 18px;
+      }
+      .nav-menu {
+        overflow: visible;
+      }
+      .main {
+        min-width: 0;
+      }
+      .page-header,
+      .card-header,
+      .rdv-body,
+      .rdv-actions,
+      .histo-row,
+      .histo-foot,
+      .family-member-card,
+      .family-member-actions,
+      .notif-row,
+      .modal-footer {
+        flex-direction: column;
+        align-items: stretch !important;
+      }
+      .rdv-details,
+      .histo-meta,
+      .card-header > div,
+      .profile-stats {
+        flex-wrap: wrap;
+      }
+      .page-header > button,
+      .rdv-actions > button,
+      .rdv-actions > .btn,
+      .histo-actions > button,
+      .histo-actions > .btn,
+      .family-member-actions > button,
+      .modal-footer > button {
+        width: 100%;
+        justify-content: center;
+      }
+      .rdv-actions .btn-outline[style*="margin-left:auto"] {
+        margin-left: 0 !important;
+      }
+      .histo-right {
+        width: 100%;
+        text-align: left;
+      }
+      .card,
+      .rdv-next,
+      .profile-card,
+      .nav-menu {
+        border-radius: 18px;
+      }
+    }
+
+    @media (max-width: 680px) {
+      body { font-size: 13px; }
+      body.mobile-sidebar-open { overflow: hidden; }
+      .nav-left {
+        flex: 1;
+        min-width: 0;
+      }
+      .mobile-menu-btn {
+        display: inline-flex;
+        flex-shrink: 0;
+      }
+      .logo { font-size: 19px; }
+      .navbar {
+        min-height: 62px;
+        padding: 10px 12px;
+        flex-wrap: nowrap;
+      }
+      .nav-right {
+        width: auto;
+        flex-wrap: nowrap;
+        gap: 8px;
+      }
+      .user-chip {
+        width: 36px;
+        min-width: 36px;
+        height: 36px;
+        padding: 0;
+        border-radius: 999px;
+        justify-content: center;
+      }
+      .user-name,
+      .user-chip::after { display: none; }
+      .user-avatar {
+        width: 26px;
+        height: 26px;
+        font-size: 11px;
+      }
+      .notif-btn {
+        width: 36px;
+        height: 36px;
+      }
+      .layout {
+        padding: 14px 12px 24px;
+      }
+      .sidebar-backdrop {
+        display: block;
+      }
+      body.mobile-sidebar-open .sidebar-backdrop {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .sidebar {
+        position: fixed;
+        top: 74px;
+        left: 0;
+        width: min(84vw, 320px);
+        height: calc(100vh - 86px);
+        transform: translateX(-112%);
+        transition: transform var(--transition);
+        z-index: 220;
+        overflow: hidden;
+        margin-bottom: 0;
+      }
+      body.mobile-sidebar-open .sidebar {
+        transform: translateX(0);
+      }
+      .nav-menu {
+        overflow-y: auto;
+      }
+      .profile-card-body { padding: 0 12px 10px; }
+      .profile-avatar {
+        width: 50px;
+        height: 50px;
+      }
+      .nav-item {
+        padding: 9px 12px;
+        font-size: 12.5px;
+      }
+      .page-header,
+      .card-header {
+        gap: 10px;
+      }
+      .page-title { font-size: 28px; }
+      .page-sub { font-size: 13px; }
+      .rdv-next,
+      .card {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+      .rdv-body,
+      .histo-head,
+      .favori-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .rdv-avatar,
+      .histo-avatar,
+      .favori-avatar,
+      .family-member-avatar {
+        width: 42px;
+        height: 42px;
+      }
+      .filter-bar,
+      #rdv-mode-filters,
+      #historique-status-filters,
+      #historique-mode-filters {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
+      .filter-select,
+      #rdv-patient-filter {
+        width: 100%;
+      }
+      .toast-container {
+        right: 12px;
+        left: 12px;
+        bottom: 12px;
+      }
+      .toast {
+        min-width: 0;
+        max-width: none;
+        width: 100%;
+      }
+      .modal {
+        margin: 12px;
+        padding: 20px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOAST CONTAINER -->
+  <div class="toast-container" id="toastContainer"></div>
+  <div class="sidebar-backdrop" id="sidebarBackdrop" hidden></div>
+
+  <!-- MODAL REPORTER -->
+  <div class="modal-overlay" id="modal-reporter">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Reporter le rendez-vous</div>
+        <button class="modal-close" onclick="closeModal()">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="form-group" style="margin-bottom:16px">
+        <label class="form-label">Motif du report</label>
+        <input class="form-input" type="text" id="motif-reporter" placeholder="Expliquez brièvement...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nouveau créneau</label>
+        <select class="form-input" id="select-creneau">
+          <option value="">Sélectionner un créneau...</option>
+          <option value="2025-01-21T09:00:00">Mardi 21 Jan — 09h00</option>
+          <option value="2025-01-21T14:30:00">Mardi 21 Jan — 14h30</option>
+          <option value="2025-01-22T10:00:00">Mercredi 22 Jan — 10h00</option>
+          <option value="2025-01-23T16:00:00">Jeudi 23 Jan — 16h00</option>
+        </select>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-modal-cancel" onclick="closeModal()">Annuler</button>
+        <button class="btn-modal-confirm" onclick="confirmReporter()">Confirmer le report</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── NAVBAR ─────────────────────────────────────── -->
+  <nav class="navbar">
+    <div class="nav-left">
+      <button class="mobile-menu-btn" id="mobileMenuBtn" type="button" aria-label="Ouvrir le menu">
+        <svg viewBox="0 0 24 24"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+      </button>
+      <a href="/tabibdz-homepage.html" class="logo">
+        Tabib<em>DZ</em><span class="logo-badge"></span>
+      </a>
+    </div>
+    <div class="nav-right">
+      <a class="btn nav-notif-btn notif-btn" href="/tabibdz-centre-notifications.html" title="Notifications" aria-label="Notifications">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 17H9M18 8A6 6 0 1 0 6 8c0 7-3 8-3 8h18s-3-1-3-8M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="nav-notif-badge notif-badge">3</div>
+      </a>
+      <div class="btn nav-user-chip user-chip" id="navUserChip">
+        <div class="nav-user-avatar user-avatar" id="navUserAvatar">..</div>
+        <div class="user-name" id="navUserName">Compte</div>
+        <div class="nav-user-caret user-caret">v</div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ─── LAYOUT ─────────────────────────────────────── -->
+  <div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="dashboardSidebar">
+      <div class="profile-card fade-up d1">
+        <div class="profile-card-banner"></div>
+        <div class="profile-card-body">
+          <div class="profile-avatar" id="sidebarProfileAvatar">..</div>
+          <div class="profile-name" id="sidebarProfileName">Compte patient</div>
+          <div class="profile-sub">Patient depuis 2023</div>
+          <div class="profile-stats">
+            <div class="pstat">
+              <div class="pstat-num" id="sidebarRdvCount">0</div>
+              <div class="pstat-lbl">RDV pris</div>
+            </div>
+            <div class="pstat">
+              <div class="pstat-num" id="sidebarFavorisCount">0</div>
+              <div class="pstat-lbl">Favoris</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <nav class="nav-menu fade-up d2">
+        <div class="nav-section-label">Mon espace</div>
+        <div class="nav-item active" data-section="rdv" onclick="switchSection('rdv', this)">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Mes rendez-vous
+          <span class="badge-count">1</span>
+        </div>
+        <div class="nav-item" data-section="historique" onclick="switchSection('historique', this)">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Historique
+        </div>
+        <div class="nav-item" data-section="favoris" onclick="switchSection('favoris', this)">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          Favoris
+        </div>
+        <div class="nav-item" data-section="messages" onclick="switchSection('messages', this)">
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Messagerie
+          <span class="badge-count" id="messagesBadge" style="display:none">0</span>
+        </div>
+        <div class="nav-divider"></div>
+        <div class="nav-section-label">Mon compte</div>
+        <div class="nav-item" data-section="profil" onclick="switchSection('profil', this)">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Mon profil
+        </div>
+        <div class="nav-item" data-section="famille" onclick="switchSection('famille', this)">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Famille
+          <span class="badge-count" id="familyBadge" style="display:none">0</span>
+        </div>
+        <div class="nav-item" data-section="notifications" onclick="switchSection('notifications', this)">
+          <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          Notifications
+        </div>
+        <div class="nav-item" data-section="securite" onclick="switchSection('securite', this)">
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Sécurité
+        </div>
+        <div class="nav-divider"></div>
+        <div class="nav-item danger" onclick="logoutDashboard()">
+          <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+          Déconnexion
+        </div>
+      </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+      <!-- ═══ SECTION RDV ════════════════════════════ -->
+      <div id="section-rdv" class="section-content active">
+
+        <div class="page-header fade-up d1">
+          <div>
+            <div class="page-title">Mes rendez-vous</div>
+            <div class="page-sub">Gérez vos consultations médicales</div>
+          </div>
+          <button class="btn btn-primary" onclick="location.href='/tabibdz-recherche.html'">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nouveau RDV
+          </button>
+        </div>
+
+        <!-- Prochain RDV -->
+        <div class="rdv-next fade-up d2" id="rdv-next-card">
+          <div class="rdv-next-top">
+            <div class="rdv-label-row">
+              <div class="rdv-dot"></div>
+              Prochain rendez-vous
+            </div>
+            <div class="rdv-countdown">Chargement...</div>
+          </div>
+          <div class="rdv-body">
+            <div class="rdv-avatar">AB</div>
+            <div class="rdv-info">
+              <div class="rdv-doc-name">Chargement du rendez-vous...</div>
+              <div class="rdv-spec">Consultation a venir</div>
+              <div class="rdv-details">
+                <div class="rdv-detail">
+                  <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  <strong>Date en cours de chargement</strong>
+                </div>
+                <div class="rdv-detail">
+                  <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  <strong>Lieu en cours de chargement</strong>
+                </div>
+                <div class="rdv-detail">
+                  <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  <strong>Motif en cours de chargement</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="rdv-actions">
+            <button class="btn btn-ghost-red" onclick="annulerRdv(42)">Annuler le RDV</button>
+            <button class="btn btn-outline" onclick="document.getElementById('modal-reporter').classList.add('open')">
+              <svg viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+              Reporter
+            </button>
+            <button class="btn btn-outline" style="margin-left:auto">
+              <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Ajouter au calendrier
+            </button>
+          </div>
+        </div>
+
+        <!-- Liste des autres RDV à venir -->
+        <div class="card fade-up d3">
+          <div class="card-header">
+            <div class="card-title">À venir</div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <div id="rdv-mode-filters" class="filter-bar">
+                <button class="filter-btn active" onclick="filterRdvMode('tous',this)">Tous</button>
+                <button class="filter-btn" onclick="filterRdvMode('cabinet',this)">Cabinet</button>
+                <button class="filter-btn" onclick="filterRdvMode('tele',this)">Téléconsultation</button>
+              </div>
+              <select class="filter-select" id="rdv-patient-filter" onchange="filterRdvPatient(this.value)">
+                <option value="tous">Tous les patients</option>
+                <option value="moi">Moi</option>
+              </select>
+            </div>
+          </div>
+          <div id="rdv-upcoming-list">
+            <!-- chargé via JS -->
+            <div class="rdv-empty">
+              <div class="rdv-empty-icon">
+                <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              </div>
+              <p>Aucun autre rendez-vous à venir.</p>
+              <button class="btn btn-primary" onclick="location.href='/tabibdz-recherche.html'">Prendre un rendez-vous</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ SECTION HISTORIQUE ═══════════════════════ -->
+      <div id="section-historique" class="section-content">
+        <div class="page-header fade-up d1">
+          <div>
+            <div class="page-title">Historique</div>
+            <div class="page-sub">Vos consultations passées</div>
+          </div>
+        </div>
+        <div class="card fade-up d2">
+          <div class="card-header" style="flex-wrap:wrap;gap:10px">
+            <div class="card-title">Toutes les consultations</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <div id="historique-status-filters" class="filter-bar">
+                <button class="filter-btn active" onclick="filterHistorique('tous',this)">Tous</button>
+                <button class="filter-btn" onclick="filterHistorique('termine',this)">Terminés</button>
+                <button class="filter-btn" onclick="filterHistorique('annule',this)">Annulés</button>
+                <button class="filter-btn" onclick="filterHistorique('reporte',this)">Reportés</button>
+              </div>
+              <div id="historique-mode-filters" class="filter-bar">
+                <button class="filter-btn active" onclick="filterHistoriqueMode('tous',this)">Tous modes</button>
+                <button class="filter-btn" onclick="filterHistoriqueMode('cabinet',this)">Cabinet</button>
+                <button class="filter-btn" onclick="filterHistoriqueMode('tele',this)">Télé</button>
+              </div>
+              <select class="filter-select" onchange="filterHistoriquePatient(this.value)">
+                <option value="tous">Tous patients</option>
+                <option value="moi">Moi</option>
+              </select>
+            </div>
+          </div>
+          <div class="historique-list" id="historique-list">
+            <!-- Exemple statique de rendu -->
+            <div class="histo-item">
+              <div class="histo-head">
+                <div class="histo-avatar" style="background:#eff6ff;color:#1d4ed8">AB</div>
+                <div class="histo-body">
+                  <div class="histo-row">
+                    <div>
+                      <div class="histo-name">Historique en cours de chargement</div>
+                      <div class="histo-sub">Consultation precedente</div>
+                    </div>
+                    <div class="histo-right">
+                      <div class="histo-date">15 Dec 2024</div>
+                      <span class="statut-pill statut-termine">Terminé</span>
+                    </div>
+                  </div>
+                  <div class="histo-meta">
+                    <div class="histo-meta-item">
+                      <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                      <strong>Cabinet</strong>
+                    </div>
+                    <div class="histo-meta-item">
+                      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                      <strong>Suivi hypertension</strong>
+                    </div>
+                    <div class="histo-meta-item">
+                      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                      <strong>Patient concerne</strong>
+                    </div>
+                  </div>
+                  <div class="histo-foot">
+                    <div class="histo-context">
+                      <div class="histo-motif">Motif : Contrôle tension artérielle</div>
+                    </div>
+                    <div class="histo-actions">
+                      <button class="btn-reprendre" onclick="location.href='/?medecin_id=1'">Reprendre RDV</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="histo-item">
+              <div class="histo-head">
+                <div class="histo-avatar" style="background:#fdf2f8;color:#86198f">SB</div>
+                <div class="histo-body">
+                  <div class="histo-row">
+                    <div>
+                      <div class="histo-name">Historique en cours de chargement</div>
+                      <div class="histo-sub">Consultation precedente</div>
+                    </div>
+                    <div class="histo-right">
+                      <div class="histo-date">02 Nov 2024</div>
+                      <span class="statut-pill statut-annule">Annulé</span>
+                    </div>
+                  </div>
+                  <div class="histo-meta">
+                    <div class="histo-meta-item">
+                      <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                      <strong>Cabinet</strong>
+                    </div>
+                    <div class="histo-meta-item">
+                      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                      <strong>Consultation dermatologie</strong>
+                    </div>
+                  </div>
+                  <div class="histo-foot">
+                    <div class="histo-context">
+                      <div class="histo-motif">Annulé par le médecin</div>
+                    </div>
+                    <div class="histo-actions">
+                      <button class="btn-reprendre" onclick="location.href='/?medecin_id=3'">Reprendre RDV</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="histo-pagination" id="histo-pagination">
+            <button class="page-btn active" onclick="loadPage(1)">1</button>
+            <button class="page-btn" onclick="loadPage(2)">2</button>
+            <button class="page-btn" onclick="loadPage('next')">›</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ SECTION FAVORIS ══════════════════════════ -->
+      <div id="section-favoris" class="section-content">
+        <div class="page-header fade-up d1">
+          <div>
+            <div class="page-title">Mes favoris</div>
+            <div class="page-sub">Vos médecins enregistrés</div>
+          </div>
+        </div>
+        <div class="card fade-up d2">
+          <div class="card-header">
+            <div class="card-title">Médecins favoris</div>
+            <div style="font-size:13px;color:var(--text-hint)">4 médecins</div>
+          </div>
+          <div class="favoris-grid" id="favoris-list">
+            <div class="favori-card">
+              <div class="favori-top">
+                <div class="favori-avatar" style="background:#eff6ff;color:#1d4ed8">AB</div>
+                <div>
+                  <div class="favori-name">Favoris en cours de chargement</div>
+                  <div class="favori-spec">Medecin favori</div>
+                </div>
+              </div>
+              <div class="favori-meta">
+                <span class="favori-loc">📍 Localisation</span>
+                <span class="favori-note">★ 4.9</span>
+              </div>
+              <div style="font-size:12px;color:var(--text-muted)">Prochain dispo : <strong style="color:var(--green)">Lun 20 Jan 10h00</strong></div>
+              <div class="favori-actions">
+                <button class="btn-fav-rdv" onclick="location.href='/?medecin_id=1'">Prendre RDV</button>
+                <button class="btn-fav-del" onclick="retirerFavori(1, this)" title="Retirer des favoris">
+                  <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="favori-card">
+              <div class="favori-top">
+                <div class="favori-avatar" style="background:#fdf2f8;color:#86198f">SB</div>
+                <div>
+                  <div class="favori-name">Favoris en cours de chargement</div>
+                  <div class="favori-spec">Medecin favori</div>
+                </div>
+              </div>
+              <div class="favori-meta">
+                <span class="favori-loc">📍 Oran, Centre-ville</span>
+                <span class="favori-note">★ 4.7</span>
+              </div>
+              <div style="font-size:12px;color:var(--text-muted)">Prochain dispo : <strong style="color:var(--green)">Jeu 23 Jan 17h00</strong></div>
+              <div class="favori-actions">
+                <button class="btn-fav-rdv" onclick="location.href='/?medecin_id=3'">Prendre RDV</button>
+                <button class="btn-fav-del" onclick="retirerFavori(3, this)" title="Retirer des favoris">
+                  <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="favori-card">
+              <div class="favori-top">
+                <div class="favori-avatar" style="background:var(--green-light);color:var(--green-dark)">LA</div>
+                <div>
+                  <div class="favori-name">Favoris en cours de chargement</div>
+                  <div class="favori-spec">Medecin favori</div>
+                </div>
+              </div>
+              <div class="favori-meta">
+                <span class="favori-loc">📍 Constantine</span>
+                <span class="favori-note">★ 4.6</span>
+              </div>
+              <div style="font-size:12px;color:var(--text-muted)">Prochain dispo : <strong style="color:var(--text-hint)">Lun 27 Jan</strong></div>
+              <div class="favori-actions">
+                <button class="btn-fav-rdv" onclick="location.href='/?medecin_id=5'">Prendre RDV</button>
+                <button class="btn-fav-del" onclick="retirerFavori(5, this)" title="Retirer des favoris">
+                  <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ SECTION MESSAGES ════════════════════════ -->
+      <div id="section-messages" class="section-content">
+        <div class="page-header fade-up d1">
+          <div>
+            <div class="page-title">Messagerie</div>
+            <div class="page-sub">Conversations médicales (après consultation)</div>
+          </div>
+        </div>
+        <div class="messages-shell fade-up d2">
+          <div class="messages-panel" id="messagesContactsPanel">
+            <div class="messages-panel-head">
+              <div>
+                <h3>Conversations médicales</h3>
+                <p>Messagerie ouverte après au moins une consultation terminée.</p>
+              </div>
+            </div>
+            <div class="messages-list" id="messagesList">
+              <div class="messages-empty">
+                <div class="messages-empty-inner">
+                  <div class="messages-empty-icon">
+                    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  </div>
+                  <div>Chargement des conversations…</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="messages-panel messages-thread hidden" id="messagesThreadPanel">
+            <div class="messages-thread-head">
+              <div class="messages-thread-head-left">
+                <button type="button" class="btn-messages-back" id="messagesBackBtn">
+                  <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/><path d="M21 12H9"/></svg>
+                </button>
+                <div class="messages-thread-id">
+                  <div class="messages-thread-avatar" id="messagesPeerAvatar">?</div>
+                  <div>
+                    <div class="messages-thread-name" id="messagesPeerName">Messagerie patient</div>
+                    <div class="messages-thread-sub" id="messagesPeerMeta">Sélectionnez une conversation.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="messages-thread-rule">Après RDV terminé</div>
+            </div>
+            <div class="messages-thread-body" id="messagesThreadBody">
+              <div class="messages-empty">
+                <div class="messages-empty-inner">
+                  <div class="messages-empty-icon">
+                    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  </div>
+                  <div>Sélectionnez un médecin pour afficher l'historique.</div>
+                </div>
+              </div>
+            </div>
+            <form class="messages-compose" id="messagesForm">
+              <textarea id="messagesInput" placeholder="Écrire un message au médecin…" disabled></textarea>
+              <input type="file" id="messagesImageInput" accept="image/*" hidden onchange="handleMessageAttachmentChange(event, 'image')">
+              <input type="file" id="messagesFileInput" accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.zip,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/plain,application/zip" hidden onchange="handleMessageAttachmentChange(event, 'file')">
+              <div class="messages-attachment-preview" id="messagesAttachmentPreview" hidden></div>
+              <div class="messages-compose-foot">
+                <div class="messages-compose-tools">
+                  <button type="button" class="messages-tool-btn" id="messagesAddImageBtn" onclick="openMessageImagePicker()" disabled>
+                    <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="M21 15l-4.5-4.5L9 18"/></svg>
+                    <span>Photo</span>
+                  </button>
+                  <button type="button" class="messages-tool-btn" id="messagesAddFileBtn" onclick="openMessageFilePicker()" disabled>
+                    <svg viewBox="0 0 24 24"><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    <span>Fichier</span>
+                  </button>
+                  <button type="button" class="messages-tool-btn" id="messagesVoiceBtn" onclick="toggleMessageVoiceRecording()" disabled>
+                    <svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg>
+                    <span>Vocal</span>
+                  </button>
+                </div>
+                <div class="messages-compose-actions">
+                  <div class="messages-compose-note" id="messagesComposeNote">La messagerie s'active après une consultation terminée.</div>
+                  <button type="submit" class="btn-message-send" id="messagesSendBtn" disabled>Envoyer</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ SECTION PROFIL ══════════════════════════ -->
+      <div id="section-profil" class="section-content">
+        <div class="page-header fade-up d1">
+          <div>
+            <div class="page-title">Mon profil</div>
+            <div class="page-sub">Informations personnelles et médicales</div>
+          </div>
+        </div>
+        <div class="card fade-up d2">
+          <div class="card-header">
+            <div class="card-title">Informations personnelles</div>
+          </div>
+          <form id="form-profil" onsubmit="saveProfil(event)">
+            <div class="form-grid">
+              <div class="photo-row">
+                <div class="photo-big" id="profilePhotoBig">..</div>
+                <div class="photo-info">
+                  <p id="profileFullName">Compte patient</p>
+                  <span>JPG ou PNG, max 2 Mo</span><br>
+                  <label class="btn-photo">
+                    Changer la photo
+                    <input type="file" accept="image/jpeg,image/png" style="display:none" id="input-photo" onchange="uploadPhoto(this)">
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Prénom</label>
+                <input class="form-input" type="text" name="prenom" value="" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Nom</label>
+                <input class="form-input" type="text" name="nom" value="" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Date de naissance</label>
+                <input class="form-input" type="date" name="date_naissance" value="">
+              </div>
+                <div class="form-group">
+                  <label class="form-label">Sexe</label>
+                  <select class="form-input" name="sexe">
+                  <option value="">Non precise</option>
+                  <option value="Homme">Masculin</option>
+                  <option value="Femme">Feminin</option>
+                  </select>
+                </div>
+
+              <hr class="form-divider">
+              <div class="form-section-title">Coordonnées</div>
+              <div class="form-group">
+                <label class="form-label">Téléphone</label>
+                <input class="form-input" type="tel" name="telephone" value="">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email</label>
+                <input class="form-input" type="email" name="email" value="">
+              </div>
+                <div class="form-group">
+                  <label class="form-label">Wilaya</label>
+                  <select class="form-input" name="wilaya_id">
+                  <option value="">Selectionner une wilaya</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Commune</label>
+                  <input class="form-input" type="text" name="commune" value="">
+                </div>
+
+              <hr class="form-divider">
+              <div class="form-section-title">Informations médicales</div>
+                <div class="form-group">
+                  <label class="form-label">Groupe sanguin</label>
+                  <select class="form-input" name="groupe_sanguin">
+                  <option value="-">-</option>
+                  <option value="A+">A+</option>
+                  <option value="A-">A-</option>
+                  <option value="B+">B+</option>
+                  <option value="B-">B-</option>
+                  <option value="AB+">AB+</option>
+                  <option value="AB-">AB-</option>
+                  <option value="O+">O+</option>
+                  <option value="O-">O-</option>
+                  </select>
+                </div>
+              <div class="form-group">
+                <label class="form-label">N° assurance / CNAS</label>
+                <input class="form-input" type="text" name="num_assurance" placeholder="Optionnel">
+              </div>
+              <div class="form-group full">
+                <label class="form-label">Allergies connues</label>
+                <input class="form-input" type="text" name="allergies" placeholder="Ex : pénicilline, arachides…">
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn-cancel" onclick="loadProfileForm()">Annuler</button>
+              <button type="submit" class="btn-save">Enregistrer les modifications</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- ═══ SECTION FAMILLE ═════════════════════════ -->
+      <div id="section-famille" class="section-content">
+        <div class="page-header fade-up d1">
+          <div>
+            <div class="page-title">Profils famille</div>
+            <div class="page-sub">Gérez les profils de vos proches</div>
+          </div>
+        </div>
+        <div class="family-shell fade-up d2" id="familyShell">
+          <div class="family-browse-view">
+            <div class="card family-hero">
+              <div class="family-toolbar">
+                <div class="family-hero-copy">
+                  <div class="card-title">Membres de la famille</div>
+                  <div class="family-hero-sub">Ajoutez des proches pour réserver des rendez-vous en leur nom, directement depuis votre espace patient.</div>
+                </div>
+                <button class="btn btn-primary family-add-btn" onclick="openFamilyEditor()">
+                  <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Ajouter
+                </button>
+              </div>
+              <div class="family-summary">
+                <div class="family-stat">
+                  <div class="family-stat-num">0</div>
+                  <div class="family-stat-lbl">Membres</div>
+                </div>
+                <div class="family-stat">
+                  <div class="family-stat-num">0</div>
+                  <div class="family-stat-lbl">RDV famille</div>
+                </div>
+                <div class="family-stat">
+                  <div class="family-stat-num">0</div>
+                  <div class="family-stat-lbl">À venir</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="family-toolbar family-browse-view">
+                <div class="card-title">Mes proches</div>
+              </div>
+              <div class="family-list" id="familyMembersList">
+                <div class="family-empty-state">
+                  <h4>Aucun membre pour le moment</h4>
+                  <p>Utilisez le bouton Ajouter en haut pour créer un premier profil famille et réserver facilement au nom d'un enfant, d'un parent ou d'un proche.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card family-editor-card" id="familyEditorCard">
+            <div class="card-header">
+              <div>
+                <div class="card-title" id="familyFormTitle">Ajouter un membre</div>
+                <div class="family-editor-head"><p>Renseignez les informations utiles pour ce profil.</p></div>
+              </div>
+              <div class="card-link" onclick="resetFamilyForm()">← Retour à la liste</div>
+            </div>
+            <form id="form-family" onsubmit="saveFamilyMember(event)">
+              <div class="form-grid">
+                <div class="form-section-title">Identité</div>
+                <div class="form-group">
+                  <label class="form-label">Prénom</label>
+                  <input class="form-input" type="text" name="prenom" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Nom</label>
+                  <input class="form-input" type="text" name="nom" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Relation</label>
+                  <input class="form-input" type="text" name="relation" placeholder="Ex: Fils, Mère, Père" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Date de naissance</label>
+                  <input class="form-input" type="date" name="date_naissance">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Sexe</label>
+                  <select class="form-input" name="sexe">
+                    <option value="">Non précisé</option>
+                    <option value="Homme">Masculin</option>
+                    <option value="Femme">Féminin</option>
+                  </select>
+                </div>
+                <div class="form-section-title">Coordonnées</div>
+                <div class="form-group">
+                  <label class="form-label">Téléphone</label>
+                  <input class="form-input" type="tel" name="telephone" placeholder="Optionnel">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Email</label>
+                  <input class="form-input" type="email" name="email" placeholder="Optionnel">
+                </div>
+                <div class="form-section-title">Infos médicales</div>
+                <div class="form-group full">
+                  <label class="form-label">Notes médicales</label>
+                  <input class="form-input" type="text" name="notes_medicales" placeholder="Optionnel">
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="button" class="btn-cancel" onclick="resetFamilyForm()">Annuler</button>
+                <button type="submit" class="btn-save">Enregistrer</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ SECTION NOTIFICATIONS ══════════════════ -->
+      <div id="section-notifications" class="section-content">
+        <div class="page-header fade-up d1">
+          <div>
+            <div class="page-title">Notifications</div>
+            <div class="page-sub">Gérez vos préférences de rappels</div>
+          </div>
+        </div>
+        <div class="card fade-up d2">
+          <div class="card-header">
+            <div class="card-title">Préférences de notifications</div>
+          </div>
+          <div class="notif-list" id="section-notifications-list">
+            <div class="notif-row">
+              <div class="notif-row-info">
+                <div class="notif-row-title">Rappel SMS — 24h avant</div>
+                <div class="notif-row-sub">Reçu la veille de votre rendez-vous par SMS sur votre téléphone.</div>
+              </div>
+              <div class="toggle-wrap">
+                <label class="toggle">
+                  <input type="checkbox" checked onchange="saveNotifPref('sms_24h', this.checked)">
+                  <span class="toggle-track"></span>
+                </label>
+              </div>
+            </div>
+            <div class="notif-row">
+              <div class="notif-row-info">
+                <div class="notif-row-title">Rappel SMS — 2h avant</div>
+                <div class="notif-row-sub">Reçu 2 heures avant votre rendez-vous par SMS.</div>
+              </div>
+              <div class="toggle-wrap">
+                <label class="toggle">
+                  <input type="checkbox" onchange="saveNotifPref('sms_2h', this.checked)">
+                  <span class="toggle-track"></span>
+                </label>
+              </div>
+            </div>
+            <div class="notif-row">
+              <div class="notif-row-info">
+                <div class="notif-row-title">Rappel Email — 24h avant</div>
+                <div class="notif-row-sub">Reçu la veille avec les détails complets du rendez-vous.</div>
+              </div>
+              <div class="toggle-wrap">
+                <label class="toggle">
+                  <input type="checkbox" checked onchange="saveNotifPref('email_24h', this.checked)">
+                  <span class="toggle-track"></span>
+                </label>
+              </div>
+            </div>
+            <div class="notif-row">
+              <div class="notif-row-info">
+                <div class="notif-row-title">Rappel Email — 2h avant</div>
+                <div class="notif-row-sub">Email de rappel 2 heures avant votre consultation.</div>
+              </div>
+              <div class="toggle-wrap">
+                <label class="toggle">
+                  <input type="checkbox" checked onchange="saveNotifPref('email_2h', this.checked)">
+                  <span class="toggle-track"></span>
+                </label>
+              </div>
+            </div>
+            <div class="notif-row">
+              <div class="notif-row-info">
+                <div class="notif-row-title">SMS en cas d'annulation</div>
+                <div class="notif-row-sub">Alerté par SMS si le médecin annule ou reporte le RDV.</div>
+              </div>
+              <div class="toggle-wrap">
+                <label class="toggle">
+                  <input type="checkbox" checked onchange="saveNotifPref('sms_annulation', this.checked)">
+                  <span class="toggle-track"></span>
+                </label>
+              </div>
+            </div>
+            <div class="notif-row">
+              <div class="notif-row-info">
+                <div class="notif-row-title">Email en cas d'annulation</div>
+                <div class="notif-row-sub">Email de confirmation lors de l'annulation d'un RDV.</div>
+              </div>
+              <div class="toggle-wrap">
+                <label class="toggle">
+                  <input type="checkbox" checked onchange="saveNotifPref('email_annulation', this.checked)">
+                  <span class="toggle-track"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="notif-info-box">
+            Les SMS sont envoyes au <strong style="color:var(--text)">votre numero</strong>.
+            <a href="#" onclick="switchSection('profil')" style="color:var(--green);margin-left:4px">Modifier →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ SECTION SÉCURITÉ ════════════════════════ -->
+      <div id="section-securite" class="section-content">
+        <div class="page-header fade-up d1">
+          <div>
+            <div class="page-title">Sécurité</div>
+            <div class="page-sub">Protégez votre compte</div>
+          </div>
+        </div>
+
+        <div class="card fade-up d2">
+          <div class="card-header">
+            <div class="card-title">Changer le mot de passe</div>
+          </div>
+          <form id="form-password" onsubmit="changePassword(event)">
+            <div class="security-grid">
+              <div class="form-group">
+                <label class="form-label">Mot de passe actuel</label>
+                <div class="input-password-wrap">
+                  <input class="form-input" type="password" id="pwd-ancien" name="ancien_mdp" placeholder="••••••••" required>
+                  <button type="button" class="toggle-pwd" onclick="togglePwd('pwd-ancien', this)">
+                    <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Nouveau mot de passe</label>
+                <div class="input-password-wrap">
+                  <input class="form-input" type="password" id="pwd-nouveau" name="nouveau_mdp" placeholder="Min. 8 caractères" required oninput="checkPwdStrength(this.value)">
+                  <button type="button" class="toggle-pwd" onclick="togglePwd('pwd-nouveau', this)">
+                    <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+                <div class="pwd-strength">
+                  <div class="pwd-bar"><div class="pwd-bar-fill" id="pwd-bar-fill"></div></div>
+                  <span id="pwd-strength-label" style="font-size:12px;color:var(--text-hint);min-width:50px"></span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Confirmer le nouveau mot de passe</label>
+                <div class="input-password-wrap">
+                  <input class="form-input" type="password" id="pwd-confirm" name="confirm_mdp" placeholder="Répéter le mot de passe" required>
+                  <button type="button" class="toggle-pwd" onclick="togglePwd('pwd-confirm', this)">
+                    <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn-cancel" onclick="document.getElementById('form-password').reset()">Annuler</button>
+              <button type="submit" class="btn-save">Changer le mot de passe</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="card fade-up d3 danger-zone">
+          <div class="card-header">
+            <div class="card-title" style="color:var(--red)">Zone de danger</div>
+          </div>
+          <p style="font-size:14px;color:var(--text-muted);margin-bottom:16px;line-height:1.7">
+            La suppression du compte est irréversible. Toutes vos données et votre historique seront définitivement effacés.
+          </p>
+          <button class="btn btn-ghost-red" style="width:auto" onclick="showToast('Contactez le support pour supprimer votre compte.', 'info')">
+            Supprimer mon compte
+          </button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    // ── STATE ──
+    let currentHistoriquePage = 1;
+    let currentHistoriqueFilter = 'tous';
+    let currentHistoriqueModeFilter = 'tous';
+    let currentHistoriquePatientFilter = 'tous';
+    let currentHistoriqueTotalPages = 1;
+    let currentRdvModeFilter = 'tous';
+    let currentRdvPatientFilter = 'tous';
+    let currentFamilyMembers = [];
+    let currentFamilyEditingId = null;
+    let currentMessagePeerId = null;
+
+    // ── SECTION SWITCH ──
+    function switchSection(name, clickedEl) {
+      document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      const sec = document.getElementById('section-' + name);
+      if (sec) sec.classList.add('active');
+      const navEl = clickedEl || document.querySelector(`.nav-item[data-section="${name}"]`);
+      if (navEl) navEl.classList.add('active');
+      location.hash = 'section-' + name;
+    }
+
+    // ── TOAST ──
+    function showToast(msg, type = 'success', duration = 3200) {
+      const container = document.getElementById('toastContainer');
+      const t = document.createElement('div');
+      t.className = `toast toast-${type}`;
+      const icons = {
+        success: '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>',
+        error:   '<svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+        info:    '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'
+      };
+      t.innerHTML = `<div class="toast-icon">${icons[type] || icons.info}</div><span>${msg}</span>`;
+      container.appendChild(t);
+      setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity 0.3s'; setTimeout(() => t.remove(), 300); }, duration);
+    }
+
+    // ── MODAL ──
+    function closeModal() {
+      document.getElementById('modal-reporter').classList.remove('open');
+    }
+    function confirmReporter() {
+      const creneau = document.getElementById('select-creneau').value;
+      if (!creneau) { showToast('Veuillez sélectionner un créneau.', 'error'); return; }
+      closeModal();
+      showToast('Rendez-vous reporté avec succès.', 'success');
+    }
+
+    // ── ANNULER RDV ──
+    function annulerRdv(id) {
+      if (!confirm('Annuler ce rendez-vous ?')) return;
+      showToast('Rendez-vous annulé.', 'success');
+    }
+
+    // ── RETIRER FAVORI ──
+    function retirerFavori(id, btn) {
+      const card = btn.closest('.favori-card');
+      if (card) { card.style.opacity = '0'; card.style.transform = 'scale(0.95)'; card.style.transition = 'all 0.3s'; setTimeout(() => card.remove(), 300); }
+      showToast('Médecin retiré des favoris.', 'success');
+    }
+
+    // ── FILTER BUTTONS ──
+    function setFilterButtonsActive(containerId, value) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      container.querySelectorAll('.filter-btn').forEach(btn => {
+        const bval = btn.getAttribute('onclick')?.match(/'([^']+)'/)?.[1];
+        btn.classList.toggle('active', bval === value);
+      });
+    }
+    function filterRdvMode(mode, btn) { setFilterButtonsActive('rdv-mode-filters', mode); }
+    function filterRdvPatient(v) {}
+    function filterHistorique(s, btn) { setFilterButtonsActive('historique-status-filters', s); }
+    function filterHistoriqueMode(m, btn) { setFilterButtonsActive('historique-mode-filters', m); }
+    function filterHistoriquePatient(v) {}
+    function loadPage(p) { showToast('Page ' + p, 'info'); }
+
+    function syncMobileDashboardChrome() {
+      const isPhone = window.innerWidth <= 680;
+      const backdrop = document.getElementById('sidebarBackdrop');
+      if (backdrop) backdrop.hidden = !isPhone;
+      if (!isPhone) document.body.classList.remove('mobile-sidebar-open');
+    }
+
+    function toggleMobileSidebar(forceOpen) {
+      if (window.innerWidth > 680) return;
+      const shouldOpen = typeof forceOpen === 'boolean'
+        ? forceOpen
+        : !document.body.classList.contains('mobile-sidebar-open');
+      document.body.classList.toggle('mobile-sidebar-open', shouldOpen);
+    }
+
+    // ── PROFIL ──
+    function saveProfil(e) {
+      e.preventDefault();
+      showToast('Profil mis à jour avec succès.', 'success');
+    }
+    function uploadPhoto(input) {
+      if (!input.files[0]) return;
+      showToast('Photo mise à jour.', 'success');
+    }
+
+    // ── FAMILLE ──
+    function openFamilyEditor(id) {
+      currentFamilyEditingId = id || null;
+      document.getElementById('familyShell').classList.add('family-editor-open');
+      document.getElementById('familyFormTitle').textContent = id ? 'Modifier un membre' : 'Ajouter un membre';
+    }
+    function resetFamilyForm() {
+      currentFamilyEditingId = null;
+      document.getElementById('familyShell').classList.remove('family-editor-open');
+      document.getElementById('form-family')?.reset();
+    }
+    function saveFamilyMember(e) {
+      e.preventDefault();
+      showToast('Membre enregistré.', 'success');
+      resetFamilyForm();
+    }
+
+    // ── NOTIFICATIONS ──
+    function saveNotifPref(key, val) {
+      showToast('Préférence mise à jour.', 'success');
+    }
+
+    // ── SÉCURITÉ ──
+    function changePassword(e) {
+      e.preventDefault();
+      const n = document.getElementById('pwd-nouveau').value;
+      const c = document.getElementById('pwd-confirm').value;
+      if (n !== c) { showToast('Les mots de passe ne correspondent pas.', 'error'); return; }
+      showToast('Mot de passe modifié avec succès.', 'success');
+      e.target.reset();
+    }
+    function togglePwd(id, btn) {
+      const inp = document.getElementById(id);
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+    }
+    function checkPwdStrength(val) {
+      const bar = document.getElementById('pwd-bar-fill');
+      const lbl = document.getElementById('pwd-strength-label');
+      if (!bar || !lbl) return;
+      let score = 0;
+      if (val.length >= 8) score++;
+      if (/[A-Z]/.test(val)) score++;
+      if (/[0-9]/.test(val)) score++;
+      if (/[^A-Za-z0-9]/.test(val)) score++;
+      const levels = ['', '#e53e3e', '#c97c0a', '#15A870', '#0a6e47'];
+      const labels = ['', 'Faible', 'Moyen', 'Bon', 'Excellent'];
+      bar.style.width = (score * 25) + '%';
+      bar.style.background = levels[score] || 'var(--border)';
+      lbl.textContent = labels[score] || '';
+      lbl.style.color = levels[score] || 'var(--text-hint)';
+    }
+
+    // ── MESSAGES ──
+    function showMessagesContacts() {
+      document.getElementById('messagesContactsPanel')?.classList.remove('hidden');
+      document.getElementById('messagesThreadPanel')?.classList.add('hidden');
+    }
+    function showMessagesThread() {
+      document.getElementById('messagesContactsPanel')?.classList.add('hidden');
+      document.getElementById('messagesThreadPanel')?.classList.remove('hidden');
+    }
+
+    // ── LOGOUT ──
+    async function logoutDashboard() {
+      if (!confirm('Se déconnecter ?')) return;
+      try {
+        await fetch('/api/auth/logout/', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Accept': 'application/json' }
+        });
+      } catch (_) {
+      } finally {
+        location.href = '/tabibdz-homepage.html';
+      }
+    }
+
+    // ── MESSAGES BACK BTN ──
+    document.addEventListener('DOMContentLoaded', async () => {
+      document.getElementById('messagesBackBtn')?.addEventListener('click', showMessagesContacts);
+      document.getElementById('mobileMenuBtn')?.addEventListener('click', () => toggleMobileSidebar());
+      document.getElementById('sidebarBackdrop')?.addEventListener('click', () => toggleMobileSidebar(false));
+      window.addEventListener('resize', syncMobileDashboardChrome);
+      syncMobileDashboardChrome();
+
+      // Hash routing
+      const hash = location.hash.replace(/^#section-/, '');
+      const allowed = ['rdv','historique','favoris','messages','profil','famille','notifications','securite'];
+      if (allowed.includes(hash)) switchSection(hash);
+
+      await initDashboardSession();
+    });
+
+    // ── API SESSION / PROFILE ──
+    const dashboardState = { authUser: null, patientProfile: null };
+    async function apiRequest(url, opts = {}) {
+      const res = await fetch(url, {
+        credentials: 'include',
+        headers: { Accept: 'application/json', ...(opts.headers || {}) },
+        ...opts
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+      return data;
+    }
+    async function verifyPatientSession() {
+      const data = await apiRequest('/api/auth/me/');
+      const user = data?.user || null;
+      if (!user || user.role !== 'patient') throw new Error('Session patient invalide');
+      dashboardState.authUser = user;
+      return user;
+    }
+    function redirectToLogin() {
+      const next = encodeURIComponent('/tabibdz-dashboard.html');
+      location.href = `/connexion/?next=${next}`;
+    }
+    async function loadNotificationsBadge() {}
+    async function loadNotificationPrefs() {}
+    async function loadRdvSection() {}
+    async function loadHistorique() {}
+    async function loadFavoris() {}
+    async function loadFamilyMembers() {}
+    async function loadMessages() {}
+    async function loadSidebarProfile() {
+      const profile = dashboardState.patientProfile || {};
+      const user = dashboardState.authUser || {};
+      const prenom = profile.prenom || user.prenom || '';
+      const nom = profile.nom || user.nom || '';
+      const initials = (initiales(prenom, nom) || '..').toUpperCase();
+      const fullName = [prenom, nom].filter(Boolean).join(' ').trim() || 'Compte patient';
+      const shortName = prenom ? prenom + (nom ? ' ' + nom.charAt(0) + '.' : '') : fullName;
+
+      const navUserAvatar = document.getElementById('navUserAvatar');
+      const navUserName = document.getElementById('navUserName');
+      const sidebarProfileAvatar = document.getElementById('sidebarProfileAvatar');
+      const sidebarProfileName = document.getElementById('sidebarProfileName');
+      const profilePhotoBig = document.getElementById('profilePhotoBig');
+      const profileFullName = document.getElementById('profileFullName');
+      const sidebarRdvCount = document.getElementById('sidebarRdvCount');
+      const sidebarFavorisCount = document.getElementById('sidebarFavorisCount');
+      const familyBadge = document.getElementById('familyBadge');
+
+      if (navUserAvatar) navUserAvatar.textContent = initials;
+      if (navUserName) navUserName.textContent = shortName;
+      if (sidebarProfileAvatar) sidebarProfileAvatar.textContent = initials;
+      if (sidebarProfileName) sidebarProfileName.textContent = fullName;
+      if (profilePhotoBig) profilePhotoBig.textContent = initials;
+      if (profileFullName) profileFullName.textContent = fullName;
+      if (sidebarRdvCount) sidebarRdvCount.textContent = String(profile.rdv_count || 0);
+      if (sidebarFavorisCount) sidebarFavorisCount.textContent = String(profile.favoris_count || 0);
+      if (familyBadge) {
+        const count = Number(profile.family_members_count || 0);
+        familyBadge.textContent = String(count);
+        familyBadge.style.display = count > 0 ? '' : 'none';
+      }
+    }
+    async function loadProfileForm() {
+      const form = document.getElementById('form-profil');
+      const profile = dashboardState.patientProfile || {};
+      if (!form) return;
+
+      if (form.elements.prenom) form.elements.prenom.value = profile.prenom || '';
+      if (form.elements.nom) form.elements.nom.value = profile.nom || '';
+      if (form.elements.date_naissance) form.elements.date_naissance.value = toIsoDateInput(profile.date_naissance);
+      if (form.elements.sexe) form.elements.sexe.value = profile.sexe || '';
+      if (form.elements.telephone) form.elements.telephone.value = profile.telephone || '';
+      if (form.elements.email) form.elements.email.value = profile.email || '';
+      if (form.elements.commune) form.elements.commune.value = profile.commune || '';
+      if (form.elements.groupe_sanguin) form.elements.groupe_sanguin.value = profile.groupe_sanguin || '-';
+      if (form.elements.num_assurance) form.elements.num_assurance.value = profile.num_assurance || '';
+      if (form.elements.allergies) form.elements.allergies.value = profile.allergies || '';
+
+      const wilayaSelect = form.elements.wilaya_id;
+      if (wilayaSelect && profile.wilaya_id != null) {
+        const value = String(profile.wilaya_id);
+        if (![...wilayaSelect.options].some(opt => opt.value === value)) {
+          const option = document.createElement('option');
+          option.value = value;
+          option.textContent = 'Wilaya ' + value;
+          wilayaSelect.appendChild(option);
+        }
+        wilayaSelect.value = value;
+      }
+    }
+    async function initDashboardSession() {
+      try {
+        await verifyPatientSession();
+        initMessageComposer();
+        dashboardState.patientProfile = await apiRequest('/api/patient/me/');
+        await loadSidebarProfile();
+        await loadProfileForm();
+      } catch (_) {
+        redirectToLogin();
+      }
+    }
+    async function loadWilayaSelect() {}
+    function initiales(p, n) { return ((p||'')[0]||'') + ((n||'')[0]||''); }
+    function escapeHtml(v) { return String(v||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+    function toIsoDateInput(v) { if(!v) return ''; const d=new Date(v); return isNaN(d)?'':d.toISOString().slice(0,10); }
+    function formatDateTime(v) { const d=new Date(v); return isNaN(d)?'Date inconnue':d.toLocaleString('fr-FR',{weekday:'long',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
+    function formatRelative(v) { const d=new Date(v); const diff=d-Date.now(); if(diff<=0) return 'En cours'; const h=Math.floor(diff/3600000); if(h>=24) return `Dans ${Math.floor(h/24)} jours`; if(h>=1) return `Dans ${h}h`; return `Dans ${Math.max(1,Math.floor(diff/60000))} min`; }
+
+    // DASHBOARD_RUNTIME_PATCH_START
+    const dashboardUiState = {
+      reportAppointmentId: null,
+      reportAppointmentDoctorId: null,
+      messageSelectedPeerId: null,
+      messageConversations: [],
+      messageSelected: null,
+      messagePendingAttachment: null,
+      messageRecorder: null,
+      messageRecordingStream: null,
+      messageRecorderChunks: [],
+      historyItems: [],
+      upcomingItems: [],
+      favoriteDoctors: [],
+    };
+
+    function textOrFallback(value, fallback = '') {
+      const text = value == null ? '' : String(value).trim();
+      return text || fallback;
+    }
+
+    function normalizeSexValue(value) {
+      const raw = String(value || '').trim().toLowerCase();
+      if (['m', 'homme', 'masculin'].includes(raw)) return 'Homme';
+      if (['f', 'femme', 'feminin'].includes(raw)) return 'Femme';
+      return '';
+    }
+
+    function titleCase(text) {
+      const value = String(text || '').trim();
+      if (!value) return '';
+      return value.charAt(0).toUpperCase() + value.slice(1);
+    }
+
+    function formatDateLabel(value, options = {}) {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return 'Date inconnue';
+      return date.toLocaleDateString('fr-FR', {
+        weekday: options.weekday || undefined,
+        day: 'numeric',
+        month: options.month || 'short',
+        year: options.year || 'numeric'
+      });
+    }
+
+    function formatShortDateTime(value) {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return 'Date inconnue';
+      const datePart = date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' });
+      const timePart = date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+      return titleCase(datePart) + ', ' + timePart;
+    }
+
+    function formatCountdownLabel(value) {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return '';
+      const diff = date.getTime() - Date.now();
+      if (diff <= 0) return 'Maintenant';
+      const mins = Math.round(diff / 60000);
+      if (mins < 60) return 'Dans ' + mins + ' min';
+      const hours = Math.round(mins / 60);
+      if (hours < 24) return 'Dans ' + hours + ' heures';
+      const days = Math.round(hours / 24);
+      return 'Dans ' + days + ' jours';
+    }
+
+    function formatFileSize(value) {
+      const size = Math.max(0, Number(value || 0));
+      if (size >= 1024 * 1024) return (size / (1024 * 1024)).toFixed(1) + ' Mo';
+      if (size >= 1024) return Math.round(size / 1024) + ' Ko';
+      return size + ' o';
+    }
+
+    function messageAttachmentLabel(kind, originalName) {
+      if (kind === 'image') return 'Photo';
+      if (kind === 'audio') return 'Vocal';
+      return originalName ? 'Fichier : ' + originalName : 'Fichier';
+    }
+
+    function getMessagePreviewText(message) {
+      const body = textOrFallback(message?.body);
+      if (body) return body;
+      const preview = textOrFallback(message?.preview);
+      if (preview) return preview;
+      const attachments = Array.isArray(message?.attachments) ? message.attachments : [];
+      if (!attachments.length) return 'Aucun message envoye pour le moment.';
+      return messageAttachmentLabel(attachments[0].kind, attachments[0].original_name);
+    }
+
+    function messageAudioExtension(mimeType) {
+      const value = String(mimeType || '').toLowerCase();
+      if (value.includes('ogg')) return 'ogg';
+      if (value.includes('mpeg') || value.includes('mp3')) return 'mp3';
+      if (value.includes('wav')) return 'wav';
+      if (value.includes('mp4') || value.includes('m4a')) return 'm4a';
+      return 'webm';
+    }
+
+    function avatarHtml(prenom, nom, photoUrl) {
+      const initials = (initiales(prenom, nom) || '..').toUpperCase();
+      if (photoUrl) {
+        return '<img src="' + escapeHtml(photoUrl) + '" alt="">';
+      }
+      return escapeHtml(initials);
+    }
+
+    function doctorDisplayName(doctor) {
+      const prenom = textOrFallback(doctor?.prenom);
+      const nom = textOrFallback(doctor?.nom);
+      return ('Dr. ' + [prenom, nom].filter(Boolean).join(' ')).trim();
+    }
+
+    function setMessageComposeNote(text) {
+      const note = document.getElementById('messagesComposeNote');
+      if (note) note.textContent = text;
+    }
+
+    function setMessageRecordingState(active) {
+      const btn = document.getElementById('messagesVoiceBtn');
+      if (!btn) return;
+      btn.classList.toggle('recording', active);
+      const label = btn.querySelector('span');
+      if (label) label.textContent = active ? 'Stop vocal' : 'Vocal';
+    }
+
+    function stopMessageRecordingStream() {
+      const stream = dashboardUiState.messageRecordingStream;
+      if (stream && typeof stream.getTracks === 'function') {
+        stream.getTracks().forEach(track => track.stop());
+      }
+      dashboardUiState.messageRecordingStream = null;
+    }
+
+    function clearPendingMessageAttachment(resetInputs = true) {
+      const pending = dashboardUiState.messagePendingAttachment;
+      if (pending && pending.previewUrl) {
+        URL.revokeObjectURL(pending.previewUrl);
+      }
+      dashboardUiState.messagePendingAttachment = null;
+      if (resetInputs) {
+        const imageInput = document.getElementById('messagesImageInput');
+        const fileInput = document.getElementById('messagesFileInput');
+        if (imageInput) imageInput.value = '';
+        if (fileInput) fileInput.value = '';
+      }
+      const preview = document.getElementById('messagesAttachmentPreview');
+      if (preview) {
+        preview.hidden = true;
+        preview.innerHTML = '';
+      }
+      if (dashboardUiState.messageSelected?.peer) {
+        setMessageComposeNote('Conversation ouverte avec ce medecin.');
+      }
+    }
+
+    function renderPendingMessageAttachment() {
+      const preview = document.getElementById('messagesAttachmentPreview');
+      const pending = dashboardUiState.messagePendingAttachment;
+      if (!preview) return;
+      if (!pending) {
+        preview.hidden = true;
+        preview.innerHTML = '';
+        return;
+      }
+
+      const file = pending.file;
+      let thumbHtml = '<div class="messages-attachment-thumb"><svg viewBox="0 0 24 24"><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"/><polyline points="14 2 14 8 20 8"/></svg></div>';
+      if (pending.kind === 'image' && pending.previewUrl) {
+        thumbHtml = '<div class="messages-attachment-thumb"><img src="' + escapeHtml(pending.previewUrl) + '" alt=""></div>';
+      } else if (pending.kind === 'audio' && pending.previewUrl) {
+        thumbHtml = '<div class="messages-attachment-thumb" style="width:auto;padding:0 10px;"><audio controls preload="metadata" src="' + escapeHtml(pending.previewUrl) + '"></audio></div>';
+      }
+
+      preview.hidden = false;
+      preview.innerHTML = [
+        '<div class="messages-attachment-card">',
+          thumbHtml,
+          '<div class="messages-attachment-meta">',
+            '<div class="messages-attachment-title">' + escapeHtml(file.name) + '</div>',
+            '<div class="messages-attachment-sub">' + escapeHtml(messageAttachmentLabel(pending.kind, file.name)) + ' · ' + escapeHtml(formatFileSize(file.size)) + '</div>',
+          '</div>',
+          '<button type="button" class="messages-attachment-remove" id="messagesAttachmentRemoveBtn" aria-label="Retirer la piece jointe">',
+            '<svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+          '</button>',
+        '</div>'
+      ].join('');
+
+      document.getElementById('messagesAttachmentRemoveBtn')?.addEventListener('click', () => clearPendingMessageAttachment());
+      setMessageComposeNote((pending.kind === 'audio' ? 'Vocal' : pending.kind === 'image' ? 'Photo' : 'Fichier') + ' pret a envoyer.');
+    }
+
+    function handleMessageAttachmentChange(event, kind) {
+      const file = event?.target?.files?.[0];
+      if (!file) return;
+      setPendingMessageAttachment(file, kind);
+    }
+
+    function openMessageImagePicker() {
+      const input = document.getElementById('messagesImageInput');
+      if (input && !input.disabled) input.click();
+    }
+
+    function openMessageFilePicker() {
+      const input = document.getElementById('messagesFileInput');
+      if (input && !input.disabled) input.click();
+    }
+
+    function setPendingMessageAttachment(file, kind) {
+      if (!file) return;
+      clearPendingMessageAttachment(false);
+      dashboardUiState.messagePendingAttachment = {
+        file,
+        kind,
+        previewUrl: URL.createObjectURL(file),
+      };
+      renderPendingMessageAttachment();
+    }
+
+    function setMessageComposerEnabled(enabled) {
+      const input = document.getElementById('messagesInput');
+      const sendBtn = document.getElementById('messagesSendBtn');
+      const imageBtn = document.getElementById('messagesAddImageBtn');
+      const fileBtn = document.getElementById('messagesAddFileBtn');
+      const voiceBtn = document.getElementById('messagesVoiceBtn');
+      const imageInput = document.getElementById('messagesImageInput');
+      const fileInput = document.getElementById('messagesFileInput');
+      if (input) input.disabled = !enabled;
+      if (sendBtn) sendBtn.disabled = !enabled;
+      if (imageBtn) imageBtn.disabled = !enabled;
+      if (fileBtn) fileBtn.disabled = !enabled;
+      if (voiceBtn) voiceBtn.disabled = !enabled;
+      if (imageInput) imageInput.disabled = !enabled;
+      if (fileInput) fileInput.disabled = !enabled;
+      if (!enabled && dashboardUiState.messageRecorder && dashboardUiState.messageRecorder.state === 'recording') {
+        dashboardUiState.messageRecorder.stop();
+      }
+    }
+
+    function renderMessageAttachments(attachments, isMine) {
+      if (!Array.isArray(attachments) || !attachments.length) return '';
+      return '<div class="message-attachments">' + attachments.map(attachment => {
+        const url = escapeHtml(attachment.file_url || '#');
+        const name = escapeHtml(attachment.original_name || 'piece-jointe');
+        const meta = escapeHtml(formatFileSize(attachment.file_size || 0));
+        if (attachment.kind === 'image') {
+          return '<a href="' + url + '" target="_blank" rel="noopener"><img class="message-attachment-image" src="' + url + '" alt="' + name + '"></a>';
+        }
+        if (attachment.kind === 'audio') {
+          return '<audio class="message-audio-player" controls preload="metadata" src="' + url + '"></audio>';
+        }
+        return [
+          '<a class="message-file-link" href="' + url + '" target="_blank" rel="noopener" download="' + name + '">',
+            '<span class="message-file-icon"><svg viewBox="0 0 24 24"><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"/><polyline points="14 2 14 8 20 8"/></svg></span>',
+            '<span><div class="message-file-name">' + name + '</div><div class="message-file-meta">' + meta + '</div></span>',
+          '</a>'
+        ].join('');
+      }).join('') + '</div>';
+    }
+
+    function appointmentPatientLabel(item) {
+      const profile = item?.patient_profile || {};
+      const display = textOrFallback(profile.display_name, 'Patient');
+      const relation = textOrFallback(profile.relation);
+      return relation ? display + ' - ' + relation : display;
+    }
+
+    function appointmentModeLabel(item) {
+      return item?.consultation_mode === 'teleconsultation' ? 'Téléconsultation' : 'Cabinet';
+    }
+
+    function appointmentTeleconsultationUrl(item) {
+      if (item?.consultation_mode !== 'teleconsultation' || !item?.id) return '';
+      return '/teleconsultation/?id=' + encodeURIComponent(item.id);
+    }
+
+    function appointmentLocationLabel(item) {
+      if (item?.consultation_mode === 'teleconsultation') return 'Consultation en ligne';
+      return textOrFallback(item?.medecin?.adresse) || [item?.medecin?.commune, item?.medecin?.wilaya].filter(Boolean).join(', ') || 'Cabinet medical';
+    }
+
+    function appointmentMotifLabel(item) {
+      return textOrFallback(item?.motif, 'Consultation');
+    }
+
+    function patientFilterOptions() {
+      const selfName = [dashboardState?.patientProfile?.prenom, dashboardState?.patientProfile?.nom].filter(Boolean).join(' ').trim() || 'Moi-meme';
+      const options = [{ value: 'tous', label: 'Tous les patients' }, { value: 'self', label: selfName + ' - Moi-meme' }];
+      currentFamilyMembers.forEach(member => {
+        options.push({ value: 'family:' + member.id, label: member.display_name + (member.relation ? ' - ' + member.relation : '') });
+      });
+      return options;
+    }
+
+    function syncPatientFilters() {
+      const options = patientFilterOptions();
+      const rdvSelect = document.getElementById('rdv-patient-filter');
+      if (rdvSelect) {
+        const current = currentRdvPatientFilter || 'tous';
+        rdvSelect.innerHTML = options.map(opt => '<option value="' + escapeHtml(opt.value) + '">' + escapeHtml(opt.label) + '</option>').join('');
+        rdvSelect.value = options.some(opt => opt.value === current) ? current : 'tous';
+      }
+      const histSelect = document.querySelector('#section-historique select.filter-select');
+      if (histSelect) {
+        const current = currentHistoriquePatientFilter || 'tous';
+        histSelect.innerHTML = options.map(opt => '<option value="' + escapeHtml(opt.value) + '">' + escapeHtml(opt.label) + '</option>').join('');
+        histSelect.value = options.some(opt => opt.value === current) ? current : 'tous';
+      }
+    }
+
+    function applyPatientFilterParams(value, params) {
+      if (!value || value === 'tous' || value === 'moi') {
+        if (value === 'moi') params.set('patient_target_type', 'self');
+        return params;
+      }
+      if (value === 'self') {
+        params.set('patient_target_type', 'self');
+        return params;
+      }
+      if (value.startsWith('family:')) {
+        const memberId = Number(value.split(':')[1] || 0);
+        if (memberId > 0) {
+          params.set('patient_target_type', 'family');
+          params.set('family_member_id', String(memberId));
+        }
+      }
+      return params;
+    }
+
+    function updateNavCounts(unreadNotifications = null) {
+      const rdvBadge = document.querySelector('.nav-item[data-section="rdv"] .badge-count');
+      if (rdvBadge) {
+        const total = dashboardUiState.upcomingItems.length;
+        rdvBadge.textContent = String(total);
+        rdvBadge.style.display = total > 0 ? '' : 'none';
+      }
+      const notifBadge = document.querySelector('.notif-badge');
+      if (notifBadge && unreadNotifications != null) {
+        notifBadge.textContent = String(unreadNotifications);
+        notifBadge.style.display = unreadNotifications > 0 ? '' : 'none';
+      }
+    }
+
+    async function loadSidebarProfile() {
+      const profile = dashboardState.patientProfile || {};
+      const user = dashboardState.authUser || {};
+      const prenom = profile.prenom || user.prenom || '';
+      const nom = profile.nom || user.nom || '';
+      const initials = (initiales(prenom, nom) || '..').toUpperCase();
+      const fullName = [prenom, nom].filter(Boolean).join(' ').trim() || 'Compte patient';
+      const shortName = prenom ? prenom + (nom ? ' ' + nom.charAt(0) + '.' : '') : fullName;
+      const photoUrl = textOrFallback(profile.photo_url || user.photo_url || '');
+
+      const navUserAvatar = document.getElementById('navUserAvatar');
+      const navUserName = document.getElementById('navUserName');
+      const sidebarProfileAvatar = document.getElementById('sidebarProfileAvatar');
+      const sidebarProfileName = document.getElementById('sidebarProfileName');
+      const profilePhotoBig = document.getElementById('profilePhotoBig');
+      const profileFullName = document.getElementById('profileFullName');
+      const sidebarRdvCount = document.getElementById('sidebarRdvCount');
+      const sidebarFavorisCount = document.getElementById('sidebarFavorisCount');
+      const familyBadge = document.getElementById('familyBadge');
+
+      [navUserAvatar, sidebarProfileAvatar, profilePhotoBig].forEach(el => {
+        if (!el) return;
+        el.innerHTML = photoUrl ? '<img src="' + escapeHtml(photoUrl) + '" alt="">' : escapeHtml(initials);
+      });
+      if (navUserName) navUserName.textContent = shortName;
+      if (sidebarProfileName) sidebarProfileName.textContent = fullName;
+      if (profileFullName) profileFullName.textContent = fullName;
+      if (sidebarRdvCount) sidebarRdvCount.textContent = String(profile.rdv_count || 0);
+      if (sidebarFavorisCount) sidebarFavorisCount.textContent = String(profile.favoris_count || 0);
+      if (familyBadge) {
+        const count = Number(profile.family_members_count || currentFamilyMembers.length || 0);
+        familyBadge.textContent = String(count);
+        familyBadge.style.display = count > 0 ? '' : 'none';
+      }
+    }
+
+    async function loadWilayaSelect() {
+      const form = document.getElementById('form-profil');
+      const wilayaSelect = form?.elements?.wilaya_id;
+      if (!wilayaSelect || wilayaSelect.dataset.loaded === 'true') return;
+      const rows = await apiRequest('/api/wilayas/');
+      const options = ['<option value="">Selectionner une wilaya</option>'].concat((rows || []).map(row => '<option value="' + escapeHtml(row.id) + '">' + escapeHtml(row.nom) + '</option>'));
+      wilayaSelect.innerHTML = options.join('');
+      wilayaSelect.dataset.loaded = 'true';
+    }
+
+    async function loadProfileForm() {
+      const form = document.getElementById('form-profil');
+      const profile = dashboardState.patientProfile || {};
+      if (!form) return;
+      await loadWilayaSelect();
+
+      if (form.elements.prenom) form.elements.prenom.value = profile.prenom || '';
+      if (form.elements.nom) form.elements.nom.value = profile.nom || '';
+      if (form.elements.date_naissance) form.elements.date_naissance.value = toIsoDateInput(profile.date_naissance);
+      if (form.elements.sexe) form.elements.sexe.value = normalizeSexValue(profile.sexe);
+      if (form.elements.telephone) form.elements.telephone.value = profile.telephone || '';
+      if (form.elements.email) form.elements.email.value = profile.email || '';
+      if (form.elements.commune) form.elements.commune.value = profile.commune || '';
+      if (form.elements.groupe_sanguin) form.elements.groupe_sanguin.value = profile.groupe_sanguin || '-';
+      if (form.elements.num_assurance) form.elements.num_assurance.value = profile.num_assurance || '';
+      if (form.elements.allergies) form.elements.allergies.value = profile.allergies || '';
+      if (form.elements.wilaya_id) form.elements.wilaya_id.value = profile.wilaya_id != null ? String(profile.wilaya_id) : '';
+    }
+
+    async function saveProfil(e) {
+      e.preventDefault();
+      const form = e.target;
+      const payload = {
+        prenom: form.elements.prenom.value.trim(),
+        nom: form.elements.nom.value.trim(),
+        date_naissance: form.elements.date_naissance.value || null,
+        sexe: form.elements.sexe.value || null,
+        telephone: form.elements.telephone.value.trim() || null,
+        email: form.elements.email.value.trim() || null,
+        wilaya_id: form.elements.wilaya_id.value || null,
+        commune: form.elements.commune.value.trim() || null,
+        groupe_sanguin: form.elements.groupe_sanguin.value || '-',
+        num_assurance: form.elements.num_assurance.value.trim() || null,
+        allergies: form.elements.allergies.value.trim() || null,
+      };
+      try {
+        await apiRequest('/api/patient/me/', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        dashboardState.patientProfile = await apiRequest('/api/patient/me/');
+        await loadSidebarProfile();
+        await loadProfileForm();
+        syncPatientFilters();
+        showToast('Profil mis a jour.', 'success');
+      } catch (error) {
+        showToast(error.message || 'Mise a jour impossible.', 'error');
+      }
+    }
+
+    async function uploadPhoto(input) {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      const formData = new FormData();
+      formData.append('photo', file);
+      try {
+        const res = await fetch('/api/patient/photo/', { method: 'POST', credentials: 'include', body: formData, headers: { Accept: 'application/json' } });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || 'Upload impossible');
+        dashboardState.patientProfile = await apiRequest('/api/patient/me/');
+        await loadSidebarProfile();
+        showToast('Photo mise a jour.', 'success');
+      } catch (error) {
+        showToast(error.message || 'Upload impossible.', 'error');
+      } finally {
+        input.value = '';
+      }
+    }
+
+    async function loadNotificationsBadge() {
+      try {
+        const data = await apiRequest('/api/notifications/?unread=true');
+        updateNavCounts(data.unread_count || 0);
+      } catch (_) {
+        updateNavCounts(0);
+      }
+    }
+
+    async function loadNotificationPrefs() {
+      try {
+        const prefs = await apiRequest('/api/patient/preferences-notifications/');
+        Object.entries(prefs || {}).forEach(([key, value]) => {
+          const input = document.querySelector('#section-notifications input[onchange*="' + key + '"]');
+          if (input) input.checked = !!value;
+        });
+        const infoBox = document.querySelector('.notif-info-box');
+        if (infoBox && dashboardState.patientProfile?.telephone) {
+          infoBox.innerHTML = 'Les SMS sont envoyes au <strong style="color:var(--text)">' + escapeHtml(dashboardState.patientProfile.telephone) + '</strong>. <a href="#" onclick="switchSection(\'profil\')" style="color:var(--green);margin-left:4px">Modifier -></a>';
+        }
+      } catch (_) {
+      }
+    }
+
+    async function saveNotifPref(key, val) {
+      try {
+        await apiRequest('/api/patient/preferences-notifications/', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ [key]: !!val })
+        });
+        showToast('Preference mise a jour.', 'success');
+      } catch (error) {
+        showToast(error.message || 'Mise a jour impossible.', 'error');
+      }
+    }
+
+    function renderNextAppointmentCard(item) {
+      const card = document.getElementById('rdv-next-card');
+      if (!card) return;
+      if (!item) {
+        card.innerHTML = '<div class="rdv-next-top"><div class="rdv-label-row"><div class="rdv-dot"></div>Prochain rendez-vous</div></div><div class="rdv-empty"><div class="rdv-empty-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><p>Aucun rendez-vous confirme a venir.</p><div style="font-size:14px;color:var(--text-muted);margin-top:8px">Les rendez-vous passes restent visibles dans la section Historique.</div><button class="btn btn-primary" onclick="location.href=\'/tabibdz-recherche.html\'">Prendre un rendez-vous</button></div>';
+        return;
+      }
+      const teleUrl = appointmentTeleconsultationUrl(item);
+      const teleAction = teleUrl
+        ? '<button class="btn btn-primary" onclick="window.location.href=\'' + teleUrl + '\'">Voir la consultation</button>'
+        : '';
+      card.innerHTML = [
+        '<div class="rdv-next-top">',
+          '<div class="rdv-label-row"><div class="rdv-dot"></div>Prochain rendez-vous</div>',
+          '<div class="rdv-countdown">' + escapeHtml(formatCountdownLabel(item.date_heure)) + '</div>',
+        '</div>',
+        '<div class="rdv-body">',
+          '<div class="rdv-avatar">' + avatarHtml(item.medecin?.prenom, item.medecin?.nom, item.medecin?.photo_url) + '</div>',
+          '<div class="rdv-info">',
+            '<div class="rdv-doc-name">' + escapeHtml(doctorDisplayName(item.medecin)) + '</div>',
+            '<div class="rdv-spec">' + escapeHtml(textOrFallback(item.medecin?.specialite, 'Consultation') + ' - ' + appointmentModeLabel(item) + ' - ' + appointmentPatientLabel(item)) + '</div>',
+            '<div class="rdv-details">',
+              '<div class="rdv-detail"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><strong>' + escapeHtml(formatShortDateTime(item.date_heure)) + '</strong></div>',
+              '<div class="rdv-detail"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><strong>' + escapeHtml(appointmentLocationLabel(item)) + '</strong></div>',
+              '<div class="rdv-detail"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><strong>' + escapeHtml(appointmentMotifLabel(item)) + '</strong></div>',
+            '</div>',
+          '</div>',
+        '</div>',
+        '<div class="rdv-actions">',
+          teleAction,
+          '<button class="btn btn-ghost-red" onclick="annulerRdv(' + item.id + ')">Annuler le RDV</button>',
+          '<button class="btn btn-outline" onclick="openReportModal(' + item.id + ', ' + item.medecin.id + ', \''
+            + escapeHtml(item.date_heure) + '\')"><svg viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>Reporter</button>',
+          '<button class="btn btn-outline" style="margin-left:auto" onclick="window.location.href=\'/api/appointments/ics.php?id=' + item.id + '\'"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Ajouter au calendrier</button>',
+        '</div>'
+      ].join('');
+    }
+
+    function renderUpcomingList(items) {
+      const list = document.getElementById('rdv-upcoming-list');
+      if (!list) return;
+      if (!items.length) {
+        list.innerHTML = '<div class="rdv-empty"><div class="rdv-empty-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><p>Aucun autre rendez-vous a venir.</p><div style="font-size:14px;color:var(--text-muted);margin-top:8px">Si un rendez-vous est deja passe, vous le retrouvez dans Historique.</div><button class="btn btn-primary" onclick="location.href=\'/tabibdz-recherche.html\'">Prendre un rendez-vous</button></div>';
+        return;
+      }
+      list.innerHTML = items.map(item => {
+        const teleUrl = appointmentTeleconsultationUrl(item);
+        const teleAction = teleUrl
+          ? '<button class="btn-reprendre" onclick="window.location.href=\'' + teleUrl + '\'">Voir la consultation</button>'
+          : '';
+        return [
+          '<div class="histo-item rdv-list-card">',
+            '<div class="histo-head">',
+              '<div class="histo-avatar">' + avatarHtml(item.medecin?.prenom, item.medecin?.nom, item.medecin?.photo_url) + '</div>',
+              '<div class="histo-body">',
+                '<div class="histo-row">',
+                  '<div><div class="histo-name">' + escapeHtml(doctorDisplayName(item.medecin)) + '</div><div class="histo-sub">' + escapeHtml(textOrFallback(item.medecin?.specialite, 'Consultation') + ' - ' + appointmentModeLabel(item) + ' - ' + appointmentPatientLabel(item)) + '</div></div>',
+                  '<div class="histo-right"><div class="histo-date">' + escapeHtml(formatShortDateTime(item.date_heure)) + '</div><span class="statut-pill statut-termine">Confirme</span></div>',
+                '</div>',
+                '<div class="histo-meta">',
+                  '<div class="histo-meta-item"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><strong>' + escapeHtml(appointmentLocationLabel(item)) + '</strong></div>',
+                  '<div class="histo-meta-item"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><strong>' + escapeHtml(appointmentMotifLabel(item)) + '</strong></div>',
+                  '<div class="histo-meta-item"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><strong>' + escapeHtml(appointmentPatientLabel(item)) + '</strong></div>',
+                '</div>',
+                '<div class="histo-foot"><div class="histo-context"><div class="histo-motif">Ref : ' + escapeHtml(textOrFallback(item.confirmation_code, '-')) + '</div></div><div class="histo-actions">' + teleAction + '<button class="btn btn-ghost-red" onclick="annulerRdv(' + item.id + ')">Annuler</button><button class="btn-reprendre" onclick="openReportModal(' + item.id + ', ' + item.medecin.id + ', \''
+                  + escapeHtml(item.date_heure) + '\')">Reporter</button><button class="btn-reprendre" onclick="window.location.href=\'/api/appointments/ics.php?id=' + item.id + '\'">Calendrier</button></div></div>',
+              '</div>',
+            '</div>',
+          '</div>'
+        ].join('');
+      }).join('');
+    }
+
+    async function loadRdvSection() {
+      const params = new URLSearchParams({ statut: 'confirme', order: 'asc', limit: '50' });
+      if (currentRdvModeFilter === 'cabinet') params.set('consultation_mode', 'cabinet');
+      if (currentRdvModeFilter === 'tele') params.set('consultation_mode', 'teleconsultation');
+      applyPatientFilterParams(currentRdvPatientFilter, params);
+      const response = await apiRequest('/api/appointments/?' + params.toString());
+      const items = (response.data || []).filter(item => new Date(item.date_heure).getTime() >= Date.now() - 60000);
+      dashboardUiState.upcomingItems = items;
+      renderNextAppointmentCard(items[0] || null);
+      renderUpcomingList(items.slice(1));
+      updateNavCounts();
+    }
+
+    function historiqueStatusToApi(status) {
+      if (status === 'termine') return 'termine,confirme';
+      if (status === 'annule') return 'annule';
+      if (status === 'reporte') return 'annule';
+      return 'termine,annule,confirme';
+    }
+
+    function appointmentIsPast(item) {
+      const timestamp = new Date(item?.date_heure || '').getTime();
+      if (!Number.isFinite(timestamp)) return false;
+      return timestamp < (Date.now() + 60000);
+    }
+
+    function historiqueDisplayStatus(item) {
+      if (item?.statut === 'annule') {
+        return { label: 'Annule', pillClass: 'statut-annule' };
+      }
+      if (item?.statut === 'confirme' && appointmentIsPast(item)) {
+        return { label: 'Passe', pillClass: 'statut-termine' };
+      }
+      return { label: 'Termine', pillClass: 'statut-termine' };
+    }
+
+    function renderHistoriqueItems(items) {
+      const list = document.getElementById('historique-list');
+      const pager = document.getElementById('histo-pagination');
+      if (!list) return;
+      if (!items.length) {
+        list.innerHTML = '<div class="rdv-empty"><div class="rdv-empty-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><p>Aucun historique pour ce filtre.</p></div>';
+        if (pager) pager.innerHTML = '';
+        return;
+      }
+      list.innerHTML = items.map(item => {
+        const statusMeta = historiqueDisplayStatus(item);
+        const status = statusMeta.label;
+        const pillClass = statusMeta.pillClass;
+        const teleUrl = appointmentTeleconsultationUrl(item);
+        const teleAction = teleUrl
+          ? '<button class="btn-reprendre" onclick="window.location.href=\'' + teleUrl + '\'">Voir la consultation</button>'
+          : '';
+        return [
+          '<div class="histo-item">',
+            '<div class="histo-head">',
+              '<div class="histo-avatar">' + avatarHtml(item.medecin?.prenom, item.medecin?.nom, item.medecin?.photo_url) + '</div>',
+              '<div class="histo-body">',
+                '<div class="histo-row">',
+                  '<div><div class="histo-name">' + escapeHtml(doctorDisplayName(item.medecin)) + '</div><div class="histo-sub">' + escapeHtml(textOrFallback(item.medecin?.specialite, 'Consultation') + ' - ' + appointmentModeLabel(item) + (item.medecin?.adresse ? ' - ' + item.medecin.adresse : '')) + '</div></div>',
+                  '<div class="histo-right"><div class="histo-date">' + escapeHtml(formatDateLabel(item.date_heure)) + '</div><span class="statut-pill ' + pillClass + '">' + escapeHtml(status) + '</span></div>',
+                '</div>',
+                '<div class="histo-meta">',
+                  '<div class="histo-meta-item"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><strong>' + escapeHtml(appointmentModeLabel(item)) + '</strong></div>',
+                  '<div class="histo-meta-item"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><strong>' + escapeHtml(appointmentMotifLabel(item)) + '</strong></div>',
+                  '<div class="histo-meta-item"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><strong>' + escapeHtml(appointmentPatientLabel(item)) + '</strong></div>',
+                '</div>',
+                '<div class="histo-foot"><div class="histo-context"><div class="histo-motif">Motif : ' + escapeHtml(appointmentMotifLabel(item)) + '</div></div><div class="histo-actions">' + teleAction + '<button class="btn-reprendre" onclick="location.href=\'/tabibdz-profil-medecin.html?medecin_id=' + item.medecin.id + '\'">Reprendre RDV</button></div></div>',
+              '</div>',
+            '</div>',
+          '</div>'
+        ].join('');
+      }).join('');
+      if (pager) pager.innerHTML = '';
+    }
+
+    async function loadHistorique() {
+      const params = new URLSearchParams({ statut: historiqueStatusToApi(currentHistoriqueFilter), order: 'desc', limit: '50' });
+      if (currentHistoriqueModeFilter === 'cabinet') params.set('consultation_mode', 'cabinet');
+      if (currentHistoriqueModeFilter === 'tele') params.set('consultation_mode', 'teleconsultation');
+      applyPatientFilterParams(currentHistoriquePatientFilter, params);
+      const response = await apiRequest('/api/appointments/?' + params.toString());
+      dashboardUiState.historyItems = (response.data || []).filter(item => item.statut !== 'confirme' || appointmentIsPast(item));
+      renderHistoriqueItems(dashboardUiState.historyItems);
+    }
+
+    async function loadFavoris() {
+      const list = document.getElementById('favoris-list');
+      if (!list) return;
+      const rows = await apiRequest('/api/patient/favoris/');
+      dashboardUiState.favoriteDoctors = rows || [];
+      const headerCount = document.querySelector('#section-favoris .card-header div[style*="font-size:13px"]');
+      if (headerCount) headerCount.textContent = (rows || []).length + ' medecin' + ((rows || []).length > 1 ? 's' : '');
+      if (!rows || !rows.length) {
+        list.innerHTML = '<div class="rdv-empty"><div class="rdv-empty-icon"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><p>Aucun favori pour le moment.</p></div>';
+        return;
+      }
+      list.innerHTML = rows.map(item => {
+        const doctorName = 'Dr. ' + [item.prenom, item.nom].filter(Boolean).join(' ');
+        const location = [item.commune, item.wilaya].filter(Boolean).join(', ') || 'Localisation indisponible';
+        const prochain = item.prochain_creneau ? formatShortDateTime(item.prochain_creneau) : 'Aucun creneau';
+        return [
+          '<div class="favori-card">',
+            '<div class="favori-top"><div class="favori-avatar">' + avatarHtml(item.prenom, item.nom, item.photo_url) + '</div><div><div class="favori-name">' + escapeHtml(doctorName) + '</div><div class="favori-spec">' + escapeHtml(textOrFallback(item.specialite, 'Medecin')) + '</div></div></div>',
+            '<div class="favori-meta"><span class="favori-loc">' + escapeHtml(location) + '</span><span class="favori-note">* ' + escapeHtml(Number(item.note || 0).toFixed(1)) + '</span></div>',
+            '<div style="font-size:12px;color:var(--text-muted)">Prochain dispo : <strong style="color:var(--green)">' + escapeHtml(prochain) + '</strong></div>',
+            '<div class="favori-actions"><button class="btn-fav-rdv" onclick="location.href=\'/tabibdz-profil-medecin.html?medecin_id=' + item.id + '\'">Prendre RDV</button><button class="btn-fav-del" onclick="retirerFavori(' + item.id + ', this)" title="Retirer des favoris"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div>',
+          '</div>'
+        ].join('');
+      }).join('');
+    }
+
+    async function retirerFavori(id, btn) {
+      try {
+        const res = await fetch('/api/patient/favoris/?medecin_id=' + encodeURIComponent(id), { method: 'DELETE', credentials: 'include', headers: { Accept: 'application/json' } });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || 'Suppression impossible');
+        await Promise.all([loadFavoris(), refreshPatientProfileCounters()]);
+        showToast('Medecin retire des favoris.', 'success');
+      } catch (error) {
+        showToast(error.message || 'Suppression impossible.', 'error');
+      }
+    }
+
+    function ageFromDate(dateValue) {
+      if (!dateValue) return null;
+      const date = new Date(dateValue);
+      if (Number.isNaN(date.getTime())) return null;
+      const today = new Date();
+      let age = today.getFullYear() - date.getFullYear();
+      const monthDiff = today.getMonth() - date.getMonth();
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < date.getDate())) age -= 1;
+      return age >= 0 ? age : null;
+    }
+
+    function renderFamilyMembersList() {
+      const list = document.getElementById('familyMembersList');
+      if (!list) return;
+      const statNums = document.querySelectorAll('.family-stat-num');
+      if (statNums[0]) statNums[0].textContent = String(currentFamilyMembers.length);
+      if (statNums[1]) statNums[1].textContent = String(currentFamilyMembers.length);
+      if (statNums[2]) statNums[2].textContent = String(currentFamilyMembers.length);
+      if (!currentFamilyMembers.length) {
+        list.innerHTML = '<div class="family-empty-state"><h4>Aucun membre pour le moment</h4><p>Utilisez le bouton Ajouter pour creer un premier profil famille et reserver facilement pour un proche.</p></div>';
+        return;
+      }
+      list.innerHTML = currentFamilyMembers.map(member => {
+        const age = ageFromDate(member.date_naissance);
+        const meta = [textOrFallback(member.relation), age != null ? age + ' ans' : '', member.date_naissance ? 'Ne le ' + formatDateLabel(member.date_naissance, { month: 'short' }) : ''].filter(Boolean).join(' - ');
+        const chips = [
+          member.date_naissance ? '<span class="pill-soft"><strong>Naissance</strong> ' + escapeHtml(formatDateLabel(member.date_naissance, { month: 'short' })) + '</span>' : '',
+          member.sexe ? '<span class="pill-soft"><strong>Sexe</strong> ' + escapeHtml(member.sexe) + '</span>' : '',
+          member.telephone ? '<span class="pill-soft"><strong>Telephone</strong> ' + escapeHtml(member.telephone) + '</span>' : '',
+          member.email ? '<span class="pill-soft"><strong>Email</strong> ' + escapeHtml(member.email) + '</span>' : ''
+        ].filter(Boolean).join('');
+        return [
+          '<div class="family-member-card">',
+            '<div class="family-member-avatar">' + escapeHtml((initiales(member.prenom, member.nom) || '..').toUpperCase()) + '</div>',
+            '<div>',
+              '<div class="family-member-name">' + escapeHtml(member.display_name || ((member.prenom || '') + ' ' + (member.nom || '')).trim()) + '</div>',
+              '<div class="family-member-relation">' + escapeHtml(meta || 'Profil famille') + '</div>',
+              '<div class="histo-meta" style="margin-top:10px">' + chips + '</div>',
+              '<div class="histo-motif" style="margin-top:12px">' + escapeHtml(member.notes_medicales || 'Aucune note medicale renseignee pour ce profil.') + '</div>',
+            '</div>',
+            '<div class="family-member-actions"><button class="btn-reprendre" onclick="openFamilyEditor(' + member.id + ')">Modifier</button><button class="btn btn-ghost-red" onclick="deleteFamilyMember(' + member.id + ')">Supprimer</button></div>',
+          '</div>'
+        ].join('');
+      }).join('');
+    }
+
+    async function loadFamilyMembers() {
+      currentFamilyMembers = await apiRequest('/api/patient/family/');
+      renderFamilyMembersList();
+      syncPatientFilters();
+      await loadSidebarProfile();
+    }
+
+    function openFamilyEditor(id) {
+      currentFamilyEditingId = id || null;
+      const shell = document.getElementById('familyShell');
+      const form = document.getElementById('form-family');
+      const member = currentFamilyMembers.find(item => item.id === id) || null;
+      if (shell) shell.classList.add('family-editor-open');
+      document.getElementById('familyFormTitle').textContent = member ? 'Modifier un membre' : 'Ajouter un membre';
+      if (!form) return;
+      form.reset();
+      if (member) {
+        form.elements.prenom.value = member.prenom || '';
+        form.elements.nom.value = member.nom || '';
+        form.elements.relation.value = member.relation || '';
+        form.elements.date_naissance.value = member.date_naissance || '';
+        form.elements.sexe.value = member.sexe || '';
+        form.elements.telephone.value = member.telephone || '';
+        form.elements.email.value = member.email || '';
+        form.elements.notes_medicales.value = member.notes_medicales || '';
+      }
+    }
+
+    function resetFamilyForm() {
+      currentFamilyEditingId = null;
+      document.getElementById('familyShell')?.classList.remove('family-editor-open');
+      document.getElementById('form-family')?.reset();
+    }
+
+    async function saveFamilyMember(e) {
+      e.preventDefault();
+      const form = e.target;
+      const payload = {
+        prenom: form.elements.prenom.value.trim(),
+        nom: form.elements.nom.value.trim(),
+        relation: form.elements.relation.value.trim(),
+        date_naissance: form.elements.date_naissance.value || null,
+        sexe: form.elements.sexe.value || null,
+        telephone: form.elements.telephone.value.trim() || null,
+        email: form.elements.email.value.trim() || null,
+        notes_medicales: form.elements.notes_medicales.value.trim() || null,
+      };
+      const url = currentFamilyEditingId ? '/api/patient/family/?id=' + currentFamilyEditingId : '/api/patient/family/';
+      const method = currentFamilyEditingId ? 'PATCH' : 'POST';
+      try {
+        await apiRequest(url, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        await Promise.all([loadFamilyMembers(), refreshPatientProfileCounters()]);
+        resetFamilyForm();
+        showToast('Membre enregistre.', 'success');
+      } catch (error) {
+        showToast(error.message || 'Enregistrement impossible.', 'error');
+      }
+    }
+
+    async function deleteFamilyMember(id) {
+      if (!confirm('Supprimer ce membre ?')) return;
+      try {
+        const res = await fetch('/api/patient/family/?id=' + encodeURIComponent(id), { method: 'DELETE', credentials: 'include', headers: { Accept: 'application/json' } });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || 'Suppression impossible');
+        await Promise.all([loadFamilyMembers(), refreshPatientProfileCounters()]);
+        showToast('Membre supprime.', 'success');
+      } catch (error) {
+        showToast(error.message || 'Suppression impossible.', 'error');
+      }
+    }
+
+    async function refreshPatientProfileCounters() {
+      dashboardState.patientProfile = await apiRequest('/api/patient/me/');
+      await loadSidebarProfile();
+    }
+
+    async function annulerRdv(id) {
+      if (!confirm('Annuler ce rendez-vous ?')) return;
+      try {
+        const res = await fetch('/api/appointments/item.php?id=' + encodeURIComponent(id), { method: 'DELETE', credentials: 'include', headers: { Accept: 'application/json' } });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || 'Annulation impossible');
+        await Promise.all([refreshPatientProfileCounters(), loadRdvSection(), loadHistorique(), loadMessages()]);
+        showToast('Rendez-vous annule.', 'success');
+      } catch (error) {
+        showToast(error.message || 'Annulation impossible.', 'error');
+      }
+    }
+
+    async function openReportModal(appointmentId, medecinId, fromDate) {
+      dashboardUiState.reportAppointmentId = appointmentId;
+      dashboardUiState.reportAppointmentDoctorId = medecinId;
+      const select = document.getElementById('select-creneau');
+      if (select) select.innerHTML = '<option value="">Chargement des creneaux...</option>';
+      document.getElementById('motif-reporter').value = '';
+      document.getElementById('modal-reporter').classList.add('open');
+      try {
+        const slots = await apiRequest('/api/medecin/creneaux/?medecin_id=' + encodeURIComponent(medecinId) + '&from=' + encodeURIComponent(fromDate));
+        const options = ['<option value="">Selectionner un creneau...</option>'].concat((slots || []).slice(0, 12).map(slot => '<option value="' + escapeHtml(slot.id) + '">' + escapeHtml(formatShortDateTime(slot.start_at)) + '</option>'));
+        if (select) select.innerHTML = options.join('');
+      } catch (_) {
+        if (select) select.innerHTML = '<option value="">Aucun creneau disponible</option>';
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('modal-reporter').classList.remove('open');
+      dashboardUiState.reportAppointmentId = null;
+      dashboardUiState.reportAppointmentDoctorId = null;
+    }
+
+    async function confirmReporter() {
+      const appointmentId = dashboardUiState.reportAppointmentId;
+      const creneauId = document.getElementById('select-creneau').value;
+      const motif = document.getElementById('motif-reporter').value.trim();
+      if (!appointmentId) {
+        showToast('Rendez-vous introuvable.', 'error');
+        return;
+      }
+      if (!creneauId) {
+        showToast('Veuillez selectionner un creneau.', 'error');
+        return;
+      }
+      try {
+        await apiRequest('/api/appointments/item.php?id=' + encodeURIComponent(appointmentId), {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ creneau_id: Number(creneauId), motif: motif || undefined })
+        });
+        closeModal();
+        await Promise.all([loadRdvSection(), loadHistorique()]);
+        showToast('Rendez-vous reporte avec succes.', 'success');
+      } catch (error) {
+        showToast(error.message || 'Report impossible.', 'error');
+      }
+    }
+
+    async function loadMessages() {
+      const list = document.getElementById('messagesList');
+      if (!list) return;
+      const data = await apiRequest('/api/messages/?context=patient');
+      dashboardUiState.messageConversations = data.conversations || [];
+      const selected = data.selected || null;
+      const badge = document.getElementById('messagesBadge');
+      const unread = dashboardUiState.messageConversations.reduce((sum, item) => sum + Number(item.unread_count || 0), 0);
+      if (badge) {
+        badge.textContent = String(unread);
+        badge.style.display = unread > 0 ? '' : 'none';
+      }
+      if (!dashboardUiState.messageConversations.length) {
+        list.innerHTML = '<div class="messages-empty"><div class="messages-empty-inner"><div class="messages-empty-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div>Aucune conversation disponible pour le moment.</div></div></div>';
+        renderSelectedConversation(null);
+        return;
+      }
+      renderMessageConversations(selected);
+      renderSelectedConversation(selected);
+    }
+
+    function renderMessageConversations(selected) {
+      const list = document.getElementById('messagesList');
+      if (!list) return;
+      list.innerHTML = dashboardUiState.messageConversations.map(item => {
+        const peer = item.peer || {};
+        const active = selected && selected.peer && Number(selected.peer.id) === Number(peer.id);
+        const preview = getMessagePreviewText(item.last_message);
+        const lastTime = item.last_message?.created_at || item.last_appointment_at || '';
+        return [
+          '<div class="message-convo ' + (active ? 'active' : '') + '" onclick="openMessageThread(' + peer.id + ')">',
+            '<div class="message-convo-top"><div class="message-convo-id"><div class="message-convo-avatar">' + avatarHtml(peer.prenom, peer.nom, peer.photo_url) + '</div><div><div class="message-convo-name">' + escapeHtml(doctorDisplayName(peer)) + '</div><div class="message-convo-sub">' + escapeHtml(textOrFallback(peer.specialite, 'Messagerie patient')) + '</div></div></div><div class="message-convo-time">' + escapeHtml(lastTime ? formatDateLabel(lastTime, { month: 'short' }) : '') + '</div></div>',
+            '<div class="message-convo-meta"><div class="message-convo-preview">' + escapeHtml(preview) + '</div>' + (item.unread_count ? '<div class="message-unread">' + escapeHtml(item.unread_count) + '</div>' : '') + '</div>',
+          '</div>'
+        ].join('');
+      }).join('');
+    }
+
+    function renderSelectedConversation(selected) {
+      dashboardUiState.messageSelected = selected;
+      const peer = selected?.peer || null;
+      const avatar = document.getElementById('messagesPeerAvatar');
+      const name = document.getElementById('messagesPeerName');
+      const meta = document.getElementById('messagesPeerMeta');
+      const body = document.getElementById('messagesThreadBody');
+      if (avatar) avatar.innerHTML = peer ? avatarHtml(peer.prenom, peer.nom, peer.photo_url) : '?';
+      if (name) name.textContent = peer ? doctorDisplayName(peer) : 'Messagerie patient';
+      if (meta) meta.textContent = peer ? [peer.specialite, peer.commune, peer.wilaya].filter(Boolean).join(' - ') : 'Selectionnez une conversation.';
+      if (!body) return;
+      if (!selected || !peer) {
+        body.innerHTML = '<div class="messages-empty"><div class="messages-empty-inner"><div class="messages-empty-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div>Selectionnez un medecin pour afficher l\'historique.</div></div></div>';
+        setMessageComposerEnabled(false);
+        setMessageComposeNote('La messagerie s active apres une consultation terminee.');
+        clearPendingMessageAttachment();
+        return;
+      }
+      body.innerHTML = (selected.messages || []).map(message => {
+        const textHtml = textOrFallback(message.body) ? '<p>' + escapeHtml(message.body) + '</p>' : '';
+        const attachmentsHtml = renderMessageAttachments(message.attachments || [], Boolean(message.is_mine));
+        return '<div class="message-row ' + (message.is_mine ? 'mine' : '') + '"><div class="message-bubble">' + textHtml + attachmentsHtml + '<time>' + escapeHtml(formatShortDateTime(message.created_at)) + '</time></div></div>';
+      }).join('') || '<div class="messages-empty"><div class="messages-empty-inner"><div>Aucun message dans cette conversation.</div></div></div>';
+      body.scrollTop = body.scrollHeight;
+      setMessageComposerEnabled(true);
+      setMessageComposeNote('Conversation ouverte avec ce medecin.');
+      document.getElementById('messagesContactsPanel')?.classList.add('hidden');
+      document.getElementById('messagesThreadPanel')?.classList.remove('hidden');
+    }
+
+    async function openMessageThread(peerId) {
+      const data = await apiRequest('/api/messages/?context=patient&peer_id=' + encodeURIComponent(peerId));
+      dashboardUiState.messageConversations = data.conversations || [];
+      renderMessageConversations(data.selected || null);
+      renderSelectedConversation(data.selected || null);
+      const badge = document.getElementById('messagesBadge');
+      const unread = dashboardUiState.messageConversations.reduce((sum, item) => sum + Number(item.unread_count || 0), 0);
+      if (badge) {
+        badge.textContent = String(unread);
+        badge.style.display = unread > 0 ? '' : 'none';
+      }
+      const bnBadge = document.getElementById('bnMessagesBadge');
+      if (bnBadge) {
+        bnBadge.textContent = String(unread);
+        bnBadge.style.display = unread > 0 ? '' : 'none';
+      }
+    }
+
+    function bindMessageAttachmentInput(inputId, kind) {
+      const input = document.getElementById(inputId);
+      if (!input || input.dataset.bound === 'true') return;
+      input.addEventListener('change', event => {
+        const file = event.target?.files?.[0];
+        if (!file) return;
+        setPendingMessageAttachment(file, kind);
+      });
+      input.dataset.bound = 'true';
+    }
+
+    async function toggleMessageVoiceRecording() {
+      if (dashboardUiState.messageRecorder && dashboardUiState.messageRecorder.state === 'recording') {
+        dashboardUiState.messageRecorder.stop();
+        return;
+      }
+      if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === 'undefined') {
+        showToast('Enregistrement vocal non supporte sur cet appareil.', 'error');
+        return;
+      }
+
+      try {
+        clearPendingMessageAttachment();
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const mimeType = [
+          'audio/webm;codecs=opus',
+          'audio/webm',
+          'audio/ogg;codecs=opus',
+          'audio/ogg',
+          'audio/mp4'
+        ].find(type => typeof MediaRecorder.isTypeSupported !== 'function' || MediaRecorder.isTypeSupported(type)) || '';
+        const recorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
+        dashboardUiState.messageRecorder = recorder;
+        dashboardUiState.messageRecordingStream = stream;
+        dashboardUiState.messageRecorderChunks = [];
+
+        recorder.addEventListener('dataavailable', event => {
+          if (event.data && event.data.size > 0) {
+            dashboardUiState.messageRecorderChunks.push(event.data);
+          }
+        });
+
+        recorder.addEventListener('stop', () => {
+          const chunks = dashboardUiState.messageRecorderChunks || [];
+          const audioType = recorder.mimeType || chunks[0]?.type || 'audio/webm';
+          if (chunks.length && dashboardUiState.messageSelected?.peer) {
+            const blob = new Blob(chunks, { type: audioType });
+            const fileName = 'vocal-' + new Date().toISOString().replace(/[:.]/g, '-') + '.' + messageAudioExtension(audioType);
+            const file = new File([blob], fileName, { type: audioType });
+            setPendingMessageAttachment(file, 'audio');
+          }
+          dashboardUiState.messageRecorder = null;
+          dashboardUiState.messageRecorderChunks = [];
+          stopMessageRecordingStream();
+          setMessageRecordingState(false);
+        });
+
+        recorder.addEventListener('error', () => {
+          dashboardUiState.messageRecorder = null;
+          dashboardUiState.messageRecorderChunks = [];
+          stopMessageRecordingStream();
+          setMessageRecordingState(false);
+          showToast('Enregistrement vocal impossible.', 'error');
+        });
+
+        recorder.start();
+        setMessageRecordingState(true);
+        setMessageComposeNote('Enregistrement vocal en cours...');
+      } catch (error) {
+        stopMessageRecordingStream();
+        setMessageRecordingState(false);
+        showToast(error?.message || 'Micro indisponible.', 'error');
+      }
+    }
+
+    function initMessageComposer() {
+      const imageBtn = document.getElementById('messagesAddImageBtn');
+      const fileBtn = document.getElementById('messagesAddFileBtn');
+      const voiceBtn = document.getElementById('messagesVoiceBtn');
+      if (imageBtn) imageBtn.dataset.bound = 'true';
+      if (fileBtn) fileBtn.dataset.bound = 'true';
+      if (voiceBtn) voiceBtn.dataset.bound = 'true';
+    }
+
+    async function submitMessage(e) {
+      e.preventDefault();
+      const input = document.getElementById('messagesInput');
+      const body = input?.value.trim() || '';
+      const peerId = dashboardUiState.messageSelected?.peer?.id;
+      const pending = dashboardUiState.messagePendingAttachment;
+      if (!peerId || (!body && !pending)) return;
+      try {
+        const formData = new FormData();
+        formData.append('context', 'patient');
+        formData.append('peer_id', String(Number(peerId)));
+        formData.append('body', body);
+        if (pending?.file) {
+          formData.append('attachment', pending.file, pending.file.name);
+          formData.append('attachment_kind', pending.kind);
+        }
+        await apiRequest('/api/messages/', {
+          method: 'POST',
+          body: formData
+        });
+        if (input) input.value = '';
+        clearPendingMessageAttachment();
+        await openMessageThread(peerId);
+      } catch (error) {
+        showToast(error.message || 'Envoi impossible.', 'error');
+      }
+    }
+
+    function showMessagesContacts() {
+      document.getElementById('messagesContactsPanel')?.classList.remove('hidden');
+      document.getElementById('messagesThreadPanel')?.classList.add('hidden');
+    }
+
+    function filterRdvMode(mode, btn) {
+      currentRdvModeFilter = mode;
+      setFilterButtonsActive('rdv-mode-filters', mode);
+      loadRdvSection().catch(error => showToast(error.message || 'Chargement impossible.', 'error'));
+    }
+
+    function filterRdvPatient(value) {
+      currentRdvPatientFilter = value;
+      loadRdvSection().catch(error => showToast(error.message || 'Chargement impossible.', 'error'));
+    }
+
+    function filterHistorique(status, btn) {
+      currentHistoriqueFilter = status;
+      setFilterButtonsActive('historique-status-filters', status);
+      loadHistorique().catch(error => showToast(error.message || 'Chargement impossible.', 'error'));
+    }
+
+    function filterHistoriqueMode(mode, btn) {
+      currentHistoriqueModeFilter = mode;
+      setFilterButtonsActive('historique-mode-filters', mode);
+      loadHistorique().catch(error => showToast(error.message || 'Chargement impossible.', 'error'));
+    }
+
+    function filterHistoriquePatient(value) {
+      currentHistoriquePatientFilter = value;
+      loadHistorique().catch(error => showToast(error.message || 'Chargement impossible.', 'error'));
+    }
+
+    async function changePassword(e) {
+      e.preventDefault();
+      const form = e.target;
+      const payload = {
+        ancien_mdp: form.elements.ancien_mdp.value,
+        nouveau_mdp: form.elements.nouveau_mdp.value,
+        confirm_mdp: form.elements.confirm_mdp.value,
+      };
+      try {
+        await apiRequest('/api/auth/change-password/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        showToast('Mot de passe modifie.', 'success');
+        form.reset();
+        checkPwdStrength('');
+      } catch (error) {
+        showToast(error.message || 'Modification impossible.', 'error');
+      }
+    }
+
+    async function loadSectionData(name) {
+      if (name === 'rdv') return loadRdvSection();
+      if (name === 'historique') return loadHistorique();
+      if (name === 'favoris') return loadFavoris();
+      if (name === 'messages') return loadMessages();
+      if (name === 'famille') return loadFamilyMembers();
+      if (name === 'notifications') return Promise.all([loadNotificationsBadge(), loadNotificationPrefs()]);
+      if (name === 'profil') return loadProfileForm();
+      return Promise.resolve();
+    }
+
+    function switchSection(name, clickedEl) {
+      document.querySelectorAll('.section-content').forEach(section => section.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+      const sec = document.getElementById('section-' + name);
+      if (sec) sec.classList.add('active');
+      const navEl = clickedEl || document.querySelector('.nav-item[data-section="' + name + '"]');
+      if (navEl) navEl.classList.add('active');
+      location.hash = 'section-' + name;
+      toggleMobileSidebar(false);
+      loadSectionData(name).catch(error => showToast(error.message || 'Chargement impossible.', 'error'));
+    }
+
+    async function initDashboardSession() {
+      try {
+        await verifyPatientSession();
+        dashboardState.patientProfile = await apiRequest('/api/patient/me/');
+        await loadSidebarProfile();
+        await loadProfileForm();
+        await loadFamilyMembers();
+        await Promise.all([
+          loadNotificationsBadge(),
+          loadNotificationPrefs(),
+          loadRdvSection(),
+          loadHistorique(),
+          loadFavoris(),
+          loadMessages(),
+        ]);
+        const messagesForm = document.getElementById('messagesForm');
+        if (messagesForm && !messagesForm.dataset.bound) {
+          messagesForm.addEventListener('submit', submitMessage);
+          messagesForm.dataset.bound = 'true';
+        }
+      } catch (error) {
+        console.error(error);
+        redirectToLogin();
+      }
+    }
+    // DASHBOARD_RUNTIME_PATCH_END
+
+  </script>
+</body>
+</html>
+

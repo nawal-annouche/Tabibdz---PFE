@@ -1,0 +1,114 @@
+.tdz-brand-lockup {
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.tdz-brand-badge {
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #10b981, #34d399);
+  box-shadow: 0 14px 32px rgba(5, 150, 105, 0.32);
+}
+
+.tdz-brand-badge svg {
+  width: 22px;
+  height: 22px;
+  fill: #fff;
+}
+
+.tdz-brand-text {
+  font-family: "Syne", sans-serif;
+  font-weight: 800;
+  font-size: 1.55rem;
+  letter-spacing: -0.04em;
+}
+
+.tdz-brand-lockup em,
+.tdz-brand-text em {
+  font-style: normal;
+  color: #34d399;
+}
+
+.tdz-feedback {
+  display: none;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.tdz-feedback.show {
+  display: flex;
+}
+
+.tdz-feedback.error {
+  background: rgba(239, 68, 68, 0.08);
+  color: #b91c1c;
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+.tdz-feedback.success {
+  background: rgba(5, 150, 105, 0.1);
+  color: #065f46;
+  border-color: rgba(5, 150, 105, 0.24);
+}
+
+.tdz-feedback.info {
+  background: rgba(59, 130, 246, 0.07);
+  color: #1e40af;
+  border-color: rgba(59, 130, 246, 0.15);
+}
+
+.tdz-feedback svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  margin-top: 1px;
+}
+
+.tdz-feedback--auth {
+  margin-bottom: 10px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.tdz-feedback--auth-wide {
+  margin-bottom: 12px;
+  border-radius: 12px;
+  font-size: 0.88rem;
+}
+
+.tdz-feedback--compact {
+  gap: 7px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.tdz-feedback--compact svg {
+  width: 14px;
+  height: 14px;
+}
+
+.tdz-feedback--status {
+  margin-bottom: 22px;
+  font-size: 0.88rem;
+  line-height: 1.55;
+}

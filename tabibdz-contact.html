@@ -1,0 +1,1657 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TabibDZ — Contact & Support</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/shared-public-nav.css">
+<style>
+:root {
+  --bg:          #ffffff;
+  --bg2:         #f7f8fa;
+  --bg3:         #f0f2f5;
+  --bg4:         #e4e7eb;
+  --border:      #e2e5ea;
+  --border2:     #d0d5dd;
+  --accent:      #2EAD76;
+  --accent2:     #259962;
+  --accent3:     #1d7a4e;
+  --accent-dim:  rgba(46,173,118,.10);
+  --accent-dim2: rgba(46,173,118,.06);
+  --text:        #0d1117;
+  --text2:       #4a5568;
+  --text3:       #8a94a6;
+  --red:         #e53e3e;
+  --shadow:      0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.05);
+  --shadow-md:   0 4px 24px rgba(0,0,0,.09);
+  --shadow-lg:   0 12px 48px rgba(0,0,0,.12);
+  --radius:      16px;
+  --radius-sm:   10px;
+  --radius-lg:   24px;
+  --font:        'DM Sans', sans-serif;
+  --font-display:'Syne', sans-serif;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+html { scroll-behavior:smooth; }
+
+body {
+  background: #f0faf6;
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+}
+
+#bg-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+body > *:not(#bg-canvas) { position: relative; z-index: 1; }
+
+/* ─── NAVBAR ─────────────────────────────────────── */
+.navbar { background:rgba(255,255,255,.94); border-bottom:1px solid var(--border); padding:0 48px; height:66px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:200; backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); box-shadow:none; }
+.logo { font-family:'Syne', sans-serif; font-size:22px; font-weight:800; color:var(--text); letter-spacing:-.5px; text-decoration:none; }
+.logo span { color:var(--accent); }
+.nav-links { display:flex; gap:34px; list-style:none; align-items:center; }
+.nav-links a { text-decoration:none; color:var(--text2); font-size:14px; font-weight:500; transition:color .15s; }
+.nav-links a:hover, .nav-links a.active { color:var(--accent); }
+/* ─── BURGER MENU ────────────────────────────────── */
+.burger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 40px; height: 40px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  cursor: pointer;
+  gap: 5px;
+  flex-shrink: 0;
+}
+.burger span {
+  display: block;
+  width: 18px; height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: all 0.25s ease;
+}
+.burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.burger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Mobile drawer */
+.nav-drawer {
+  display: none;
+  position: fixed;
+  top: 66px; left: 0; right: 0;
+  background: rgba(255,255,255,0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 20px 20px 28px;
+  z-index: 199;
+  flex-direction: column;
+  gap: 0;
+  box-shadow: 0 8px 32px rgba(15,90,50,.08);
+  transform: translateY(-8px);
+  opacity: 0;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+.nav-drawer.open {
+  display: flex;
+  opacity: 1;
+  transform: translateY(0);
+}
+.nav-drawer a {
+  display: block;
+  padding: 13px 4px;
+  font-size: 15px; font-weight: 500;
+  color: var(--text2);
+  border-bottom: 1px solid var(--border);
+  transition: color 0.15s;
+  text-decoration: none;
+}
+.nav-drawer a:last-of-type { border-bottom: none; }
+.nav-drawer a:hover, .nav-drawer a.active { color: var(--accent); }
+.nav-drawer-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+.nav-drawer-actions .btn {
+  width: 100%;
+  justify-content: center;
+  padding: 12px 20px;
+  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-weight: 500;
+  text-decoration: none;
+  transition: all .18s ease;
+}
+.nav-drawer-actions .btn-primary {
+  background: var(--accent); border-color: var(--accent); color: #fff;
+  box-shadow: 0 4px 16px rgba(46,173,118,.22);
+}
+
+/* ─── HERO ──────────────────────────────────────── */
+.hero {
+  position: relative;
+  background: transparent;
+  border-bottom: 1px solid rgba(46,173,118,.15);
+  overflow: hidden;
+  padding: 0;
+}
+
+.hero-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: calc(96px - 0.6cm) 48px 80px;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+/* Large decorative circle */
+.hero::before {
+  content:'';
+  position:absolute;
+  top: -200px; right: -180px;
+  width: 680px; height: 680px;
+  border-radius:50%;
+  background: radial-gradient(circle, rgba(46,173,118,.07) 0%, transparent 70%);
+  pointer-events:none;
+}
+.hero::after {
+  content:'';
+  position:absolute;
+  bottom: -100px; left: -60px;
+  width: 400px; height: 400px;
+  border-radius:50%;
+  background: radial-gradient(circle, rgba(46,173,118,.04) 0%, transparent 70%);
+  pointer-events:none;
+}
+
+.hero-left { padding-bottom: 0; }
+
+.hero-badge {
+  display: inline-flex; align-items:center; gap:8px;
+  background: var(--accent-dim);
+  border: 1px solid rgba(46,173,118,.25);
+  color: var(--accent2);
+  padding: 7px 16px;
+  border-radius: 999px;
+  font-size:12.5px; font-weight:700; letter-spacing:.3px;
+  margin-bottom: 24px;
+}
+.hero-badge-dot {
+  width:7px; height:7px; border-radius:50%;
+  background:var(--accent);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100%{ opacity:1; transform:scale(1); }
+  50%{ opacity:.5; transform:scale(.8); }
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.8rem, 5.5vw, 4.6rem);
+  font-weight: 800;
+  line-height: .93;
+  letter-spacing: -2.5px;
+  color: var(--text);
+  margin-bottom: calc(20px + 0.6cm);
+}
+.hero-title em {
+  font-style: normal;
+  color: var(--accent);
+}
+.hero-title .line-muted {
+  color: var(--text3);
+  font-size: 80%;
+}
+
+.hero-desc {
+  font-size: 17px;
+  color: var(--text2);
+  max-width: 520px;
+  line-height: 1.7;
+  margin: 0 auto 36px;
+  font-weight: 400;
+}
+
+.hero-chips { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+.hero-chip {
+  display:inline-flex; align-items:center; gap:7px;
+  background:var(--bg2); border:1.5px solid var(--border);
+  border-radius:999px; padding:7px 16px;
+  font-size:13px; font-weight:600; color:var(--text2);
+}
+.hero-chip-dot { width:6px; height:6px; border-radius:50%; background:var(--accent); }
+
+/* Hero visual panel */
+.hero-visual {
+  position: relative;
+  align-self: stretch;
+  display: flex;
+  align-items: flex-end;
+}
+
+.hero-stat-stack {
+  position: absolute;
+  bottom: 40px;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.hero-stat {
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: var(--shadow-md);
+  animation: float-in .6s ease both;
+}
+.hero-stat:nth-child(1){ animation-delay:.1s; }
+.hero-stat:nth-child(2){ animation-delay:.2s; }
+.hero-stat:nth-child(3){ animation-delay:.3s; }
+
+@keyframes float-in {
+  from{ opacity:0; transform:translateY(20px); }
+  to  { opacity:1; transform:translateY(0); }
+}
+
+.hero-stat-icon {
+  width: 42px; height:42px;
+  border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px;
+  flex-shrink:0;
+}
+.hero-stat-icon.g { background: var(--accent-dim); }
+.hero-stat-icon.b { background: #eef3ff; }
+.hero-stat-icon.o { background: #fff8ee; }
+
+.hero-stat-num {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1;
+}
+.hero-stat-lbl { font-size:12px; color:var(--text3); font-weight:500; margin-top:2px; }
+
+/* ─── CONTACT CHANNELS ──────────────────────────── */
+.channels-section {
+  max-width: 1120px;
+  margin: -1px auto 0;
+  padding: 0 48px;
+}
+
+.channels-strip {
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.channel {
+  padding: 28px 30px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  cursor: pointer;
+  transition: background .2s;
+  text-decoration: none;
+  color: inherit;
+  border-right: 1px solid var(--border);
+  position: relative;
+}
+.channel:last-child { border-right:none; }
+.channel:hover { background: var(--bg2); }
+.channel:hover .channel-arrow { transform:translateX(4px); opacity:1; }
+
+.channel-icon {
+  width:48px; height:48px;
+  border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:22px;
+  flex-shrink:0;
+}
+.ch-green { background:var(--accent-dim); }
+.ch-wa    { background:#e7f8ef; }
+.ch-mail  { background:#eef3ff; }
+
+.channel-info { flex:1; min-width:0; }
+.channel-label {
+  font-size:11px; font-weight:700; letter-spacing:.9px;
+  text-transform:uppercase; color:var(--text3);
+  margin-bottom:3px;
+}
+.channel-value { font-size:15px; font-weight:700; color:var(--text); }
+.channel-note  { font-size:12px; color:var(--text3); margin-top:2px; }
+
+.channel-arrow {
+  color:var(--accent);
+  opacity:0;
+  transition: all .2s;
+  flex-shrink:0;
+}
+
+/* ─── MAIN GRID ─────────────────────────────────── */
+.main-wrap {
+  max-width: 1120px;
+  margin: 48px auto 0;
+  padding: 0 48px 80px;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 28px;
+  align-items: start;
+}
+
+/* ─── FORM CARD ─────────────────────────────────── */
+.form-card {
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.form-card-header {
+  padding: 36px 40px 28px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(135deg, #fafffe 0%, #fff 100%);
+  position: relative;
+  overflow: hidden;
+}
+.form-card-header::before {
+  content:'';
+  position:absolute;
+  top:-40px; right:-40px;
+  width:180px; height:180px;
+  border-radius:50%;
+  background: radial-gradient(circle, rgba(46,173,118,.06) 0%, transparent 70%);
+}
+
+.form-card-header h2 {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -.8px;
+  margin-bottom: 6px;
+  position:relative;
+}
+.form-card-header p { font-size:13.5px; color:var(--text3); position:relative; }
+
+.form-card-body { padding: 36px 40px 40px; }
+
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+
+.form-group { margin-bottom:20px; }
+.form-group:last-of-type { margin-bottom:0; }
+
+.form-label {
+  display:block;
+  font-size:12px; font-weight:700;
+  color:var(--text2);
+  margin-bottom:8px;
+  letter-spacing:.15px;
+  text-transform:uppercase;
+}
+.form-label .req { color:var(--accent); margin-left:2px; }
+
+.form-input,
+.form-select,
+.form-textarea {
+  width:100%;
+  background: var(--bg2);
+  border: 1.5px solid var(--border2);
+  color: var(--text);
+  padding: 11px 15px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 14px;
+  outline: none;
+  transition: border-color .18s, box-shadow .18s, background .18s;
+}
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3.5px var(--accent-dim);
+  background: var(--bg);
+}
+.form-input::placeholder,
+.form-textarea::placeholder { color:var(--text3); }
+
+.form-select {
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a94a6' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 14px center;
+  cursor:pointer;
+}
+
+.form-textarea { resize:vertical; min-height:140px; line-height:1.65; }
+
+.char-row { display:flex; justify-content:flex-end; margin-top:5px; }
+.char-count { font-size:11.5px; color:var(--text3); }
+
+.consent-row {
+  display:flex; align-items:flex-start; gap:11px;
+  margin-top:20px; margin-bottom:24px;
+}
+.consent-row input[type=checkbox] {
+  width:16px; height:16px; margin-top:2px;
+  accent-color:var(--accent); cursor:pointer; flex-shrink:0;
+}
+.consent-row label {
+  font-size:12.5px; color:var(--text2); cursor:pointer; line-height:1.6;
+}
+.consent-row a { color:var(--accent); text-decoration:none; }
+.consent-row a:hover { text-decoration:underline; }
+
+.btn-submit {
+  width:100%;
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  padding: 14px 24px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 15px; font-weight:700;
+  cursor: pointer;
+  display: flex; align-items:center; justify-content:center; gap:9px;
+  transition: background .15s, transform .12s, box-shadow .15s;
+  box-shadow: 0 4px 18px rgba(46,173,118,.25);
+  letter-spacing: .1px;
+}
+.btn-submit:hover {
+  background:var(--accent2);
+  transform:translateY(-2px);
+  box-shadow: 0 8px 28px rgba(46,173,118,.32);
+}
+.btn-submit:active { transform:translateY(0); }
+
+.form-privacy {
+  text-align:center;
+  font-size:12px; color:var(--text3);
+  margin-top:14px;
+  display:flex; align-items:center; justify-content:center; gap:6px;
+}
+
+/* SUCCESS */
+.success-state {
+  display:none;
+  flex-direction:column; align-items:center; justify-content:center;
+  gap:18px; padding:64px 40px; text-align:center;
+}
+.success-icon {
+  width:72px; height:72px; border-radius:50%;
+  background:var(--accent-dim);
+  display:flex; align-items:center; justify-content:center;
+  font-size:34px;
+}
+.success-state h3 {
+  font-family:var(--font-display);
+  font-size:24px; font-weight:800;
+  letter-spacing:-.5px;
+}
+.success-state p { font-size:14px; color:var(--text2); max-width:320px; line-height:1.65; }
+.btn-reset {
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--accent); color:#fff;
+  border:none; border-radius:var(--radius-sm);
+  padding:11px 24px; font-family:var(--font);
+  font-size:14px; font-weight:700; cursor:pointer;
+  margin-top:8px;
+  transition:background .15s;
+}
+.btn-reset:hover { background:var(--accent2); }
+
+/* ─── SIDE PANEL ────────────────────────────────── */
+.side-panel { display:flex; flex-direction:column; gap:20px; }
+
+/* WA Card */
+.wa-card {
+  background: linear-gradient(135deg, #e7f8ef 0%, #d1f5e3 100%);
+  border: 1.5px solid rgba(46,173,118,.22);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+}
+.wa-card::before {
+  content:'';
+  position:absolute;
+  top:-30px; right:-30px;
+  width:130px; height:130px;
+  border-radius:50%;
+  background: rgba(46,173,118,.07);
+}
+
+.wa-card-top { display:flex; align-items:center; gap:14px; margin-bottom:14px; }
+
+.wa-logo {
+  width:48px; height:48px; border-radius:12px;
+  background:#25D366;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+  box-shadow: 0 4px 14px rgba(37,211,102,.3);
+}
+.wa-logo svg { fill:#fff; }
+
+.wa-card h4 {
+  font-family:var(--font-display);
+  font-size:16px; font-weight:800;
+  color:#0d2e1c; letter-spacing:-.3px;
+}
+.wa-card .wa-status {
+  display:inline-flex; align-items:center; gap:5px;
+  font-size:12px; font-weight:600; color:#156843;
+  margin-top:2px;
+}
+.wa-status-dot { width:6px; height:6px; border-radius:50%; background:var(--accent); }
+
+.wa-card p { font-size:13px; color:#2d6448; line-height:1.55; margin-bottom:16px; }
+
+.wa-number {
+  font-family: var(--font-display);
+  font-size:20px; font-weight:800;
+  color:#0d2e1c; letter-spacing:.3px;
+  margin-bottom:16px;
+}
+
+.btn-wa {
+  width:100%;
+  background:#25D366; border:none; color:#fff;
+  padding:12px 18px; border-radius:var(--radius-sm);
+  font-family:var(--font); font-size:14px; font-weight:700;
+  cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:9px;
+  transition:background .15s, transform .12s;
+  box-shadow:0 4px 14px rgba(37,211,102,.25);
+}
+.btn-wa:hover { background:#1daa55; transform:translateY(-1px); }
+
+/* Info Card */
+.info-card {
+  background:var(--bg);
+  border:1.5px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:28px;
+  box-shadow:var(--shadow-md);
+}
+
+.info-card-head {
+  display:flex; align-items:center; gap:10px;
+  margin-bottom:20px;
+}
+.info-card-head-icon {
+  width:34px; height:34px; border-radius:9px;
+  background:var(--accent-dim);
+  display:flex; align-items:center; justify-content:center;
+  color:var(--accent);
+}
+.info-card-head h3 {
+  font-family:var(--font-display);
+  font-size:15px; font-weight:800;
+  letter-spacing:-.3px;
+}
+
+.contact-item {
+  display:flex; align-items:center; gap:14px;
+  padding:14px 0;
+  border-bottom:1px solid var(--border);
+}
+.contact-item:last-child { border-bottom:none; padding-bottom:0; }
+.contact-item:first-child { padding-top:0; }
+
+.ci-icon {
+  width:40px; height:40px; border-radius:10px;
+  background:var(--accent-dim);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; color:var(--accent); font-size:18px;
+}
+
+.ci-body { flex:1; min-width:0; }
+.ci-lbl { font-size:11px; font-weight:700; letter-spacing:.6px; text-transform:uppercase; color:var(--text3); margin-bottom:2px; }
+.ci-val { font-size:14px; font-weight:700; color:var(--text); }
+.ci-note { font-size:12px; color:var(--text3); margin-top:1px; }
+
+.ci-copy {
+  background:none; border:none; cursor:pointer;
+  color:var(--text3); padding:6px;
+  border-radius:7px;
+  display:inline-flex; align-items:center;
+  transition:all .15s;
+  flex-shrink:0;
+}
+.ci-copy:hover { color:var(--accent); background:var(--accent-dim); }
+
+/* Hours */
+.hours-grid { display:flex; flex-direction:column; gap:0; }
+.hours-row {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:10px 0; border-bottom:1px solid var(--border);
+  font-size:13px;
+}
+.hours-row:last-child { border-bottom:none; }
+.hours-day { color:var(--text2); font-weight:500; }
+.hours-time { font-weight:700; color:var(--text); }
+.hours-time.off { color:var(--red); font-weight:500; }
+
+/* Live status */
+.live-badge {
+  display:inline-flex; align-items:center; gap:6px;
+  background:#e7f8ef; color:#156843;
+  border-radius:20px; padding:4px 12px;
+  font-size:11.5px; font-weight:700;
+}
+.live-dot { width:6px; height:6px; border-radius:50%; background:var(--accent); animation:pulse 2s infinite; }
+
+/* ─── FAQ ───────────────────────────────────────── */
+.faq-section {
+  max-width:1120px;
+  margin:0 auto;
+  padding:0 48px 100px;
+}
+
+.section-head {
+  display:flex; align-items:flex-end; justify-content:space-between;
+  margin-bottom:36px;
+}
+.section-head h2 {
+  font-family:var(--font-display);
+  font-size:clamp(1.8rem, 3vw, 2.6rem);
+  font-weight:800; letter-spacing:-1px; color:var(--text);
+}
+.section-head p { font-size:14px; color:var(--text3); margin-top:6px; }
+
+.faq-tabs {
+  display:flex; gap:8px; margin-bottom:28px;
+}
+.faq-tab {
+  background:var(--bg); border:1.5px solid var(--border);
+  color:var(--text2); padding:8px 22px; border-radius:999px;
+  font-family:var(--font); font-size:13px; font-weight:600;
+  cursor:pointer; transition:all .15s;
+}
+.faq-tab:hover:not(.active) { border-color:var(--border2); color:var(--text); background:var(--bg2); }
+.faq-tab.active {
+  background:var(--accent); border-color:var(--accent); color:#fff;
+  box-shadow:0 4px 12px rgba(46,173,118,.22);
+}
+
+.faq-panel { display:none; }
+.faq-panel.active { display:block; }
+
+.faq-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+
+.faq-item {
+  background:var(--bg);
+  border:1.5px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;
+  box-shadow:var(--shadow);
+  transition:border-color .2s, box-shadow .2s;
+}
+.faq-item:hover { border-color:var(--border2); box-shadow:var(--shadow-md); }
+.faq-item.open { border-color:var(--accent); box-shadow: 0 4px 20px rgba(46,173,118,.1); }
+
+.faq-q {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:18px 22px; cursor:pointer; gap:14px;
+  font-size:14px; font-weight:600; color:var(--text);
+  user-select:none; transition:background .15s;
+}
+.faq-q:hover { background:var(--bg2); }
+.faq-item.open .faq-q { background:var(--accent-dim2); color:var(--accent2); }
+
+.faq-chevron {
+  width:22px; height:22px; border-radius:50%;
+  background:var(--bg3);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; transition:transform .25s, background .2s;
+  color:var(--text3);
+}
+.faq-item.open .faq-chevron { transform:rotate(180deg); background:var(--accent-dim); color:var(--accent); }
+
+.faq-a {
+  max-height:0; overflow:hidden;
+  transition:max-height .3s ease, padding .3s ease;
+  font-size:13.5px; color:var(--text2); line-height:1.7;
+  padding:0 22px;
+}
+.faq-item.open .faq-a { max-height:200px; padding:4px 22px 18px; }
+
+/* ─── TOAST ─────────────────────────────────────── */
+.copy-toast {
+  position:fixed;
+  bottom:28px; left:50%; transform:translateX(-50%) translateY(20px);
+  background:var(--text); color:#fff;
+  padding:11px 24px; border-radius:999px;
+  font-size:13px; font-weight:600;
+  opacity:0; pointer-events:none;
+  transition:all .25s ease;
+  z-index:9999;
+  white-space:nowrap;
+  box-shadow:0 8px 32px rgba(0,0,0,.18);
+}
+.copy-toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* ─── FOOTER CTA ────────────────────────────────── */
+.footer-cta {
+  background:linear-gradient(135deg, var(--accent3) 0%, var(--accent2) 100%);
+  padding:56px 48px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.footer-cta::before {
+  content:'';
+  position:absolute; inset:0;
+  background:radial-gradient(ellipse 60% 80% at 50% 50%, rgba(255,255,255,.08) 0%, transparent 60%);
+  pointer-events:none;
+}
+.footer-cta h3 {
+  font-family:var(--font-display);
+  font-size:clamp(1.6rem, 3vw, 2.4rem);
+  font-weight:800; color:#fff; letter-spacing:-1px;
+  margin-bottom:12px; position:relative;
+}
+.footer-cta p { font-size:15px; color:rgba(255,255,255,.75); margin-bottom:28px; position:relative; }
+.footer-cta-btn {
+  display:inline-flex; align-items:center; gap:9px;
+  background:#fff; color:var(--accent2);
+  border:none; border-radius:999px;
+  padding:13px 32px; font-family:var(--font);
+  font-size:15px; font-weight:700; cursor:pointer;
+  transition:all .18s;
+  box-shadow:0 4px 20px rgba(0,0,0,.15);
+  text-decoration:none;
+  position:relative;
+}
+.footer-cta-btn:hover { transform:translateY(-2px); box-shadow:0 8px 32px rgba(0,0,0,.2); }
+
+@media (max-width: 900px) {
+  /* Navbar — burger mode */
+  .navbar { padding: 0 20px; height: 60px; }
+  .nav-links { display: none; }
+  .nav-actions { display: none; }
+  .burger { display: flex; }
+
+  /* Content padding */
+  .hero-shell,
+  .contact-grid,
+  .contact-support-grid,
+  .faq-wrap,
+  .footer-cta,
+  .channels-section,
+  .main-wrap,
+  .faq-section {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .contact-grid,
+  .contact-support-grid {
+    grid-template-columns: 1fr;
+  }
+  /* Main grid (form + sidebar) */
+  .main-wrap { grid-template-columns: 1fr; }
+  /* Channels strip */
+  .channels-strip { grid-template-columns: 1fr; border-radius: var(--radius); }
+  .channel { border-right: none; border-bottom: 1px solid var(--border); }
+  .channel:last-child { border-bottom: none; }
+  /* FAQ grid */
+  .faq-grid { grid-template-columns: 1fr; }
+  /* Footer CTA */
+  .footer-cta { padding: 40px 20px; }
+}
+
+@media (max-width: 640px) {
+  .hero-shell,
+  .contact-grid,
+  .contact-support-grid,
+  .faq-wrap,
+  .footer-cta,
+  .channels-section,
+  .main-wrap,
+  .faq-section {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+  .hero-title { font-size: 2.35rem; line-height: 0.98; }
+  .hero-desc { font-size: 0.92rem; line-height: 1.6; }
+  .hero-chip { width: 100%; justify-content: center; }
+  .channel { padding: 16px 14px; gap: 12px; align-items: flex-start; }
+  .channel-icon { width: 42px; height: 42px; flex: 0 0 42px; }
+  .channel-value { font-size: 0.98rem; }
+  .contact-card,
+  .support-card { padding: 18px 16px; border-radius: 18px; }
+  .footer-cta { padding-top: 28px; padding-bottom: 28px; }
+  .form-card-body { padding: 24px 20px 28px; }
+  .form-card-header { padding: 24px 20px 20px; }
+  .form-row { grid-template-columns: 1fr; }
+}
+
+  /* MOBILE NAV DRAWER — unified with search */
+  .nav-drawer-overlay {
+    display: none !important;
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    background: rgba(5, 18, 12, .42) !important;
+    z-index: 20000 !important;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .22s ease;
+  }
+  .nav-drawer-overlay.open {
+    display: block !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+  .nav-drawer {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: auto !important;
+    bottom: 0 !important;
+    width: min(82vw, 300px) !important;
+    max-width: 300px !important;
+    height: 100dvh !important;
+    overflow-y: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: #ffffff !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-right: 1px solid var(--border) !important;
+    border-bottom: none !important;
+    box-shadow: 10px 0 40px rgba(15, 23, 42, .18) !important;
+    transform: translateX(-100%) !important;
+    transition: transform .28s cubic-bezier(.4,0,.2,1) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+    opacity: 1 !important;
+    z-index: 20001 !important;
+    pointer-events: none;
+  }
+  .nav-drawer:not(.open) { pointer-events: none !important; }
+  .nav-drawer.open {
+    transform: translateX(0) !important;
+    pointer-events: auto !important;
+  }
+  .nav-drawer-header .logo {
+    font-family: 'Syne', sans-serif !important;
+    font-size: 26px !important;
+    font-weight: 800 !important;
+    letter-spacing: -1px !important;
+    color: var(--text, var(--ink)) !important;
+    text-decoration: none !important;
+  }
+  .nav-drawer-header .logo span { color: var(--green, var(--accent)) !important; }
+  .nav-drawer-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 18px 20px !important;
+    border-bottom: 1px solid var(--border) !important;
+    background: #ffffff !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 2 !important;
+  }
+  .nav-drawer-close {
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    padding: 6px !important;
+    color: var(--text3, var(--text-muted)) !important;
+    border-radius: 8px !important;
+  }
+  .nav-drawer-close:hover { background: rgba(148, 163, 184, .12) !important; color: var(--text, var(--ink)) !important; }
+  .nav-drawer-links {
+    list-style: none !important;
+    padding: 12px 0 !important;
+    margin: 0 !important;
+    flex: 1 1 auto !important;
+    background: #ffffff !important;
+  }
+  .nav-drawer-links li a {
+    display: block !important;
+    padding: 13px 24px !important;
+    text-decoration: none !important;
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    border-left: 3px solid transparent !important;
+    position: relative !important;
+    z-index: 1 !important;
+  }
+  .nav-drawer-actions {
+    margin-top: auto !important;
+    padding: 16px 20px 28px !important;
+    border-top: 1px solid var(--border) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    background: #ffffff !important;
+  }
+  body.mobile-nav-open {
+    overflow: hidden !important;
+    touch-action: none;
+  }
+  body.mobile-nav-open > *:not(#bg-canvas):not(.nav-drawer-overlay):not(.nav-drawer) {
+    pointer-events: none !important;
+    user-select: none;
+  }
+  body.mobile-nav-open .nav-drawer,
+  body.mobile-nav-open .nav-drawer *,
+  body.mobile-nav-open .nav-drawer-overlay {
+    pointer-events: auto !important;
+  }
+  @media (min-width: 901px) {
+    .nav-drawer,
+    .nav-drawer-overlay { display: none !important; }
+  }
+  }
+
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a class="logo" href="/tabibdz-homepage.html">Tabib<span>DZ</span></a>
+
+  <ul class="nav-links">
+    <li><a href="/tabibdz-homepage.html">Accueil</a></li>
+    <li><a href="/tabibdz-recherche.html">Médecins</a></li>
+    <li><a href="/tabibdz-a-propos.html">À propos</a></li>
+    <li><a href="/tabibdz-comment-ca-marche.html">Comment ça marche</a></li>
+    <li><a href="/tabibdz-contact.html" class="active">Contact</a></li>
+  </ul>
+
+  <div class="nav-actions" id="nav-actions">
+    <a class="btn" href="/connexion/?next=%2Ftabibdz-contact.html">Connexion</a>
+    <a class="btn btn-primary" href="/inscription/?next=%2Ftabibdz-contact.html">S'inscrire</a>
+  </div>
+
+  <!-- Burger button (mobile only) -->
+  <button class="burger" id="burger-btn" aria-label="Menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- NAV DRAWER (mobile) -->
+<div class="nav-drawer-overlay" id="nav-overlay"></div>
+<div class="nav-drawer" id="nav-drawer" aria-hidden="true">
+  <div class="nav-drawer-header">
+    <a class="logo" href="/tabibdz-homepage.html">Tabib<span>DZ</span></a>
+    <button class="nav-drawer-close" id="nav-drawer-close" aria-label="Fermer">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <ul class="nav-drawer-links">
+    <li><a href="/tabibdz-homepage.html">Accueil</a></li>
+    <li><a href="/tabibdz-recherche.html">Médecins</a></li>
+    <li><a href="/tabibdz-a-propos.html">À propos</a></li>
+    <li><a href="/tabibdz-comment-ca-marche.html">Comment ça marche</a></li>
+    <li><a href="/tabibdz-contact.html" class="active">Contact</a></li>
+  </ul>
+  <div class="nav-drawer-actions" id="drawer-nav-actions">
+    <a href="/connexion/?next=%2Ftabibdz-contact.html" class="btn">Connexion</a>
+    <a href="/inscription/?next=%2Ftabibdz-contact.html" class="btn btn-primary">S'inscrire</a>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+
+    <div class="hero-left">
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        Support disponible aujourd'hui
+      </div>
+
+      <h1 class="hero-title">
+        Une question ?<br>
+        <em>On est là</em><br>
+        <span class="line-muted">pour vous.</span>
+      </h1>
+
+      <p class="hero-desc">
+        Notre équipe est disponible 7j/7 pour vous accompagner — que vous soyez patient ou médecin. Réponse garantie sous 24h ouvrables.
+      </p>
+
+      <div class="hero-chips">
+        <span class="hero-chip"><span class="hero-chip-dot"></span> Réponse &lt; 24h</span>
+        <span class="hero-chip"><span class="hero-chip-dot"></span> WhatsApp disponible</span>
+        <span class="hero-chip"><span class="hero-chip-dot"></span> Support Médecins</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTACT CHANNELS STRIP -->
+<div class="channels-section">
+  <div class="channels-strip">
+
+    <a class="channel" href="tel:0542416573">
+      <div class="channel-icon ch-green">📞</div>
+      <div class="channel-info">
+        <div class="channel-label">Téléphone</div>
+        <div class="channel-value">0542416573</div>
+        <div class="channel-note">Lun–Sam · 8h–20h</div>
+      </div>
+      <div class="channel-arrow">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+    </a>
+
+    <a class="channel" href="https://wa.me/213542416573" target="_blank">
+      <div class="channel-icon ch-wa">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.998 2C6.48 2 2.002 6.477 2.002 12c0 1.76.464 3.412 1.26 4.852L2 22l5.293-1.233A9.946 9.946 0 0 0 12 21.999c5.52 0 10-4.477 10-10 0-5.522-4.48-10-10.002-10z"/></svg>
+      </div>
+      <div class="channel-info">
+        <div class="channel-label">WhatsApp</div>
+        <div class="channel-value">Chatter maintenant</div>
+        <div class="channel-note">Réponse rapide garantie</div>
+      </div>
+      <div class="channel-arrow">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+    </a>
+
+    <a class="channel" href="mailto:tabibdz.support@gmail.com">
+      <div class="channel-icon ch-mail">✉️</div>
+      <div class="channel-info">
+        <div class="channel-label">Email</div>
+        <div class="channel-value">tabibdz.support@gmail.com</div>
+        <div class="channel-note">Sous 24h ouvrables</div>
+      </div>
+      <div class="channel-arrow">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<!-- MAIN GRID -->
+<div class="main-wrap">
+
+  <!-- FORM CARD -->
+  <div class="form-card">
+    <div class="form-card-header">
+      <h2>Envoyez-nous un message</h2>
+      <p>Notre équipe vous répond en moins de 24h ouvrables.</p>
+    </div>
+
+    <div class="form-card-body">
+      <form id="contact-form" action="https://formspree.io/f/xlgzvgdq" method="POST" novalidate>
+        <div id="form-wrap">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Prénom <span class="req">*</span></label>
+            <input class="form-input" type="text" placeholder="Votre prénom" id="f-prenom" name="prenom" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nom</label>
+            <input class="form-input" type="text" placeholder="Votre nom" id="f-nom" name="nom">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Email <span class="req">*</span></label>
+            <input class="form-input" type="email" placeholder="vous@exemple.com" id="f-email" name="email" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Téléphone</label>
+            <input class="form-input" type="tel" placeholder="+213 5xx xxx xxx" id="f-tel" name="telephone">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Vous êtes <span class="req">*</span></label>
+            <select class="form-select" id="f-role" name="role" required>
+              <option value="" disabled selected>Choisir...</option>
+              <option>Patient</option>
+              <option>Médecin / Spécialiste</option>
+              <option>Établissement de santé</option>
+              <option>Partenaire / Presse</option>
+              <option>Autre</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Sujet <span class="req">*</span></label>
+            <select class="form-select" id="f-sujet" name="sujet" required>
+              <option value="" disabled selected>Choisir un sujet...</option>
+              <option>Problème de connexion / compte</option>
+              <option>Prise de rendez-vous</option>
+              <option>Annulation / modification RDV</option>
+              <option>Remboursement</option>
+              <option>Signaler un médecin</option>
+              <option>Médecin — Inscription</option>
+              <option>Médecin — Problème agenda</option>
+              <option>Partenariat / Presse</option>
+              <option>Autre</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Message <span class="req">*</span></label>
+          <textarea class="form-textarea" placeholder="Décrivez votre demande en détail…" id="f-msg" name="message" maxlength="1000" required oninput="updateCount(this)"></textarea>
+          <div class="char-row">
+            <span class="char-count"><span id="char-count">0</span> / 1000</span>
+          </div>
+        </div>
+
+        <div class="consent-row">
+          <input type="checkbox" id="f-consent" name="consentement" required>
+          <label for="f-consent">
+            J'accepte que mes données soient traitées conformément à la
+            <a href="/tabibdz-comment-ca-marche.html">politique de confidentialité</a> de TabibDZ.
+          </label>
+        </div>
+
+        <input type="hidden" name="_subject" value="Nouveau message depuis la page contact TabibDZ">
+
+        <button class="btn-submit" type="submit" id="contact-submit">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></svg>
+          <span id="contact-submit-label">Envoyer le message</span>
+        </button>
+
+        <div class="form-privacy">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Vos données ne seront jamais partagées avec des tiers.
+        </div>
+
+        </div>
+      </form>
+
+      <!-- SUCCESS -->
+      <div class="success-state" id="success-msg">
+        <div class="success-icon">✅</div>
+        <h3>Message envoyé !</h3>
+        <p>Merci pour votre message. Notre équipe vous répondra dans les <strong>24h ouvrables</strong>.</p>
+        <button class="btn-reset" onclick="resetForm()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          Nouveau message
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIDE PANEL -->
+  <div class="side-panel">
+
+    <!-- Coordonnées -->
+    <div class="info-card">
+      <div class="info-card-head">
+        <div class="info-card-head-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.42 2 2 0 0 1 3.6 1.24h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.96a16 16 0 0 0 6.08 6.08l.96-.96a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </div>
+        <h3>Coordonnées</h3>
+      </div>
+
+      <div class="contact-item">
+        <div class="ci-icon">✉️</div>
+        <div class="ci-body">
+          <div class="ci-lbl">Email support</div>
+          <div class="ci-val">tabibdz.support@gmail.com</div>
+          <div class="ci-note">Réponse sous 24h ouvrables</div>
+        </div>
+        <button class="ci-copy" onclick="copyText('tabibdz.support@gmail.com','Email copié !')" title="Copier">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </button>
+      </div>
+
+      <div class="contact-item">
+        <div class="ci-icon">💬</div>
+        <div class="ci-body">
+          <div class="ci-lbl">WhatsApp</div>
+          <div class="ci-val">0542416573</div>
+          <div class="ci-note">Lun–Sam · 8h00–20h00</div>
+        </div>
+        <button class="ci-copy" onclick="copyText('0542416573','Numéro copié !')" title="Copier">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </button>
+      </div>
+
+      <div class="contact-item">
+        <div class="ci-icon">🏢</div>
+        <div class="ci-body">
+          <div class="ci-lbl">Siège social</div>
+          <div class="ci-val">Alger, Algérie</div>
+          <div class="ci-note">TabibDZ SAS · RC Alger</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Horaires -->
+    <div class="info-card">
+      <div class="info-card-head">
+        <div class="info-card-head-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <h3>Horaires du support</h3>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;margin-bottom:14px;">
+        <span class="live-badge"><span class="live-dot"></span> Ouvert maintenant</span>
+      </div>
+
+      <div class="hours-grid">
+        <div class="hours-row"><span class="hours-day">Lundi – Jeudi</span><span class="hours-time">8h00 – 20h00</span></div>
+        <div class="hours-row"><span class="hours-day">Vendredi</span><span class="hours-time">8h00 – 18h00</span></div>
+        <div class="hours-row"><span class="hours-day">Samedi</span><span class="hours-time">9h00 – 17h00</span></div>
+        <div class="hours-row"><span class="hours-day">Dimanche</span><span class="hours-time">9h00 – 14h00</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="faq-section">
+  <div class="section-head">
+    <div>
+      <h2>Questions fréquentes</h2>
+      <p>Trouvez rapidement une réponse à votre question.</p>
+    </div>
+  </div>
+
+  <div class="faq-tabs">
+    <button class="faq-tab active" onclick="switchTab('patients',this)">Patients</button>
+    <button class="faq-tab" onclick="switchTab('medecins',this)">Médecins</button>
+    <button class="faq-tab" onclick="switchTab('general',this)">Général</button>
+  </div>
+
+  <div class="faq-panel active" id="tab-patients">
+    <div class="faq-grid">
+      <div class="faq-item open">
+        <div class="faq-q" onclick="toggleFaq(this)">Comment prendre un rendez-vous ?
+          <div class="faq-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></div>
+        </div>
+        <div class="faq-a">Recherchez un médecin, choisissez un créneau disponible, puis confirmez votre rendez-vous depuis votre espace patient.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Comment annuler ou modifier mon RDV ?
+          <div class="faq-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></div>
+        </div>
+        <div class="faq-a">Depuis votre tableau de bord, ouvrez « Mes rendez-vous » puis choisissez annuler ou reporter selon votre besoin.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Puis-je consulter un médecin en ligne ?
+          <div class="faq-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></div>
+        </div>
+        <div class="faq-a">Oui, certains médecins proposent des téléconsultations. Filtrez par « Téléconsultation » lors de votre recherche.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Mon compte est bloqué, que faire ?
+          <div class="faq-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></div>
+        </div>
+        <div class="faq-a">Contactez notre support via WhatsApp ou le formulaire ci-dessus. Un agent vérifiera votre compte sous 2h ouvrables.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="faq-panel" id="tab-medecins">
+    <div class="faq-grid">
+      <div class="faq-item open">
+        <div class="faq-q" onclick="toggleFaq(this)">Comment inscrire mon cabinet ?
+          <div class="faq-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></div>
+        </div>
+        <div class="faq-a">Inscrivez-vous en tant que médecin, complétez votre profil professionnel, puis attendez la validation de l'équipe TabibDZ (sous 48h).</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Comment gérer mon agenda ?
+          <div class="faq-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></div>
+        </div>
+        <div class="faq-a">Depuis votre espace médecin, vous pouvez ajouter vos disponibilités, bloquer des jours et gérer vos confirmations en temps réel.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="faq-panel" id="tab-general">
+    <div class="faq-grid">
+      <div class="faq-item open">
+        <div class="faq-q" onclick="toggleFaq(this)">Sous quel délai recevez-vous une réponse ?
+          <div class="faq-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></div>
+        </div>
+        <div class="faq-a">Notre support répond en général sous 24h ouvrables. Pour les urgences, préférez WhatsApp ou le téléphone.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">TabibDZ est-il disponible dans toute l'Algérie ?
+          <div class="faq-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></div>
+        </div>
+        <div class="faq-a">Oui, la plateforme couvre l'ensemble des wilayas. La couverture médecins est en croissance constante.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER CTA -->
+<div class="footer-cta">
+  <h3>Prêt à prendre soin de votre santé ?</h3>
+  <p>Rejoignez plus de 500 000 patients qui font confiance à TabibDZ.</p>
+  <a href="/inscription/" class="footer-cta-btn">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    Créer un compte gratuit
+  </a>
+</div>
+
+<!-- Copy Toast -->
+<div class="copy-toast" id="copy-toast">Copié !</div>
+
+<script src="/assets/site-public-chrome.js"></script>
+<script>
+let authUser = null;
+
+function toggleFaq(el) {
+  const item = el.parentElement;
+  const isOpen = item.classList.contains('open');
+  const panel = item.closest('.faq-panel');
+  panel.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+function switchTab(tab, btn) {
+  document.querySelectorAll('.faq-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.faq-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+function updateCount(el) {
+  if (el.value.length > 1000) el.value = el.value.substring(0, 1000);
+  document.getElementById('char-count').textContent = Math.min(el.value.length, 1000);
+}
+
+async function submitForm(event) {
+  event.preventDefault();
+
+  const form = document.getElementById('contact-form');
+  const prenom  = document.getElementById('f-prenom').value.trim();
+  const email   = document.getElementById('f-email').value.trim();
+  const role    = document.getElementById('f-role').value;
+  const sujet   = document.getElementById('f-sujet').value;
+  const msg     = document.getElementById('f-msg').value.trim();
+  const consent = document.getElementById('f-consent').checked;
+  const submitBtn = document.getElementById('contact-submit');
+  const submitLabel = document.getElementById('contact-submit-label');
+
+  if (!prenom || !email || !role || !sujet || !msg || !consent) {
+    alert('Veuillez remplir tous les champs obligatoires et accepter la politique de confidentialité.');
+    return;
+  }
+
+  try {
+    submitBtn.disabled = true;
+    submitLabel.textContent = 'Envoi en cours...';
+
+    const response = await fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { 'Accept': 'application/json' }
+    });
+
+    if (!response.ok) {
+      throw new Error('L’envoi a échoué. Veuillez réessayer dans un instant.');
+    }
+
+    document.getElementById('form-wrap').style.display = 'none';
+    document.getElementById('success-msg').style.display = 'flex';
+  } catch (error) {
+    alert(error.message || 'Une erreur est survenue lors de l’envoi du message.');
+  } finally {
+    submitBtn.disabled = false;
+    submitLabel.textContent = 'Envoyer le message';
+  }
+}
+
+function resetForm() {
+  const form = document.getElementById('contact-form');
+  document.getElementById('form-wrap').style.display = 'block';
+  document.getElementById('success-msg').style.display = 'none';
+  form.reset();
+  document.getElementById('char-count').textContent = '0';
+  syncSharedAuthState();
+}
+
+function copyText(text, label) {
+  navigator.clipboard.writeText(text).then(() => {
+    const t = document.getElementById('copy-toast');
+    t.textContent = label;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  });
+}
+
+function syncSharedAuthState() {
+  authUser = window.TabibPublicChrome?.getAuthUser?.() || null;
+  if (!authUser) return;
+  const p = document.getElementById('f-prenom');
+  const n = document.getElementById('f-nom');
+  const e = document.getElementById('f-email');
+  if (p && !p.value) p.value = authUser.prenom || '';
+  if (n && !n.value) n.value = authUser.nom || '';
+  if (e && !e.value) e.value = authUser.email || '';
+}
+
+document.addEventListener('tabibdz:public-auth-ready', syncSharedAuthState);
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await window.TabibPublicChrome.whenReady();
+  const form = document.getElementById('contact-form');
+  if (form) form.addEventListener('submit', submitForm);
+  syncSharedAuthState();
+});
+</script>
+
+<!-- BURGER MENU SCRIPT -->
+<script>
+(function() {
+  const btn = document.getElementById('burger-btn');
+  const drawer = document.getElementById('nav-drawer');
+  const overlay = document.getElementById('nav-overlay');
+  const closeBtn = document.getElementById('nav-drawer-close');
+  const drawerActions = document.getElementById('drawer-nav-actions');
+  const desktopActions = document.querySelector('.nav-actions');
+  if (!btn || !drawer) return;
+
+  function syncDrawerNavActions() {
+    if (desktopActions && drawerActions) drawerActions.innerHTML = desktopActions.innerHTML;
+  }
+
+  function toggleMenu(open) {
+    btn.classList.toggle('open', open);
+    drawer.classList.toggle('open', open);
+    overlay && overlay.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', String(open));
+    drawer.setAttribute('aria-hidden', String(!open));
+    document.body.style.overflow = open ? 'hidden' : '';
+    document.body.classList.toggle('mobile-nav-open', open);
+  }
+
+  btn.addEventListener('click', function() { toggleMenu(true); });
+  closeBtn && closeBtn.addEventListener('click', function() { toggleMenu(false); });
+  overlay && overlay.addEventListener('click', function() { toggleMenu(false); });
+
+  drawer.addEventListener('click', function(event) {
+    if (event.target.closest('a')) toggleMenu(false);
+  });
+
+  if (desktopActions && drawerActions) {
+    syncDrawerNavActions();
+    const observer = new MutationObserver(syncDrawerNavActions);
+    observer.observe(desktopActions, { childList: true, subtree: true });
+  }
+
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 900) toggleMenu(false);
+  });
+})();
+</script>
+
+<script>
+(function() {
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+
+  const GREEN = { r:46, g:173, b:118 };
+  const WHITE = { r:255, g:255, b:255 };
+
+  let W, H, blobs, time = 0;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = Math.max(window.innerHeight, document.body.scrollHeight);
+  }
+
+  function makeBlob(i, total) {
+    const angle = (i / total) * Math.PI * 2;
+    return {
+      x: W * (.2 + Math.random() * .6),
+      y: H * (.05 + Math.random() * .9),
+      r: 220 + Math.random() * 300,
+      speedX: (Math.random() - .5) * .18,
+      speedY: (Math.random() - .5) * .12,
+      phase: Math.random() * Math.PI * 2,
+      alpha: .07 + Math.random() * .09,
+      green: Math.random() > .45
+    };
+  }
+
+  function initBlobs() {
+    blobs = Array.from({length: 9}, (_, i) => makeBlob(i, 9));
+  }
+
+  function drawBg() {
+    ctx.fillStyle = '#f0faf6';
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  function drawBlob(b) {
+    const px = b.x + Math.sin(time * .3 + b.phase) * 60;
+    const py = b.y + Math.cos(time * .22 + b.phase * 1.3) * 40;
+    const grad = ctx.createRadialGradient(px, py, 0, px, py, b.r);
+    const c = b.green ? GREEN : WHITE;
+    grad.addColorStop(0, `rgba(${c.r},${c.g},${c.b},${b.alpha})`);
+    grad.addColorStop(1, `rgba(${c.r},${c.g},${c.b},0)`);
+    ctx.beginPath();
+    ctx.arc(px, py, b.r, 0, Math.PI * 2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+  }
+
+  function drawGrid() {
+    ctx.save();
+    ctx.strokeStyle = 'rgba(46,173,118,0.04)';
+    ctx.lineWidth = 1;
+    const step = 60;
+    for (let x = 0; x < W; x += step) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+    }
+    for (let y = 0; y < H; y += step) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function drawDots() {
+    ctx.save();
+    const step = 60;
+    for (let x = 0; x < W; x += step) {
+      for (let y = 0; y < H; y += step) {
+        const dist = blobs.reduce((mn, b) => {
+          const dx = x - b.x, dy = y - b.y;
+          return Math.min(mn, Math.sqrt(dx*dx+dy*dy));
+        }, Infinity);
+        const alpha = Math.max(0, .055 - dist / 8000);
+        if (alpha > 0) {
+          ctx.beginPath();
+          ctx.arc(x, y, 1.5, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(46,173,118,${alpha})`;
+          ctx.fill();
+        }
+      }
+    }
+    ctx.restore();
+  }
+
+  let raf;
+  function loop() {
+    time += .016;
+    blobs.forEach(b => {
+      b.x += b.speedX;
+      b.y += b.speedY;
+      if (b.x < -b.r)  b.x = W + b.r;
+      if (b.x > W+b.r) b.x = -b.r;
+      if (b.y < -b.r)  b.y = H + b.r;
+      if (b.y > H+b.r) b.y = -b.r;
+    });
+    drawBg();
+    drawGrid();
+    blobs.forEach(drawBlob);
+    drawDots();
+    raf = requestAnimationFrame(loop);
+  }
+
+  resize();
+  initBlobs();
+  loop();
+
+  let resizeTO;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTO);
+    resizeTO = setTimeout(() => { resize(); }, 120);
+  });
+})();
+</script>
+<script src="/assets/ai-chat-widget.js?v=20260426c"></script>
+</body>
+</html>
+

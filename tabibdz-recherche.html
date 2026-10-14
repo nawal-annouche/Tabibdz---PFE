@@ -1,0 +1,1521 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TabibDZ - Recherche Médecins</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/shared-public-nav.css">
+<style>
+  :root {
+    --bg:        #ffffff;
+    --bg2:       #f7f8fa;
+    --bg3:       #f0f2f5;
+    --bg4:       #e4e7eb;
+    --border:    #e2e5ea;
+    --border2:   #d0d5dd;
+    --accent:    #2EAD76;
+    --accent2:   #259962;
+    --accent3:   #1d7a4e;
+    --accent-dim: rgba(46,173,118,0.10);
+    --text:      #0d1117;
+    --text2:     #4a5568;
+    --text3:     #8a94a6;
+    --yellow:    #d97706;
+    --red:       #e53e3e;
+    --tag-cnas-bg:    #d1fae5; --tag-cnas-text:  #065f46;
+    --tag-casnos-bg:  #fef3c7; --tag-casnos-text:#92400e;
+    --tag-ar-bg:      #fee2e2; --tag-ar-text:    #991b1b;
+    --tag-fr-bg:      #dbeafe; --tag-fr-text:    #1e40af;
+    --radius: 12px; --radius-sm: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.05);
+    --shadow-md: 0 4px 20px rgba(0,0,0,.10);
+    --font: 'DM Sans', sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg2); color:var(--text); font-family:var(--font); min-height:100vh; font-size:14px; line-height:1.5; }
+
+  /* NAVBAR */
+  .navbar { background:rgba(255,255,255,.94); border-bottom:1px solid var(--border); padding:0 48px; height:66px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); box-shadow:none; }
+  .logo { font-family:'Syne', sans-serif; font-size:22px; font-weight:800; color:var(--text); letter-spacing:-.5px; text-decoration:none; }
+  .logo span { color:var(--accent); }
+  .nav-links { display:flex; gap:34px; list-style:none; align-items:center; }
+  .nav-links a { text-decoration:none; color:var(--text2); font-size:14px; font-weight:500; transition:color .15s; }
+  .nav-links a:hover, .nav-links a.active { color:var(--accent); }
+  /* SEARCH BAR */
+  .search-bar-wrap { background:var(--bg); border-bottom:1px solid var(--border); padding:12px 24px 10px; }
+  .search-row { display:flex; gap:10px; align-items:center; width:min(100%, 900px); margin:0 auto; }
+  .search-input-box { display:flex; align-items:center; background:var(--bg); border:1.5px solid var(--border); border-radius:12px; padding:0 14px; gap:10px; flex:1; min-height:44px; transition:border-color .18s,box-shadow .18s; box-shadow:0 4px 12px rgba(13,17,23,.025); }
+  .search-input-box:focus-within { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-dim); }
+  .search-input-box svg { color:var(--text3); flex-shrink:0; }
+  .search-input-box input { background:none; border:none; outline:none; color:var(--text); font-family:var(--font); font-size:14px; width:100%; }
+  .search-input-box input::placeholder { color:var(--text3); }
+  .btn-search { background:var(--accent); border:none; color:#fff; min-width:160px; height:44px; padding:0 20px; border-radius:12px; font-family:var(--font); font-size:14px; font-weight:700; cursor:pointer; white-space:nowrap; transition:background .15s,transform .15s,box-shadow .15s; box-shadow:0 6px 14px rgba(46,173,118,.12); }
+  .btn-search:hover { background:var(--accent2); }
+  .btn-search:hover { transform:translateY(-1px); }
+  .active-filters { display:flex; gap:8px; width:min(100%, 900px); margin:8px auto 0; flex-wrap:wrap; }
+  .filter-chip { background:var(--accent-dim); border:1.5px solid var(--accent); color:var(--accent2); padding:4px 10px 4px 12px; border-radius:20px; font-size:12px; font-weight:600; display:flex; align-items:center; gap:6px; cursor:pointer; }
+  .filter-chip:hover { background:rgba(46,173,118,.18); }
+  .filter-chip .x { color:var(--accent3); font-size:11px; }
+
+  /* LAYOUT */
+  .page-body { display:flex; align-items:flex-start; max-width:1320px; margin:0 auto; }
+
+  /* SIDEBAR */
+  .sidebar { width:258px; flex-shrink:0; padding:12px 16px; border-right:1px solid var(--border); background:var(--bg); position:sticky; top:66px; max-height:calc(100vh - 78px); overflow:auto; }
+  .filter-section { margin-bottom:10px; }
+  .filter-label { font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--text3); margin-bottom:6px; }
+  .filter-select { width:100%; background:var(--bg); border:1.5px solid var(--border2); color:var(--text); padding:8px 32px 8px 12px; border-radius:var(--radius-sm); font-family:var(--font); font-size:13px; cursor:pointer; outline:none; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a94a6' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 10px center; transition:border-color .18s,box-shadow .18s; }
+  .filter-select:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-dim); }
+  .chip-group { display:flex; flex-wrap:wrap; gap:6px; }
+  .chip { background:var(--bg2); border:1.5px solid var(--border); color:var(--text2); padding:3px 10px; border-radius:20px; font-size:12px; font-weight:500; cursor:pointer; transition:all .15s; }
+  .chip.active { background:var(--accent-dim); border-color:var(--accent); color:var(--accent2); font-weight:600; }
+  .chip:hover:not(.active) { border-color:var(--border2); background:var(--bg3); color:var(--text); }
+  .slider-wrap { padding:2px 0; }
+  .slider-labels { display:flex; justify-content:space-between; font-size:11px; color:var(--text3); margin-top:6px; }
+  input[type=range] { -webkit-appearance:none; width:100%; height:4px; border-radius:4px; background:linear-gradient(to right,var(--accent) 55%,var(--bg4) 55%); outline:none; cursor:pointer; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:var(--accent); border:2.5px solid #fff; box-shadow:0 0 0 1px var(--accent); cursor:pointer; }
+  .reset-btn { width:100%; background:transparent; border:1.5px solid var(--border2); color:var(--text2); padding:8px; border-radius:var(--radius-sm); font-family:var(--font); font-size:13px; font-weight:500; cursor:pointer; transition:all .15s; margin-top:2px; }
+  .reset-btn:hover { border-color:var(--red); color:var(--red); }
+  .divider { height:1px; background:var(--border); margin:0 0 10px; }
+
+  /* RESULTS */
+  .results-area { flex:1; padding:22px 28px; min-width:0; }
+  .results-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+  .results-count { font-size:14px; color:var(--text2); }
+  .results-count strong { color:var(--text); font-weight:700; }
+  .results-controls { display:flex; align-items:center; gap:10px; }
+  .sort-select { background:var(--bg); border:1.5px solid var(--border2); color:var(--text); padding:8px 32px 8px 12px; border-radius:var(--radius-sm); font-family:var(--font); font-size:13px; cursor:pointer; outline:none; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a94a6' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 10px center; }
+  .view-toggle { display:flex; gap:4px; }
+  .view-btn { background:var(--bg); border:1.5px solid var(--border2); color:var(--text3); width:36px; height:36px; border-radius:var(--radius-sm); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .15s; }
+  .view-btn.active { border-color:var(--accent); color:var(--accent); background:var(--accent-dim); }
+
+  /* CARDS */
+  .cards-list { display:flex; flex-direction:column; gap:12px; }
+  .doctor-card { background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius); padding:20px 22px; display:flex; gap:18px; align-items:flex-start; transition:border-color .2s,box-shadow .2s; cursor:pointer; animation:fadeIn .3s ease both; box-shadow:var(--shadow); }
+  .doctor-card:hover { border-color:var(--accent); box-shadow:var(--shadow-md); }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+  .doctor-card:nth-child(1){animation-delay:.04s} .doctor-card:nth-child(2){animation-delay:.08s} .doctor-card:nth-child(3){animation-delay:.12s} .doctor-card:nth-child(4){animation-delay:.16s}
+  .avatar { width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:16px; flex-shrink:0; }
+  .card-body { flex:1; min-width:0; }
+  .card-top { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; margin-bottom:6px; }
+  .card-top-main { min-width:0; flex:1; }
+  .card-top-side { display:flex; align-items:flex-start; gap:10px; flex-shrink:0; }
+  .doc-name { font-size:15px; font-weight:700; color:var(--text); }
+  .doc-specialty { font-size:12px; color:var(--text3); margin-top:2px; }
+  .rating { display:flex; align-items:center; gap:4px; font-size:13px; font-weight:700; color:var(--yellow); flex-shrink:0; }
+  .rating .count { font-size:11px; color:var(--text3); font-weight:400; }
+  .favorite-btn {
+    width:40px; height:40px; border-radius:999px; border:1.5px solid var(--border2);
+    background:var(--bg); color:var(--text3); display:inline-flex; align-items:center; justify-content:center;
+    cursor:pointer; transition:all .18s ease; flex-shrink:0;
+  }
+  .favorite-btn:hover { border-color:#f1b2b2; color:#dc2626; background:#fff5f5; transform:translateY(-1px); }
+  .favorite-btn svg { width:19px; height:19px; stroke:currentColor; fill:none; stroke-width:1.9; transition:all .18s ease; }
+  .favorite-btn.is-active { border-color:#fecaca; background:#fff1f2; color:#dc2626; box-shadow:0 6px 18px rgba(220,38,38,.12); }
+  .favorite-btn.is-active svg { fill:currentColor; stroke:currentColor; }
+  .favorite-btn.is-busy { opacity:.7; cursor:wait; }
+  .card-meta { display:flex; align-items:center; gap:18px; margin-bottom:8px; flex-wrap:wrap; }
+  .meta-item { display:flex; align-items:center; gap:5px; font-size:12px; color:var(--text2); }
+  .meta-item svg { color:var(--text3); }
+  .tags { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:12px; }
+  .tag { padding:2px 9px; border-radius:4px; font-size:11px; font-weight:600; }
+  .tag.cnas   { background:var(--tag-cnas-bg);   color:var(--tag-cnas-text); }
+  .tag.casnos { background:var(--tag-casnos-bg); color:var(--tag-casnos-text); }
+  .tag.ar     { background:var(--tag-ar-bg);     color:var(--tag-ar-text); }
+  .tag.fr     { background:var(--tag-fr-bg);     color:var(--tag-fr-text); }
+  .card-bottom { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  .slot-info { display:flex; align-items:center; gap:8px; font-size:12px; }
+  .slot-dot { width:8px; height:8px; border-radius:50%; background:var(--accent); flex-shrink:0; }
+  .slot-dot.none { background:var(--text3); }
+  .slot-label { color:var(--text3); }
+  .slot-time { font-weight:600; color:var(--text); }
+  .slot-time.today    { color:var(--accent2); }
+  .slot-time.tomorrow { color:var(--yellow); }
+  .slot-time.none     { color:var(--text3); font-weight:400; }
+  .card-actions { display:flex; gap:8px; }
+  .btn-profile { background:var(--bg2); border:1.5px solid var(--border2); color:var(--text); padding:8px 18px; border-radius:var(--radius-sm); font-family:var(--font); font-size:12px; font-weight:600; cursor:pointer; transition:all .15s; white-space:nowrap; }
+  .btn-profile:hover { border-color:var(--text2); background:var(--bg3); }
+  .btn-rdv { background:var(--accent); border:none; color:#fff; padding:8px 18px; border-radius:var(--radius-sm); font-family:var(--font); font-size:12px; font-weight:700; cursor:pointer; transition:background .15s; white-space:nowrap; }
+  .btn-rdv:hover { background:var(--accent2); }
+  .btn-rdv:disabled { background:var(--bg3); color:var(--text3); cursor:not-allowed; }
+
+  /* GRID */
+  .cards-grid { display:none; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:14px; }
+  .cards-grid.active { display:grid; }
+  .cards-list.hidden { display:none; }
+  .grid-card { background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius); padding:18px; display:flex; flex-direction:column; gap:12px; transition:border-color .2s,box-shadow .2s; cursor:pointer; box-shadow:var(--shadow); animation:fadeIn .3s ease both; }
+  .grid-card:hover { border-color:var(--accent); box-shadow:var(--shadow-md); }
+  .grid-head { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+  .grid-top { display:flex; gap:12px; align-items:center; min-width:0; flex:1; }
+  .grid-name { font-size:14px; font-weight:700; color:var(--text); }
+  .grid-spec { font-size:12px; color:var(--text3); }
+  .grid-rating { display:flex; align-items:center; gap:4px; font-size:12px; color:var(--yellow); font-weight:700; }
+  .grid-meta { font-size:12px; color:var(--text2); }
+  .grid-slot { font-size:12px; font-weight:600; }
+  .grid-actions { display:flex; gap:8px; }
+  .grid-actions .btn-profile,.grid-actions .btn-rdv { flex:1; text-align:center; }
+
+  /* PAGINATION */
+  .pagination { display:flex; align-items:center; justify-content:center; gap:6px; margin-top:32px; padding-bottom:48px; }
+  .page-btn { width:36px; height:36px; border-radius:var(--radius-sm); background:var(--bg); border:1.5px solid var(--border2); color:var(--text2); font-family:var(--font); font-size:13px; font-weight:500; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .15s; box-shadow:var(--shadow); }
+  .page-btn:hover { border-color:var(--accent); color:var(--accent); }
+  .page-btn.active { background:var(--accent); border-color:var(--accent); color:#fff; font-weight:700; }
+  .page-btn.ellipsis { cursor:default; border:none; box-shadow:none; background:transparent; color:var(--text3); }
+  .page-btn.prev-next { font-size:16px; }
+
+  /* TOAST */
+  .toast { position:fixed; bottom:0; left:0; right:0; background:var(--bg); border-top:1px solid var(--border); padding:10px 32px; display:flex; align-items:center; justify-content:space-between; font-size:13px; color:var(--text2); z-index:200; box-shadow:0 -2px 12px rgba(0,0,0,.06); }
+  .toast-upgrade { background:var(--accent); color:#fff; border:none; padding:7px 18px; border-radius:var(--radius-sm); font-family:var(--font); font-size:12px; font-weight:700; cursor:pointer; }
+  .toast-upgrade:hover { background:var(--accent2); }
+
+  /* HAMBURGER BUTTON */
+  .hamburger {
+    display: none;
+    background: none; border: none; cursor: pointer;
+    padding: 6px; border-radius: 8px;
+    color: var(--text2); transition: background .15s;
+    flex-shrink: 0;
+  }
+  .hamburger:hover { background: var(--bg3); }
+  .hamburger svg { display: block; }
+
+  /* MOBILE NAV DRAWER */
+  .nav-drawer-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.35);
+    z-index: 998;
+    animation: fadeOverlay .2s ease;
+  }
+  @keyframes fadeOverlay { from{opacity:0} to{opacity:1} }
+  .nav-drawer-overlay.open { display: block; }
+  .nav-drawer {
+    position: fixed; top: 0; left: 0; bottom: 0;
+    width: 280px; background: var(--bg);
+    z-index: 999; padding: 0;
+    transform: translateX(-100%);
+    transition: transform .28s cubic-bezier(.4,0,.2,1);
+    display: flex; flex-direction: column;
+    box-shadow: 4px 0 24px rgba(0,0,0,.12);
+  }
+  .nav-drawer.open { transform: translateX(0); }
+  .nav-drawer-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 20px; border-bottom: 1px solid var(--border);
+  }
+  .nav-drawer-close {
+    background: none; border: none; cursor: pointer; padding: 4px;
+    color: var(--text3); border-radius: 6px;
+  }
+  .nav-drawer-close:hover { background: var(--bg3); color: var(--text); }
+  .nav-drawer-links {
+    list-style: none; padding: 12px 0; flex: 1;
+  }
+  .nav-drawer-links li a {
+    display: block; padding: 13px 24px;
+    text-decoration: none; color: var(--text2);
+    font-size: 15px; font-weight: 500;
+    border-left: 3px solid transparent;
+    transition: all .15s;
+  }
+  .nav-drawer-links li a:hover,
+  .nav-drawer-links li a.active {
+    color: var(--accent); background: var(--accent-dim);
+    border-left-color: var(--accent);
+  }
+  /* FILTER DRAWER (mobile) */
+  .filter-drawer-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.35);
+    z-index: 90;
+  }
+  .filter-drawer-overlay.open { display: block; }
+  .filter-drawer {
+    position: fixed; top: 0; right: 0;
+    height: 100%; height: 100dvh;
+    width: min(320px, 90vw); background: var(--bg);
+    z-index: 91; overflow: hidden;
+    transform: translateX(100%);
+    transition: transform .28s cubic-bezier(.4,0,.2,1);
+    display: flex; flex-direction: column;
+    box-shadow: -4px 0 24px rgba(0,0,0,.12);
+  }
+  .filter-drawer.open { transform: translateX(0); }
+  .filter-drawer-header {
+    flex-shrink: 0;
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px; border-bottom: 1px solid var(--border);
+  }
+  .filter-drawer-title { font-size: 16px; font-weight: 700; color: var(--text); }
+  .filter-drawer-close {
+    background: none; border: none; cursor: pointer; padding: 6px;
+    color: var(--text3); border-radius: 8px;
+  }
+  .filter-drawer-close:hover { background: var(--bg3); color: var(--text); }
+  .filter-drawer-body {
+    padding: 12px 16px 20px;
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .filter-drawer-body .filter-section { margin-bottom: 14px; }
+  .filter-drawer-body .filter-label { margin-bottom: 6px; }
+  .filter-drawer-body .filter-select { padding: 7px 28px 7px 10px; font-size: 13px; }
+  .filter-drawer-body .chip { padding: 4px 10px; font-size: 12px; }
+  .filter-drawer-body .chip-group { gap: 5px; }
+  .filter-drawer-body .slider-wrap { padding: 0; }
+  .filter-drawer-body .divider { margin: 0 0 14px; }
+  .filter-drawer-footer {
+    flex-shrink: 0;
+    background: var(--bg); border-top: 1px solid var(--border);
+    padding: 12px 14px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .btn-apply-filters {
+    width: 100%; background: var(--accent); border: none; color: #fff;
+    padding: 11px; border-radius: var(--radius-sm);
+    font-family: var(--font); font-size: 14px; font-weight: 700;
+    cursor: pointer; transition: background .15s;
+  }
+  .btn-apply-filters:hover { background: var(--accent2); }
+  #reset-filters-mobile {
+    width: 100%; text-align: center;
+  }
+
+  /* MOBILE FILTER TRIGGER BAR */
+  .mobile-filter-bar {
+    display: none;
+    background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 10px 16px; gap: 10px; align-items: center;
+  }
+  .btn-open-filters {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: var(--bg2); border: 1.5px solid var(--border2);
+    color: var(--text2); padding: 8px 14px; border-radius: 999px;
+    font-family: var(--font); font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all .15s; white-space: nowrap;
+  }
+  .btn-open-filters:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-open-filters .filter-count-badge {
+    background: var(--accent); color: #fff;
+    border-radius: 99px; font-size: 11px; font-weight: 700;
+    padding: 1px 6px; margin-left: 2px;
+    display: none;
+  }
+  .btn-open-filters.has-filters .filter-count-badge { display: inline; }
+  .mobile-sort-select {
+    flex: 1; min-width: 0;
+    background: var(--bg); border: 1.5px solid var(--border2);
+    color: var(--text); padding: 8px 28px 8px 10px; border-radius: 999px;
+    font-family: var(--font); font-size: 13px; cursor: pointer;
+    outline: none; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a94a6' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 10px center;
+  }
+
+  @media (max-width: 900px) {
+    /* NAVBAR */
+    .navbar {
+      padding: 0 16px;
+      height: 56px;
+    }
+    .nav-links { display: none; }
+    .nav-actions { display: none; }
+    .hamburger { display: flex; align-items: center; justify-content: center; }
+
+    /* SEARCH BAR */
+    .search-bar-wrap { padding: 10px 16px 8px; }
+    .search-row { width: 100%; gap: 8px; }
+    .search-input-box { min-height: 42px; }
+    .btn-search { min-width: 0; width: auto; padding: 0 18px; height: 42px; }
+    .active-filters { width: 100%; }
+
+    /* MOBILE FILTER BAR */
+    .mobile-filter-bar { display: flex; }
+
+    /* PAGE BODY — stack vertically */
+    .page-body {
+      flex-direction: column;
+      padding: 0;
+    }
+    /* Sidebar hidden on mobile — shown in drawer */
+    .sidebar { display: none; }
+
+    /* RESULTS AREA */
+    .results-area { padding: 14px 0; width: 100%; }
+    /* Hide desktop sort/header on mobile */
+    .results-header { display: none; }
+
+    /* CARDS */
+    .cards-list { gap: 4px; padding: 0; width: 100%; align-items: center; }
+    .doctor-card {
+      padding: 14px 16px;
+      gap: 12px;
+      flex-direction: row;
+      align-items: flex-start;
+      border-radius: var(--radius-sm);
+      width: calc(100% - 38px);
+      margin: 0 auto;
+    }
+    .avatar { width: 44px; height: 44px; font-size: 14px; }
+    .card-top {
+      flex-direction: row;
+      align-items: flex-start;
+    }
+    .doc-name { font-size: 14px; }
+    .card-meta { gap: 10px; }
+    .card-bottom {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .card-actions {
+      width: 100%;
+      flex-direction: row;
+      gap: 8px;
+    }
+    .card-actions .btn-profile,
+    .card-actions .btn-rdv { flex: 1; text-align: center; }
+
+    .cards-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .grid-actions { flex-direction: row; }
+    .grid-actions .btn-profile, .grid-actions .btn-rdv { flex: 1; text-align: center; }
+
+    .pagination { padding-bottom: 32px; gap: 4px; }
+    .page-btn { width: 32px; height: 32px; font-size: 12px; }
+
+    .toast { padding: 10px 16px; font-size: 12px; }
+  }
+
+  @media (max-width: 640px) {
+    .navbar { padding: 0 14px; }
+    .search-bar-wrap { padding: 10px 14px 8px; }
+    .results-area { padding: 12px 0; width: 100%; }
+    .cards-list { padding: 0; gap: 4px; width: 100%; align-items: center; }
+    .doctor-card {
+      border-radius: var(--radius-sm);
+      width: calc(100% - 38px);
+      margin: 0 auto;
+    }
+
+    .cards-grid { grid-template-columns: 1fr; padding: 0 14px; }
+
+    .btn-search { font-size: 13px; padding: 0 14px; }
+
+    .nav-actions .btn,
+    .search-row .btn-search,
+    .reset-btn,
+    .card-actions .btn-profile,
+    .card-actions .btn-rdv,
+    .grid-actions .btn-profile,
+    .grid-actions .btn-rdv {
+      justify-content: center;
+      text-align: center;
+    }
+    .doctor-card,
+    .grid-card { padding: 14px; }
+    .doctor-card,
+    .card-top,
+    .card-bottom {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .card-actions,
+    .grid-actions {
+      width: 100%;
+      flex-direction: column;
+    }
+    .pagination { padding-bottom: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="logo" href="/tabibdz-homepage.html">Tabib<span>DZ</span></a>
+  <ul class="nav-links">
+    <li><a href="/tabibdz-homepage.html">Accueil</a></li>
+    <li><a href="/tabibdz-recherche.html" class="active">Médecins</a></li>
+    <li><a href="/tabibdz-a-propos.html">A propos</a></li>
+    <li><a href="/tabibdz-comment-ca-marche.html">Comment ça marche</a></li>
+    <li><a href="/tabibdz-contact.html">Contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a class="btn" href="/connexion/?next=%2Ftabibdz-recherche.html">Connexion</a>
+    <a class="btn btn-primary" href="/inscription/?next=%2Ftabibdz-recherche.html">S'inscrire</a>
+  </div>
+  <button class="hamburger" id="hamburger-btn" aria-label="Menu">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
+</nav>
+
+<!-- NAV DRAWER (mobile) -->
+<div class="nav-drawer-overlay" id="nav-overlay"></div>
+<div class="nav-drawer" id="nav-drawer">
+  <div class="nav-drawer-header">
+    <a class="logo" href="/tabibdz-homepage.html">Tabib<span>DZ</span></a>
+    <button class="nav-drawer-close" id="nav-drawer-close" aria-label="Fermer">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <ul class="nav-drawer-links">
+    <li><a href="/tabibdz-homepage.html">Accueil</a></li>
+    <li><a href="/tabibdz-recherche.html" class="active">Médecins</a></li>
+    <li><a href="/tabibdz-a-propos.html">À propos</a></li>
+    <li><a href="/tabibdz-comment-ca-marche.html">Comment ça marche</a></li>
+    <li><a href="/tabibdz-contact.html">Contact</a></li>
+  </ul>
+  <div class="nav-drawer-actions" id="drawer-nav-actions">
+    <a class="btn" href="/connexion/?next=%2Ftabibdz-recherche.html">Connexion</a>
+    <a class="btn btn-primary" href="/inscription/?next=%2Ftabibdz-recherche.html">S'inscrire</a>
+  </div>
+</div>
+
+<!-- FILTER DRAWER (mobile) -->
+<div class="filter-drawer-overlay" id="filter-overlay"></div>
+<div class="filter-drawer" id="filter-drawer">
+  <div class="filter-drawer-header">
+    <span class="filter-drawer-title">Filtres</span>
+    <button class="filter-drawer-close" id="filter-drawer-close" aria-label="Fermer">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="filter-drawer-body">
+
+    <div class="filter-section">
+      <div class="filter-label">Spécialité</div>
+      <select id="d-filter-specialite" class="filter-select">
+        <option value="">Toutes les spécialités</option>
+        <option value="Cardiologie">Cardiologie</option>
+        <option value="Médecine générale">Médecine générale</option>
+        <option value="Pédiatrie">Pédiatrie</option>
+        <option value="Dermatologie">Dermatologie</option>
+        <option value="Ophtalmologie">Ophtalmologie</option>
+        <option value="Gynecologie">Gynecologie</option>
+        <option value="Dentisterie">Dentisterie</option>
+        <option value="Orthopedie">Orthopedie</option>
+      </select>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-label">Wilaya</div>
+      <select id="d-filter-wilaya" class="filter-select" style="margin-bottom:8px"><option value="">Toutes les wilayas</option></select>
+      <select id="d-filter-commune" class="filter-select"><option value="">Toutes les communes</option></select>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="filter-section">
+      <div class="filter-label">Disponibilité</div>
+      <div class="chip-group">
+        <span class="chip" data-d-group="dispo" data-d-val="today">Aujourd'hui</span>
+        <span class="chip" data-d-group="dispo" data-d-val="week">Cette semaine</span>
+        <span class="chip active" data-d-group="dispo" data-d-val="any">Toute date</span>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-label">Langue de consultation</div>
+      <div class="chip-group">
+        <span class="chip" data-d-group="langue" data-d-val="Arabe">Arabe</span>
+        <span class="chip" data-d-group="langue" data-d-val="Français">Français</span>
+        <span class="chip" data-d-group="langue" data-d-val="Tamazight">Tamazight</span>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-label">Secteur</div>
+      <div class="chip-group">
+        <span class="chip" data-d-group="secteur" data-d-val="public">Public</span>
+        <span class="chip" data-d-group="secteur" data-d-val="prive">Privé</span>
+        <span class="chip active" data-d-group="secteur" data-d-val="">Les deux</span>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-label">Tarif max</div>
+      <div class="slider-wrap">
+        <input type="range" min="0" max="5000" value="5000" id="d-tarif-slider">
+        <div class="slider-labels"><span>0 DA</span><span id="d-slider-val">5 000 DA</span></div>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-label">Conventions</div>
+      <div class="chip-group">
+        <span class="chip active" data-d-group="conv" data-d-val="cnas">CNAS</span>
+        <span class="chip active" data-d-group="conv" data-d-val="casnos">CASNOS</span>
+      </div>
+    </div>
+
+  </div>
+  <div class="filter-drawer-footer">
+    <button class="reset-btn" id="reset-filters-mobile" style="width:100%;padding:9px;font-size:13px;border-radius:8px;text-align:center;">Réinitialiser</button>
+    <button class="btn-apply-filters" id="apply-filters-mobile">Voir les résultats</button>
+  </div>
+</div>
+
+<div class="search-bar-wrap">
+  <div class="search-row">
+    <div class="search-input-box">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input id="search-query" type="text" value="" placeholder="Spécialité ou nom du médecin...">
+    </div>
+    <button id="search-btn" class="btn-search">Rechercher</button>
+  </div>
+  <div class="active-filters" id="active-filters"></div>
+</div>
+
+<!-- MOBILE FILTER + SORT BAR -->
+<div class="mobile-filter-bar" id="mobile-filter-bar">
+  <button class="btn-open-filters" id="open-filters-btn">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+    Filtres
+    <span class="filter-count-badge" id="filter-count-badge">0</span>
+  </button>
+  <select class="mobile-sort-select" id="sort-select-mobile">
+    <option>Pertinence</option>
+    <option>Note la plus haute</option>
+    <option>Disponibilité</option>
+    <option>Tarif croissant</option>
+  </select>
+  <div class="view-toggle">
+    <button class="view-btn active" id="list-btn-mobile" onclick="setView('list')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+    </button>
+    <button class="view-btn" id="grid-btn-mobile" onclick="setView('grid')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    </button>
+  </div>
+</div>
+
+<div class="page-body">
+  <aside class="sidebar">
+    <div class="filter-section">
+      <div class="filter-label">Spécialité</div>
+      <select id="filter-specialite" class="filter-select">
+        <option value="">Toutes les spécialités</option>
+        <option value="Cardiologie">Cardiologie</option>
+        <option value="Médecine générale">Médecine générale</option>
+        <option value="Pédiatrie">Pédiatrie</option>
+        <option value="Dermatologie">Dermatologie</option>
+        <option value="Ophtalmologie">Ophtalmologie</option>
+        <option value="Gynecologie">Gynecologie</option>
+        <option value="Dentisterie">Dentisterie</option>
+        <option value="Orthopedie">Orthopedie</option>
+      </select>
+    </div>
+    <div class="filter-section">
+      <div class="filter-label">Wilaya</div>
+      <select id="filter-wilaya" class="filter-select" style="margin-bottom:8px"><option value="">Toutes les wilayas</option></select>
+      <select id="filter-commune" class="filter-select"><option value="">Toutes les communes</option></select>
+    </div>
+    <div class="divider"></div>
+    <div class="filter-section">
+      <div class="filter-label">Disponibilité</div>
+      <div class="chip-group">
+        <span class="chip" data-filter-group="dispo" data-filter-value="today">Aujourd'hui</span>
+        <span class="chip" data-filter-group="dispo" data-filter-value="week">Cette semaine</span>
+        <span class="chip" data-filter-group="dispo" data-filter-value="any">Toute date</span>
+      </div>
+    </div>
+    <div class="filter-section">
+      <div class="filter-label">Langue de consultation</div>
+      <div class="chip-group">
+        <span class="chip" data-filter-group="langue" data-filter-value="Arabe">Arabe</span>
+        <span class="chip" data-filter-group="langue" data-filter-value="Français">Français</span>
+        <span class="chip" data-filter-group="langue" data-filter-value="Tamazight">Tamazight</span>
+      </div>
+    </div>
+    <div class="filter-section">
+      <div class="filter-label">Secteur</div>
+      <div class="chip-group">
+        <span class="chip" data-filter-group="secteur" data-filter-value="public">Public</span>
+        <span class="chip" data-filter-group="secteur" data-filter-value="prive">Privé</span>
+        <span class="chip" data-filter-group="secteur" data-filter-value="">Les deux</span>
+      </div>
+    </div>
+    <div class="filter-section">
+      <div class="filter-label">Tarif max</div>
+      <div class="slider-wrap">
+        <input type="range" min="0" max="5000" value="5000" id="tarif-slider" oninput="updateSlider(this)">
+        <div class="slider-labels"><span>0 DA</span><span id="slider-val">5 000 DA</span></div>
+      </div>
+    </div>
+    <div class="filter-section">
+      <div class="filter-label">Conventions</div>
+      <div class="chip-group">
+        <span class="chip active" data-filter-group="conv" data-filter-value="cnas">CNAS</span>
+        <span class="chip active" data-filter-group="conv" data-filter-value="casnos">CASNOS</span>
+      </div>
+    </div>
+    <button id="reset-filters" class="reset-btn">Réinitialiser les filtres</button>
+  </aside>
+
+  <main class="results-area">
+    <div class="results-header">
+      <div class="results-count"><strong id="results-count">24 médecins</strong> trouvés</div>
+      <div class="results-controls">
+        <select id="sort-select" class="sort-select">
+          <option>Trier : Pertinence</option>
+          <option>Note la plus haute</option>
+          <option>Disponibilité</option>
+          <option>Tarif croissant</option>
+        </select>
+        <div class="view-toggle">
+          <button class="view-btn active" id="list-btn" onclick="setView('list')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          </button>
+          <button class="view-btn" id="grid-btn" onclick="setView('grid')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="cards-list" id="list-view">
+
+      <div class="doctor-card">
+        <div class="avatar" style="background:#d1fae5;color:#065f46;">AB</div>
+        <div class="card-body">
+          <div class="card-top">
+            <div><div class="doc-name">Profil medecin</div><div class="doc-specialty">Profil charge dynamiquement</div></div>
+            <div class="rating">★ 4.8 <span class="count">(124)</span></div>
+          </div>
+          <div class="card-meta">
+            <span class="meta-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Localisation chargee</span>
+            <span class="meta-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>2 000 DA</span>
+            <span class="meta-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Arabe, Français</span>
+          </div>
+          <div class="tags"><span class="tag cnas">CNAS</span><span class="tag fr">Français</span><span class="tag ar">Arabe</span></div>
+          <div class="card-bottom">
+            <div class="slot-info"><div class="slot-dot"></div><span class="slot-label">Prochain créneau :</span><span class="slot-time tomorrow">Demain à 10h00</span></div>
+            <div class="card-actions"><button class="btn-profile">Voir profil</button><button class="btn-rdv">Prendre RDV</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="doctor-card">
+        <div class="avatar" style="background:#dbeafe;color:#1e3a8a;">KM</div>
+        <div class="card-body">
+          <div class="card-top">
+            <div><div class="doc-name">Professionnel de sante</div><div class="doc-specialty">Profil charge dynamiquement</div></div>
+            <div class="rating">★ 4.9 <span class="count">(89)</span></div>
+          </div>
+          <div class="card-meta">
+            <span class="meta-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Localisation chargee</span>
+            <span class="meta-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>1 500 DA</span>
+            <span class="meta-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Français</span>
+          </div>
+          <div class="tags"><span class="tag casnos">CASNOS</span><span class="tag fr">Français</span></div>
+          <div class="card-bottom">
+            <div class="slot-info"><div class="slot-dot"></div><span class="slot-label">Prochain créneau :</span><span class="slot-time today">Aujourd'hui à 15h30</span></div>
+            <div class="card-actions"><button class="btn-profile">Voir profil</button><button class="btn-rdv">Prendre RDV</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="doctor-card">
+        <div class="avatar" style="background:#ede9fe;color:#5b21b6;">SB</div>
+        <div class="card-body">
+          <div class="card-top">
+            <div><div class="doc-name">Praticien disponible</div><div class="doc-specialty">Profil charge dynamiquement</div></div>
+            <div class="rating">★ 4.7 <span class="count">(201)</span></div>
+          </div>
+          <div class="card-meta">
+            <span class="meta-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Localisation chargee</span>
+            <span class="meta-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>2 500 DA</span>
+            <span class="meta-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Arabe, Français</span>
+          </div>
+          <div class="tags"><span class="tag cnas">CNAS</span><span class="tag casnos">CASNOS</span><span class="tag ar">Arabe</span><span class="tag fr">Français</span></div>
+          <div class="card-bottom">
+            <div class="slot-info"><div class="slot-dot"></div><span class="slot-label">Prochain créneau :</span><span class="slot-time today">Aujourd'hui à 17h00</span></div>
+            <div class="card-actions"><button class="btn-profile">Voir profil</button><button class="btn-rdv">Prendre RDV</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="doctor-card">
+        <div class="avatar" style="background:#ffedd5;color:#9a3412;">YR</div>
+        <div class="card-body">
+          <div class="card-top">
+            <div><div class="doc-name">Profil charge dynamiquement</div><div class="doc-specialty">Profil charge dynamiquement</div></div>
+            <div class="rating">★ 4.5 <span class="count">(47)</span></div>
+          </div>
+          <div class="card-meta">
+            <span class="meta-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Localisation chargee</span>
+            <span class="meta-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>3 000 DA</span>
+            <span class="meta-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Arabe</span>
+          </div>
+          <div class="tags"><span class="tag ar">Arabe</span></div>
+          <div class="card-bottom">
+            <div class="slot-info"><div class="slot-dot none"></div><span class="slot-label">Prochain créneau :</span><span class="slot-time none">Aucun créneau cette semaine</span></div>
+            <div class="card-actions"><button class="btn-profile">Voir profil</button><button class="btn-rdv" disabled>Complet</button></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="cards-grid" id="grid-view">
+      <div class="grid-card">
+        <div class="grid-top"><div class="avatar" style="background:#d1fae5;color:#065f46;width:42px;height:42px;font-size:13px;">MD</div><div><div class="grid-name">Profil medecin</div><div class="grid-spec">Profil charge dynamiquement</div></div></div>
+        <div class="grid-rating">★ 4.8 <span style="color:var(--text3);font-weight:400;font-size:11px;margin-left:2px;">(124)</span></div>
+        <div class="grid-meta">Localisation chargee · Tarif selon praticien</div>
+        <div class="tags"><span class="tag cnas">CNAS</span><span class="tag fr">Français</span></div>
+        <div class="grid-slot" style="color:var(--yellow);">• Demain à 10h00</div>
+        <div class="grid-actions"><button class="btn-profile">Profil</button><button class="btn-rdv">RDV</button></div>
+      </div>
+      <div class="grid-card">
+        <div class="grid-top"><div class="avatar" style="background:#dbeafe;color:#1e3a8a;width:42px;height:42px;font-size:13px;">PS</div><div><div class="grid-name">Professionnel de sante</div><div class="grid-spec">Profil charge dynamiquement</div></div></div>
+        <div class="grid-rating">★ 4.9 <span style="color:var(--text3);font-weight:400;font-size:11px;margin-left:2px;">(89)</span></div>
+        <div class="grid-meta">Localisation chargee · Tarif selon praticien</div>
+        <div class="tags"><span class="tag casnos">CASNOS</span><span class="tag fr">Français</span></div>
+        <div class="grid-slot" style="color:var(--accent2);">• Aujourd'hui à 15h30</div>
+        <div class="grid-actions"><button class="btn-profile">Profil</button><button class="btn-rdv">RDV</button></div>
+      </div>
+      <div class="grid-card">
+        <div class="grid-top"><div class="avatar" style="background:#ede9fe;color:#5b21b6;width:42px;height:42px;font-size:13px;">PR</div><div><div class="grid-name">Praticien disponible</div><div class="grid-spec">Profil charge dynamiquement</div></div></div>
+        <div class="grid-rating">★ 4.7 <span style="color:var(--text3);font-weight:400;font-size:11px;margin-left:2px;">(201)</span></div>
+        <div class="grid-meta">Localisation chargee · Tarif selon praticien</div>
+        <div class="tags"><span class="tag cnas">CNAS</span><span class="tag ar">Arabe</span></div>
+        <div class="grid-slot" style="color:var(--accent2);">• Aujourd'hui à 17h00</div>
+        <div class="grid-actions"><button class="btn-profile">Profil</button><button class="btn-rdv">RDV</button></div>
+      </div>
+      <div class="grid-card">
+        <div class="grid-top"><div class="avatar" style="background:#ffedd5;color:#9a3412;width:42px;height:42px;font-size:13px;">PL</div><div><div class="grid-name">Profil charge dynamiquement</div><div class="grid-spec">Profil charge dynamiquement</div></div></div>
+        <div class="grid-rating">★ 4.5 <span style="color:var(--text3);font-weight:400;font-size:11px;margin-left:2px;">(47)</span></div>
+        <div class="grid-meta">Localisation chargee · Tarif selon praticien</div>
+        <div class="tags"><span class="tag ar">Arabe</span></div>
+        <div class="grid-slot" style="color:var(--text3);font-weight:400;">Aucun créneau cette semaine</div>
+        <div class="grid-actions"><button class="btn-profile">Profil</button><button class="btn-rdv" disabled>Complet</button></div>
+      </div>
+    </div>
+
+    <div class="pagination" id="pagination">
+      <button class="page-btn prev-next" disabled>&lt;</button>
+      <button class="page-btn active">1</button>
+      <button class="page-btn prev-next" disabled>&gt;</button>
+    </div>
+  </main>
+</div>
+
+<script src="/assets/shared-toast.js"></script>
+<script src="/assets/site-public-chrome.js"></script>
+<script>
+  const state = {
+    view: 'list',
+    doctors: [],
+    page: 1,
+    perPage: 8,
+    total: 0,
+    totalPages: 1,
+    wilayas: [],
+    filters: {
+      q: '',
+      specialite: '',
+      wilayaId: '',
+      commune: '',
+      tarifMax: 5000,
+      dispo: 'any',
+      langues: new Set(),
+      secteur: '',
+      conventions: new Set(['cnas', 'casnos']),
+      sort: 'pertinence',
+    },
+    authUser: null,
+    unreadNotifications: 0,
+    favoriteIds: new Set(),
+    favoritePendingIds: new Set(),
+  };
+
+  function esc(s) {
+    return String(s ?? '').replace(/[&<>"']/g, (m) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[m]));
+  }
+
+  async function apiGet(url) {
+    const res = await fetch(url, { headers: { Accept: 'application/json' }, credentials: 'include' });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+    return data;
+  }
+
+  function safeNext(path) {
+    if (typeof path !== 'string') return '/tabibdz-homepage.html';
+    return path.startsWith('/') ? path : '/tabibdz-homepage.html';
+  }
+
+  function syncSharedAuthState() {
+    state.authUser = window.TabibPublicChrome?.getAuthUser?.() || null;
+    state.unreadNotifications = window.TabibPublicChrome?.getUnreadNotifications?.() || 0;
+  }
+
+  document.addEventListener('tabibdz:public-auth-ready', syncSharedAuthState);
+
+  function goRdv(medecinId) {
+    const target = `/tabibdz-rdv-medecin.html?medecin_id=${medecinId}`;
+    if (!state.authUser) {
+      window.location.href = `/connexion/?next=${encodeURIComponent(target)}`;
+      return;
+    }
+    window.location.href = target;
+  }
+
+  function initials(prenom, nom) {
+    return `${(prenom || '').slice(0,1)}${(nom || '').slice(0,1)}`.toUpperCase() || 'DR';
+  }
+
+  function isPatientLoggedIn() {
+    return !!(state.authUser && state.authUser.role === 'patient');
+  }
+
+  async function loadFavoriteIds() {
+    if (!isPatientLoggedIn()) {
+      state.favoriteIds = new Set();
+      return;
+    }
+    const rows = await apiGet('/api/patient/favoris/');
+    state.favoriteIds = new Set((Array.isArray(rows) ? rows : [])
+      .map((item) => Number(item.id))
+      .filter((id) => id > 0));
+  }
+
+  function favoriteButtonMarkup(medecinId) {
+    const id = Number(medecinId || 0);
+    const active = state.favoriteIds.has(id);
+    const busy = state.favoritePendingIds.has(id);
+    return `<button class="favorite-btn${active ? ' is-active' : ''}${busy ? ' is-busy' : ''}" type="button" data-favorite-id="${id}" aria-pressed="${active ? 'true' : 'false'}" aria-label="${active ? 'Retirer des favoris' : 'Ajouter aux favoris'}" title="${active ? 'Retirer des favoris' : 'Ajouter aux favoris'}" onclick="toggleFavoriteDoctor(event, ${id})"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5l-1.1-1C5.3 14.4 2 11.4 2 7.7 2 4.8 4.2 2.5 7.1 2.5c1.7 0 3.3.8 4.4 2.1 1.1-1.3 2.7-2.1 4.4-2.1 2.9 0 5.1 2.3 5.1 5.2 0 3.7-3.3 6.7-8.9 11.8l-1.1 1z"/></svg></button>`;
+  }
+
+  function syncFavoriteButtons() {
+    document.querySelectorAll('[data-favorite-id]').forEach((btn) => {
+      const id = Number(btn.getAttribute('data-favorite-id') || 0);
+      const active = state.favoriteIds.has(id);
+      const busy = state.favoritePendingIds.has(id);
+      btn.classList.toggle('is-active', active);
+      btn.classList.toggle('is-busy', busy);
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      const label = active ? 'Retirer des favoris' : 'Ajouter aux favoris';
+      btn.setAttribute('aria-label', label);
+      btn.setAttribute('title', label);
+    });
+  }
+
+  async function toggleFavoriteDoctor(event, medecinId) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    const id = Number(medecinId || 0);
+    if (id < 1 || state.favoritePendingIds.has(id)) return;
+    if (!state.authUser) {
+      const next = encodeURIComponent(safeNext(window.location.pathname + window.location.search));
+      window.location.href = `/connexion/?next=${next}`;
+      return;
+    }
+    if (!isPatientLoggedIn()) {
+      showToast('Connectez-vous avec un compte patient pour gerer les favoris.', 'error');
+      return;
+    }
+
+    const wasFavorite = state.favoriteIds.has(id);
+    state.favoritePendingIds.add(id);
+    if (wasFavorite) state.favoriteIds.delete(id);
+    else state.favoriteIds.add(id);
+    syncFavoriteButtons();
+
+    try {
+      const response = await fetch(wasFavorite
+        ? `/api/patient/favoris/?medecin_id=${encodeURIComponent(id)}`
+        : '/api/patient/favoris/', {
+        method: wasFavorite ? 'DELETE' : 'POST',
+        credentials: 'include',
+        headers: {
+          Accept: 'application/json',
+          ...(wasFavorite ? {} : { 'Content-Type': 'application/json' })
+        },
+        body: wasFavorite ? undefined : JSON.stringify({ medecin_id: id })
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload.error || 'Operation impossible');
+      showToast(wasFavorite ? 'Retire des favoris.' : 'Ajoute aux favoris.');
+    } catch (error) {
+      if (wasFavorite) state.favoriteIds.add(id);
+      else state.favoriteIds.delete(id);
+      showToast(error.message || 'Operation impossible.', 'error');
+    } finally {
+      state.favoritePendingIds.delete(id);
+      syncFavoriteButtons();
+    }
+  }
+
+  function nextSlotLabel(iso) {
+    if (!iso) return { text: 'Aucun créneau', cls: 'none' };
+    const d = new Date(iso);
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const target = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    const diffDays = Math.round((target - today) / 86400000);
+    const t = new Intl.DateTimeFormat('fr-FR', { hour: '2-digit', minute: '2-digit' }).format(d);
+    if (diffDays === 0) return { text: `Aujourd'hui à ${t}`, cls: 'today' };
+    if (diffDays === 1) return { text: `Demain à ${t}`, cls: 'tomorrow' };
+    const day = new Intl.DateTimeFormat('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' }).format(d);
+    return { text: `${day} à ${t}`, cls: '' };
+  }
+
+  function setView(mode) {
+    state.view = mode;
+    const lv = document.getElementById('list-view');
+    const gv = document.getElementById('grid-view');
+    const lb = document.getElementById('list-btn');
+    const gb = document.getElementById('grid-btn');
+    if (mode === 'list') {
+      lv.classList.remove('hidden');
+      gv.classList.remove('active');
+      lb.classList.add('active');
+      gb.classList.remove('active');
+    } else {
+      lv.classList.add('hidden');
+      gv.classList.add('active');
+      gb.classList.add('active');
+      lb.classList.remove('active');
+    }
+  }
+
+  function updateSlider(el) {
+    const val = parseInt(el.value, 10);
+    state.filters.tarifMax = val;
+    document.getElementById('slider-val').textContent = val.toLocaleString('fr-DZ') + ' DA';
+    const pct = ((val - el.min) / (el.max - el.min)) * 100;
+    el.style.background = `linear-gradient(to right,var(--accent) ${pct}%,var(--bg4) ${pct}%)`;
+  }
+
+  function currentSortKey() {
+    const idx = document.getElementById('sort-select')?.selectedIndex || 0;
+    if (idx === 1) return 'note';
+    if (idx === 2) return 'disponibilite';
+    if (idx === 3) return 'tarif_asc';
+    return 'pertinence';
+  }
+
+  function renderActiveFilters() {
+    const wrap = document.getElementById('active-filters');
+    const chips = [];
+    if (state.filters.specialite) chips.push(`Spécialité: ${state.filters.specialite}`);
+    if (state.filters.wilayaId) {
+      const w = state.wilayas.find(x => String(x.id) === String(state.filters.wilayaId));
+      if (w) chips.push(`Wilaya: ${w.nom}`);
+    }
+    if (state.filters.commune) chips.push(`Commune: ${state.filters.commune}`);
+    if (state.filters.dispo !== 'any') chips.push(state.filters.dispo === 'today' ? 'Aujourd\'hui' : 'Cette semaine');
+    if (state.filters.secteur) chips.push(`Secteur: ${state.filters.secteur}`);
+    const langs = Array.from(state.filters.langues);
+    if (langs.length) chips.push(`Langue: ${langs.join(', ')}`);
+    wrap.innerHTML = chips.map((txt) => `<span class="filter-chip">${esc(txt)}</span>`).join('');
+  }
+
+  async function populateWilayaOptions() {
+    const rows = await apiGet('/api/wilayas/');
+    state.wilayas = Array.isArray(rows) ? rows : [];
+    const sel = document.getElementById('filter-wilaya');
+    sel.innerHTML = '<option value="">Toutes les wilayas</option>' + state.wilayas.map((w) => `<option value="${w.id}">${esc(w.nom)}</option>`).join('');
+  }
+
+  async function populateCommuneOptions() {
+    const sel = document.getElementById('filter-commune');
+    const wilayaId = state.filters.wilayaId;
+    const qs = wilayaId ? `?wilaya_id=${encodeURIComponent(wilayaId)}` : '';
+    const rows = await apiGet(`/api/communes/${qs}`);
+    const communes = Array.isArray(rows) ? rows : [];
+    sel.innerHTML = '<option value="">Toutes les communes</option>' + communes.map((c) => `<option value="${esc(c.nom)}">${esc(c.nom)}</option>`).join('');
+  }
+
+  function buildQuery() {
+    const p = new URLSearchParams();
+    p.set('with_meta', '1');
+    p.set('page', String(state.page));
+    p.set('per_page', String(state.perPage));
+    p.set('sort', state.filters.sort);
+    if (state.filters.q) p.set('q', state.filters.q);
+    if (state.filters.specialite) p.set('specialite', state.filters.specialite);
+    if (state.filters.wilayaId) p.set('wilaya_id', state.filters.wilayaId);
+    if (state.filters.commune) p.set('commune', state.filters.commune);
+    if (state.filters.tarifMax) p.set('tarif_max', String(state.filters.tarifMax));
+    if (state.filters.dispo && state.filters.dispo !== 'any') p.set('dispo', state.filters.dispo);
+    if (state.filters.secteur) p.set('secteur', state.filters.secteur);
+
+    const langs = Array.from(state.filters.langues);
+    if (langs.length) p.set('lang', langs.join(','));
+
+    const conv = Array.from(state.filters.conventions);
+    if (conv.length === 1) {
+      if (conv[0] === 'cnas') p.set('cnas', '1');
+      if (conv[0] === 'casnos') p.set('casnos', '1');
+    }
+    return p.toString();
+  }
+
+  function renderDoctors() {
+    const list = document.getElementById('list-view');
+    const grid = document.getElementById('grid-view');
+    const count = document.getElementById('results-count');
+    count.textContent = `${state.total} médecins`;
+
+    if (!state.doctors.length) {
+      list.innerHTML = '<div class="doctor-card"><div class="card-body"><div class="doc-name">Aucun médecin trouvé</div><div class="doc-specialty">Essayez d\'ajuster les filtres.</div></div></div>';
+      grid.innerHTML = '';
+      return;
+    }
+
+    list.innerHTML = state.doctors.map((d) => {
+      const inits = initials(d.prenom, d.nom);
+      const slot = nextSlotLabel(d.prochain_creneau);
+      const note = Number(d.note || 0).toFixed(1);
+      const avis = Number(d.avis_count || 0);
+      const place = [d.wilaya, d.commune].filter(Boolean).join(', ');
+      const spec = d.specialite?.nom || 'Spécialité';
+      const langues = Array.isArray(d.langues) ? d.langues : [];
+
+      return `
+        <div class="doctor-card">
+          <div class="avatar" style="background:#d1fae5;color:#065f46;">${esc(inits)}</div>
+          <div class="card-body">
+            <div class="card-top">
+              <div class="card-top-main"><div class="doc-name">Dr. ${esc(d.prenom)} ${esc(d.nom)}</div><div class="doc-specialty">${esc(spec)} · ${esc(place)}</div></div>
+              <div class="card-top-side">${favoriteButtonMarkup(d.id)}<div class="rating">★ ${esc(note)} <span class="count">(${esc(avis)})</span></div></div>
+            </div>
+            <div class="card-meta">
+              <span class="meta-item">${esc(place)}</span>
+              <span class="meta-item">${esc(new Intl.NumberFormat('fr-FR').format(Number(d.tarif || 0)))} DA</span>
+              <span class="meta-item">${esc((d.secteur || 'prive').toUpperCase())}</span>
+            </div>
+            <div class="tags">
+              ${d.cnas ? '<span class="tag cnas">CNAS</span>' : ''}
+              ${d.casnos ? '<span class="tag casnos">CASNOS</span>' : ''}
+              ${langues.includes('Arabe') ? '<span class="tag ar">Arabe</span>' : ''}
+              ${langues.some((l) => ['Français', 'Francais'].includes(l)) ? '<span class="tag fr">Français</span>' : ''}
+            </div>
+            <div class="card-bottom">
+              <div class="slot-info"><div class="slot-dot ${slot.cls === 'none' ? 'none' : ''}"></div><span class="slot-label">Prochain créneau :</span><span class="slot-time ${slot.cls}">${esc(slot.text)}</span></div>
+              <div class="card-actions">
+                <button class="btn-profile" onclick="location.href='/tabibdz-profil-medecin.html?medecin_id=${d.id}'">Voir profil</button>
+                <button class="btn-rdv" ${slot.cls==='none' ? 'disabled' : ''} onclick="goRdv(${d.id})">${slot.cls==='none' ? 'Complet' : 'Prendre RDV'}</button>
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+
+    grid.innerHTML = state.doctors.map((d) => {
+      const inits = initials(d.prenom, d.nom);
+      const slot = nextSlotLabel(d.prochain_creneau);
+      const note = Number(d.note || 0).toFixed(1);
+      const avis = Number(d.avis_count || 0);
+      const place = [d.wilaya, d.commune].filter(Boolean).join(', ');
+      const spec = d.specialite?.nom || 'Spécialité';
+      return `
+        <div class="grid-card">
+          <div class="grid-head"><div class="grid-top"><div class="avatar" style="background:#d1fae5;color:#065f46;width:42px;height:42px;font-size:13px;">${esc(inits)}</div><div><div class="grid-name">Dr. ${esc(d.prenom)} ${esc(d.nom)}</div><div class="grid-spec">${esc(spec)} · ${esc(d.commune || d.wilaya || '')}</div></div></div>${favoriteButtonMarkup(d.id)}</div>
+          <div class="grid-rating">★ ${esc(note)} <span style="color:var(--text3);font-weight:400;font-size:11px;margin-left:2px;">(${esc(avis)})</span></div>
+          <div class="grid-meta">${esc(place)} · ${esc(new Intl.NumberFormat('fr-FR').format(Number(d.tarif || 0)))} DA</div>
+          <div class="tags">${d.cnas ? '<span class="tag cnas">CNAS</span>' : ''}${d.casnos ? '<span class="tag casnos">CASNOS</span>' : ''}</div>
+          <div class="grid-slot" style="color:${slot.cls==='today'?'var(--accent2)':slot.cls==='tomorrow'?'var(--yellow)':'var(--text3)'};">${esc(slot.text)}</div>
+          <div class="grid-actions"><button class="btn-profile" onclick="location.href='/tabibdz-profil-medecin.html?medecin_id=${d.id}'">Profil</button><button class="btn-rdv" ${slot.cls==='none' ? 'disabled' : ''} onclick="goRdv(${d.id})">${slot.cls==='none' ? 'Complet' : 'RDV'}</button></div>
+        </div>`;
+    }).join('');
+    syncFavoriteButtons();
+  }
+
+  function renderPagination() {
+    const p = document.getElementById('pagination');
+    const totalPages = Math.max(1, state.totalPages);
+    const page = Math.min(state.page, totalPages);
+
+    const pages = [];
+    const add = (v) => pages.push(v);
+    add(1);
+    if (page > 3) add('...');
+    for (let i = Math.max(2, page - 1); i <= Math.min(totalPages - 1, page + 1); i += 1) add(i);
+    if (page < totalPages - 2) add('...');
+    if (totalPages > 1) add(totalPages);
+
+    p.innerHTML = `
+      <button class="page-btn prev-next" ${page <= 1 ? 'disabled' : ''} onclick="goPage(${page - 1})">&lt;</button>
+      ${pages.map((x) => x === '...'
+        ? '<button class="page-btn ellipsis" disabled>···</button>'
+        : `<button class="page-btn ${Number(x) === page ? 'active' : ''}" onclick="goPage(${Number(x)})">${Number(x)}</button>`).join('')}
+      <button class="page-btn prev-next" ${page >= totalPages ? 'disabled' : ''} onclick="goPage(${page + 1})">&gt;</button>
+    `;
+  }
+
+  async function fetchDoctors() {
+    const qs = buildQuery();
+    const payload = await apiGet(`/api/medecins/?${qs}`);
+    const data = Array.isArray(payload?.data) ? payload.data : [];
+    const meta = payload?.meta || {};
+    state.doctors = data;
+    state.total = Number(meta.total || data.length || 0);
+    state.totalPages = Number(meta.total_pages || 1);
+    state.page = Number(meta.page || state.page);
+    renderDoctors();
+    renderPagination();
+    renderActiveFilters();
+  }
+
+  async function applyFilters() {
+    state.page = 1;
+    await fetchDoctors();
+  }
+
+  function goPage(page) {
+    state.page = Math.max(1, page);
+    fetchDoctors().catch((err) => console.error(err));
+  }
+
+  function setupChipFilters() {
+    document.querySelectorAll('[data-filter-group]').forEach((chip) => {
+      chip.addEventListener('click', () => {
+        const group = chip.dataset.filterGroup;
+        const value = chip.dataset.filterValue || '';
+
+        if (group === 'dispo' || group === 'secteur') {
+          document.querySelectorAll(`[data-filter-group="${group}"]`).forEach((c) => c.classList.remove('active'));
+          chip.classList.add('active');
+          state.filters[group === 'dispo' ? 'dispo' : 'secteur'] = value;
+        } else if (group === 'langue') {
+          chip.classList.toggle('active');
+          if (chip.classList.contains('active')) state.filters.langues.add(value);
+          else state.filters.langues.delete(value);
+        } else if (group === 'conv') {
+          chip.classList.toggle('active');
+          if (chip.classList.contains('active')) state.filters.conventions.add(value);
+          else state.filters.conventions.delete(value);
+        }
+        applyFilters().catch((err) => console.error(err));
+      });
+    });
+  }
+
+  function syncChipUIFromState() {
+    document.querySelectorAll('[data-filter-group="dispo"]').forEach((c) => c.classList.toggle('active', c.dataset.filterValue === state.filters.dispo));
+    document.querySelectorAll('[data-filter-group="langue"]').forEach((c) => c.classList.toggle('active', state.filters.langues.has(c.dataset.filterValue)));
+    document.querySelectorAll('[data-filter-group="secteur"]').forEach((c) => c.classList.toggle('active', c.dataset.filterValue === state.filters.secteur));
+    document.querySelectorAll('[data-filter-group="conv"]').forEach((c) => c.classList.toggle('active', state.filters.conventions.has(c.dataset.filterValue)));
+  }
+
+  async function bootstrap() {
+    await window.TabibPublicChrome.whenReady();
+    syncSharedAuthState();
+    await loadFavoriteIds();
+
+    const params = new URLSearchParams(window.location.search);
+    const queryQ = params.get('q') || '';
+    const querySpecialite = params.get('specialite') || '';
+    const queryWilaya = params.get('wilaya_id') || '';
+    document.getElementById('search-query').value = queryQ;
+    state.filters.q = queryQ;
+    state.filters.specialite = querySpecialite;
+    state.filters.wilayaId = queryWilaya;
+
+    const slider = document.getElementById('tarif-slider');
+    updateSlider(slider);
+
+    await populateWilayaOptions();
+    if (state.filters.wilayaId) {
+      document.getElementById('filter-wilaya').value = state.filters.wilayaId;
+    }
+    await populateCommuneOptions();
+    if (state.filters.specialite) {
+      document.getElementById('filter-specialite').value = state.filters.specialite;
+    }
+
+    setupChipFilters();
+    syncChipUIFromState();
+
+    document.getElementById('search-btn').addEventListener('click', () => {
+      state.filters.q = (document.getElementById('search-query').value || '').trim();
+      applyFilters().catch((err) => console.error(err));
+    });
+
+    document.getElementById('search-query').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        state.filters.q = (document.getElementById('search-query').value || '').trim();
+        applyFilters().catch((err) => console.error(err));
+      }
+    });
+
+    document.getElementById('filter-specialite').addEventListener('change', (e) => {
+      state.filters.specialite = (e.target.value || '').trim();
+      applyFilters().catch((err) => console.error(err));
+    });
+
+    document.getElementById('filter-wilaya').addEventListener('change', async (e) => {
+      state.filters.wilayaId = (e.target.value || '').trim();
+      state.filters.commune = '';
+      await populateCommuneOptions();
+      applyFilters().catch((err) => console.error(err));
+    });
+
+    document.getElementById('filter-commune').addEventListener('change', (e) => {
+      state.filters.commune = (e.target.value || '').trim();
+      applyFilters().catch((err) => console.error(err));
+    });
+
+    document.getElementById('sort-select').addEventListener('change', () => {
+      state.filters.sort = currentSortKey();
+      applyFilters().catch((err) => console.error(err));
+    });
+
+    slider.addEventListener('input', (e) => {
+      updateSlider(e.target);
+      applyFilters().catch((err) => console.error(err));
+    });
+
+    document.getElementById('reset-filters').addEventListener('click', async () => {
+      state.filters = {
+        q: '',
+        specialite: '',
+        wilayaId: '',
+        commune: '',
+        tarifMax: 5000,
+        dispo: 'any',
+        langues: new Set(),
+        secteur: '',
+        conventions: new Set(['cnas', 'casnos']),
+        sort: 'pertinence',
+      };
+
+      document.getElementById('search-query').value = '';
+      document.getElementById('filter-specialite').value = '';
+      document.getElementById('filter-wilaya').value = '';
+      await populateCommuneOptions();
+      document.getElementById('filter-commune').value = '';
+      document.getElementById('sort-select').selectedIndex = 0;
+      slider.value = '5000';
+      updateSlider(slider);
+
+      syncChipUIFromState();
+
+      await applyFilters();
+    });
+
+    state.filters.sort = currentSortKey();
+    await fetchDoctors();
+  }
+
+  bootstrap().catch((err) => {
+    console.error(err);
+    alert('Erreur chargement recherche: ' + err.message);
+  });
+
+  /* ========== MOBILE DRAWERS ========== */
+  (function() {
+
+    /* --- NAV DRAWER --- */
+    const hamburger = document.getElementById('hamburger-btn');
+    const navDrawer  = document.getElementById('nav-drawer');
+    const navOverlay = document.getElementById('nav-overlay');
+    const navClose   = document.getElementById('nav-drawer-close');
+
+    function openNav()  { navDrawer.classList.add('open'); navOverlay.classList.add('open'); }
+    function closeNav() { navDrawer.classList.remove('open'); navOverlay.classList.remove('open'); }
+
+    hamburger  && hamburger.addEventListener('click', openNav);
+    navClose   && navClose.addEventListener('click', closeNav);
+    navOverlay && navOverlay.addEventListener('click', closeNav);
+
+    // Sync auth buttons into drawer
+    const observer = new MutationObserver(() => {
+      const desktop = document.querySelector('.nav-actions');
+      const drawer  = document.getElementById('drawer-nav-actions');
+      if (desktop && drawer) drawer.innerHTML = desktop.innerHTML;
+    });
+    const desktopNav = document.querySelector('.nav-actions');
+    if (desktopNav) observer.observe(desktopNav, { childList: true, subtree: true });
+
+    /* --- FILTER DRAWER (own HTML, syncs with state) --- */
+    const filterDrawer  = document.getElementById('filter-drawer');
+    const filterOverlay = document.getElementById('filter-overlay');
+    const openFiltersBtn = document.getElementById('open-filters-btn');
+    const filterDrawerClose = document.getElementById('filter-drawer-close');
+
+    // Wilaya options into drawer
+    async function populateDrawerWilayas() {
+      const dSel = document.getElementById('d-filter-wilaya');
+      const sSel = document.getElementById('filter-wilaya');
+      if (!dSel || !sSel) return;
+      dSel.innerHTML = sSel.innerHTML;
+      dSel.value = state.filters.wilayaId || '';
+    }
+    async function populateDrawerCommunes() {
+      const dSel = document.getElementById('d-filter-commune');
+      const sSel = document.getElementById('filter-commune');
+      if (!dSel || !sSel) return;
+      dSel.innerHTML = sSel.innerHTML;
+      dSel.value = state.filters.commune || '';
+    }
+
+    function syncDrawerFromState() {
+      // selects
+      const dSpec = document.getElementById('d-filter-specialite');
+      if (dSpec) dSpec.value = state.filters.specialite || '';
+
+      // slider
+      const dSlider = document.getElementById('d-tarif-slider');
+      if (dSlider) {
+        dSlider.value = state.filters.tarifMax;
+        const pct = ((state.filters.tarifMax - 0) / 5000) * 100;
+        dSlider.style.background = 'linear-gradient(to right,var(--accent) ' + pct + '%,var(--bg4) ' + pct + '%)';
+        const dVal = document.getElementById('d-slider-val');
+        if (dVal) dVal.textContent = Number(state.filters.tarifMax).toLocaleString('fr-DZ') + ' DA';
+      }
+
+      // chips
+      document.querySelectorAll('[data-d-group="dispo"]').forEach(c =>
+        c.classList.toggle('active', c.dataset.dVal === state.filters.dispo));
+      document.querySelectorAll('[data-d-group="langue"]').forEach(c =>
+        c.classList.toggle('active', state.filters.langues.has(c.dataset.dVal)));
+      document.querySelectorAll('[data-d-group="secteur"]').forEach(c =>
+        c.classList.toggle('active', c.dataset.dVal === state.filters.secteur));
+      document.querySelectorAll('[data-d-group="conv"]').forEach(c =>
+        c.classList.toggle('active', state.filters.conventions.has(c.dataset.dVal)));
+    }
+
+    function updateFilterBadge() {
+      const btn   = document.getElementById('open-filters-btn');
+      const badge = document.getElementById('filter-count-badge');
+      if (!btn || !badge) return;
+      let count = 0;
+      if (state.filters.specialite) count++;
+      if (state.filters.wilayaId)   count++;
+      if (state.filters.dispo && state.filters.dispo !== 'any') count++;
+      count += state.filters.langues.size;
+      if (state.filters.secteur)    count++;
+      if (state.filters.tarifMax < 5000) count++;
+      badge.textContent = count;
+      btn.classList.toggle('has-filters', count > 0);
+    }
+
+    async function openFilterDrawer() {
+      await populateDrawerWilayas();
+      await populateDrawerCommunes();
+      syncDrawerFromState();
+      filterDrawer.classList.add('open');
+      filterOverlay.classList.add('open');
+    }
+    function closeFilterDrawer() {
+      filterDrawer.classList.remove('open');
+      filterOverlay.classList.remove('open');
+    }
+
+    openFiltersBtn  && openFiltersBtn.addEventListener('click', openFilterDrawer);
+    filterDrawerClose && filterDrawerClose.addEventListener('click', closeFilterDrawer);
+    filterOverlay   && filterOverlay.addEventListener('click', closeFilterDrawer);
+
+    // Drawer chip clicks → update state → trigger sidebar filter
+    document.querySelectorAll('[data-d-group]').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const group = chip.dataset.dGroup;
+        const val   = chip.dataset.dVal;
+        if (group === 'dispo' || group === 'secteur') {
+          document.querySelectorAll('[data-d-group="' + group + '"]').forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          if (group === 'dispo')   state.filters.dispo   = val;
+          if (group === 'secteur') state.filters.secteur = val;
+        } else if (group === 'langue') {
+          chip.classList.toggle('active');
+          chip.classList.contains('active') ? state.filters.langues.add(val) : state.filters.langues.delete(val);
+        } else if (group === 'conv') {
+          chip.classList.toggle('active');
+          chip.classList.contains('active') ? state.filters.conventions.add(val) : state.filters.conventions.delete(val);
+        }
+        // mirror to sidebar chips
+        const sChip = document.querySelector('[data-filter-group="' + group.replace('d-','') + '"][data-filter-value="' + val + '"]')
+                   || document.querySelector('[data-filter-group="' + group + '"][data-filter-value="' + val + '"]');
+        // just apply filters directly
+        applyFilters().catch(console.error);
+        updateFilterBadge();
+      });
+    });
+
+    // Drawer selects
+    const dSpec = document.getElementById('d-filter-specialite');
+    dSpec && dSpec.addEventListener('change', () => {
+      state.filters.specialite = dSpec.value;
+      const s = document.getElementById('filter-specialite');
+      if (s) s.value = dSpec.value;
+      applyFilters().catch(console.error);
+      updateFilterBadge();
+    });
+
+    const dWilaya = document.getElementById('d-filter-wilaya');
+    dWilaya && dWilaya.addEventListener('change', async () => {
+      state.filters.wilayaId = dWilaya.value;
+      state.filters.commune  = '';
+      const s = document.getElementById('filter-wilaya');
+      if (s) { s.value = dWilaya.value; s.dispatchEvent(new Event('change')); }
+      await populateDrawerCommunes();
+      applyFilters().catch(console.error);
+      updateFilterBadge();
+    });
+
+    const dCommune = document.getElementById('d-filter-commune');
+    dCommune && dCommune.addEventListener('change', () => {
+      state.filters.commune = dCommune.value;
+      const s = document.getElementById('filter-commune');
+      if (s) s.value = dCommune.value;
+      applyFilters().catch(console.error);
+      updateFilterBadge();
+    });
+
+    const dSlider = document.getElementById('d-tarif-slider');
+    dSlider && dSlider.addEventListener('input', () => {
+      const val = parseInt(dSlider.value, 10);
+      state.filters.tarifMax = val;
+      const pct = (val / 5000) * 100;
+      dSlider.style.background = 'linear-gradient(to right,var(--accent) ' + pct + '%,var(--bg4) ' + pct + '%)';
+      const dVal = document.getElementById('d-slider-val');
+      if (dVal) dVal.textContent = val.toLocaleString('fr-DZ') + ' DA';
+      const s = document.getElementById('tarif-slider');
+      if (s) { s.value = val; updateSlider(s); }
+      applyFilters().catch(console.error);
+      updateFilterBadge();
+    });
+
+    // Apply button
+    const applyBtn = document.getElementById('apply-filters-mobile');
+    applyBtn && applyBtn.addEventListener('click', closeFilterDrawer);
+
+    // Reset button in drawer
+    const resetMobile = document.getElementById('reset-filters-mobile');
+    resetMobile && resetMobile.addEventListener('click', async () => {
+      const resetBtn = document.getElementById('reset-filters');
+      if (resetBtn) resetBtn.click();
+      await populateDrawerWilayas();
+      await populateDrawerCommunes();
+      syncDrawerFromState();
+      closeFilterDrawer();
+      updateFilterBadge();
+    });
+
+    // Mobile sort
+    const mobileSortSel  = document.getElementById('sort-select-mobile');
+    const desktopSortSel = document.getElementById('sort-select');
+    mobileSortSel && mobileSortSel.addEventListener('change', () => {
+      if (desktopSortSel) {
+        desktopSortSel.selectedIndex = mobileSortSel.selectedIndex;
+        desktopSortSel.dispatchEvent(new Event('change'));
+      }
+    });
+
+  })();
+</script>
+<script src="/assets/ai-chat-widget.js?v=20260426c"></script>
+</body>
+</html>
+

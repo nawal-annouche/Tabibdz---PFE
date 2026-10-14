@@ -1,0 +1,13 @@
+{
+  "name": "tabibdz-smoke-runner",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "test:public": "playwright test .\\public-shell.smoke.spec.js --config .\\playwright.smoke.config.cjs --reporter=line",
+    "test:auth-booking": "playwright test .\\auth-booking.smoke.spec.js --config .\\playwright.smoke.config.cjs --reporter=line",
+    "test:all": "playwright test --config .\\playwright.smoke.config.cjs --reporter=line"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.60.0"
+  }
+}

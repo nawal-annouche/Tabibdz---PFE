@@ -1,0 +1,23 @@
+INSERT INTO wilayas (id, nom) VALUES
+(49,'Timimoun'),
+(50,'Bordj Badji Mokhtar'),
+(51,'Ouled Djellal'),
+(52,'Beni Abbes'),
+(53,'In Salah'),
+(54,'In Guezzam'),
+(55,'Touggourt'),
+(56,'Djanet'),
+(57,'El M Ghair'),
+(58,'El Meniaa'),
+(59,'Aflou'),
+(60,'El Abiodh Sidi Cheikh'),
+(61,'El Kantara'),
+(62,'Bir El Ater'),
+(63,'El Aricha'),
+(64,'Ksar Chellala'),
+(65,'Ain Oussara'),
+(66,'Messaad'),
+(67,'Ksar El Boukhari'),
+(68,'Boussaada'),
+(69,'Barika')
+ON DUPLICATE KEY UPDATE nom=VALUES(nom);

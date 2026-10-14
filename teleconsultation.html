@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Téléconsultation — TabibDZ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+/* ── DESIGN TOKENS ── */
+:root {
+  --green:        #0E9E6E;
+  --green-2:      #0b8560;
+  --green-glow:   rgba(14,158,110,.15);
+  --green-soft:   rgba(14,158,110,.08);
+  --green-border: rgba(14,158,110,.2);
+  --red:          #dc2626;
+  --red-soft:     rgba(220,38,38,.07);
+  --amber:        #d97706;
+  --amber-soft:   rgba(217,119,6,.08);
+  --ink:          #0c1420;
+  --ink-2:        #1e2d3d;
+  --ink-3:        #4b5a6e;
+  --ink-4:        #8a97a8;
+  --ink-5:        #c4cdd8;
+  --surface:      #ffffff;
+  --surface-2:    #f7f9fc;
+  --surface-3:    #f0f4f8;
+  --border:       #e4eaf2;
+  --border-2:     #eef2f7;
+  --shadow-sm:    0 1px 3px rgba(12,20,32,.06), 0 1px 2px rgba(12,20,32,.04);
+  --shadow-md:    0 4px 16px rgba(12,20,32,.08), 0 2px 6px rgba(12,20,32,.05);
+  --shadow-lg:    0 12px 40px rgba(12,20,32,.1), 0 4px 12px rgba(12,20,32,.06);
+  --font:         'Plus Jakarta Sans', sans-serif;
+  --serif:        'Instrument Serif', serif;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 20px;
+  --nav-h: 60px;
+  --ctx-h: 72px;
+  --ease: cubic-bezier(.4,0,.2,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--surface-2);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+a { text-decoration: none; color: inherit; }
+button { font-family: var(--font); cursor: pointer; border: none; background: none; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: .6; transform: scale(.85); }
+}
+@keyframes breathe {
+  0%,100% { opacity: 1; }
+  50%      { opacity: .5; }
+}
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ═══════════════════════════════════════
+   TOP NAVBAR
+═══════════════════════════════════════ */
+.navbar {
+  position: sticky; top: 0; z-index: 500;
+  height: var(--nav-h);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  box-shadow: var(--shadow-sm);
+}
+.nav-left { display: flex; align-items: center; gap: 20px; }
+.logo {
+  font-family: var(--font); font-size: 18px; font-weight: 800;
+  letter-spacing: -.6px; color: var(--ink);
+  display: flex; align-items: center;
+}
+.logo em { color: var(--green); font-style: normal; }
+.logo-sep { width: 1px; height: 20px; background: var(--border); margin: 0 4px; }
+.breadcrumb {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; color: var(--ink-4);
+}
+.breadcrumb a { color: var(--ink-3); font-weight: 500; transition: color .15s; }
+.breadcrumb a:hover { color: var(--green); }
+.breadcrumb svg { width: 12px; height: 12px; opacity: .4; flex-shrink: 0; }
+.breadcrumb strong { color: var(--ink-2); font-weight: 600; }
+
+.nav-right { display: flex; align-items: center; gap: 10px; }
+.status-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 14px; border-radius: 999px;
+  font-size: 11.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+}
+.chip-live {
+  background: var(--green-soft);
+  border: 1.5px solid var(--green-border);
+  color: var(--green);
+}
+.chip-status {
+  background: var(--surface-3);
+  border: 1.5px solid var(--border);
+  color: var(--ink-3);
+}
+.live-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--green);
+  animation: pulse-dot 1.8s ease-in-out infinite; flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════
+   CONTEXT BAR — médecin + actions rapides
+═══════════════════════════════════════ */
+.ctx-bar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  height: var(--ctx-h);
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  animation: fadeUp .3s var(--ease) both;
+}
+.ctx-doctor { display: flex; align-items: center; gap: 14px; }
+.ctx-avatar {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: linear-gradient(135deg, #a7f3d0 0%, #34d399 100%);
+  color: var(--green-2); font-weight: 800; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; overflow: hidden;
+  border: 2px solid rgba(14,158,110,.2);
+}
+.ctx-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.ctx-doctor-name {
+  font-size: 15px; font-weight: 800; color: var(--ink); letter-spacing: -.3px;
+  line-height: 1.2;
+}
+.ctx-doctor-sub { font-size: 12.5px; color: var(--ink-4); margin-top: 1px; }
+
+.ctx-meta { display: flex; align-items: center; gap: 0; }
+.ctx-meta-item {
+  padding: 0 20px; border-left: 1px solid var(--border-2);
+  display: flex; flex-direction: column; gap: 1px;
+}
+.ctx-meta-item:first-child { border-left: none; }
+.ctx-meta-lbl {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--ink-5);
+}
+.ctx-meta-val { font-size: 13px; font-weight: 700; color: var(--ink-2); }
+
+.ctx-actions { display: flex; align-items: center; gap: 8px; }
+
+/* ═══════════════════════════════════════
+   MAIN LAYOUT — 3 colonnes
+═══════════════════════════════════════ */
+.page-body {
+  max-width: 1240px; margin: 0 auto;
+  padding: 28px 32px 60px;
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  grid-template-rows: auto;
+  gap: 20px;
+  align-items: start;
+}
+
+/* ── Colonne gauche ── */
+.main-col { display: flex; flex-direction: column; gap: 16px; }
+
+/* ── Sidebar droite ── */
+.sidebar { display: flex; flex-direction: column; gap: 16px; }
+
+/* ═══════════════════════════════════════
+   CARDS
+═══════════════════════════════════════ */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  animation: fadeUp .35s var(--ease) both;
+}
+.card-head {
+  padding: 18px 22px 16px;
+  border-bottom: 1px solid var(--border-2);
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.card-title-group {}
+.card-title {
+  font-size: 14.5px; font-weight: 800; color: var(--ink); letter-spacing: -.3px;
+}
+.card-sub { font-size: 12px; color: var(--ink-4); margin-top: 2px; }
+.card-badge {
+  display: inline-flex; align-items: center;
+  padding: 3px 10px; border-radius: 999px;
+  background: var(--surface-3); border: 1px solid var(--border);
+  font-size: 10.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+  color: var(--ink-4); flex-shrink: 0;
+}
+.card-body { padding: 20px 22px; }
+
+/* ═══════════════════════════════════════
+   SALLE D'ATTENTE CARD (sidebar, top)
+═══════════════════════════════════════ */
+.waiting-card {
+  background: var(--ink-2);
+  border: none;
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  animation: fadeUp .28s var(--ease) both;
+}
+.waiting-strip {
+  height: 3px;
+  background: linear-gradient(90deg, var(--green), #34d399, #6ee7b7);
+}
+.waiting-body { padding: 20px; }
+.waiting-label {
+  font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .12em;
+  color: rgba(255,255,255,.3); margin-bottom: 14px;
+}
+.waiting-countdown {
+  text-align: center;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: var(--r-lg); padding: 22px 16px 18px;
+  position: relative; overflow: hidden;
+}
+.waiting-countdown::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(14,158,110,.5), transparent);
+  background-size: 600px 100%;
+  animation: shimmer 2s linear infinite;
+}
+.countdown-val {
+  font-size: 40px; font-weight: 800; letter-spacing: -.05em; color: #fff; line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.countdown-val.live {
+  color: var(--green);
+  animation: breathe 2s ease-in-out infinite;
+}
+.countdown-sub {
+  font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em;
+  color: rgba(255,255,255,.3); margin-top: 6px;
+}
+.waiting-msg {
+  font-size: 11.5px; color: rgba(255,255,255,.35);
+  text-align: center; margin-top: 10px; line-height: 1.55;
+}
+.waiting-actions { display: flex; flex-direction: column; gap: 7px; margin-top: 16px; }
+.btn-join {
+  width: 100%; min-height: 46px; border-radius: var(--r-md);
+  background: linear-gradient(135deg, var(--green), var(--green-2));
+  color: #fff; font-size: 13.5px; font-weight: 700;
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  box-shadow: 0 4px 20px rgba(14,158,110,.38);
+  transition: all .15s var(--ease);
+  letter-spacing: -.01em;
+}
+.btn-join:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 28px rgba(14,158,110,.5);
+}
+.btn-join:disabled { opacity: .3; cursor: not-allowed; box-shadow: none; }
+.btn-join svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+.btn-ghost {
+  width: 100%; min-height: 38px; border-radius: var(--r-md);
+  background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+  color: rgba(255,255,255,.62); font-size: 12.5px; font-weight: 600;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px;
+  transition: all .15s;
+}
+.btn-ghost:hover { background: rgba(255,255,255,.11); color: rgba(255,255,255,.88); }
+.btn-ghost svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+
+/* ═══════════════════════════════════════
+   CHECKLIST (sidebar)
+═══════════════════════════════════════ */
+.checklist-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  animation: fadeUp .32s var(--ease) both;
+  animation-delay: .06s;
+}
+.checklist-head {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-2);
+  font-size: 12px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: .08em; color: var(--ink-4);
+}
+.checklist-body { padding: 14px 18px; display: flex; flex-direction: column; gap: 12px; }
+.chk-row { display: flex; align-items: flex-start; gap: 12px; }
+.chk-num {
+  width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800;
+  background: var(--surface-3); border: 1.5px solid var(--border);
+  color: var(--ink-4);
+}
+.chk-num.done {
+  background: var(--green-soft); border-color: var(--green-border); color: var(--green);
+}
+.chk-num.done svg { width: 11px; height: 11px; stroke: var(--green); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.chk-title { font-size: 12.5px; font-weight: 700; color: var(--ink); }
+.chk-desc { font-size: 11px; color: var(--ink-4); margin-top: 1px; }
+
+/* ═══════════════════════════════════════
+   DEVICE TEST (sidebar)
+═══════════════════════════════════════ */
+.device-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  animation: fadeUp .32s var(--ease) both;
+  animation-delay: .1s;
+}
+.device-body { padding: 16px 18px; }
+.btn-device {
+  width: 100%; min-height: 38px; border-radius: var(--r-md);
+  background: var(--surface-3); border: 1px solid var(--border);
+  color: var(--ink-2); font-size: 12.5px; font-weight: 600;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px;
+  transition: all .15s;
+}
+.btn-device:hover { background: var(--green-soft); border-color: var(--green-border); color: var(--green); }
+.btn-device svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+.device-result {
+  margin-top: 10px; padding: 10px 12px;
+  background: var(--surface-3); border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  font-size: 11.5px; color: var(--ink-4); line-height: 1.5;
+  min-height: 36px;
+}
+
+/* ═══════════════════════════════════════
+   MANAGE (sidebar)
+═══════════════════════════════════════ */
+.manage-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  animation: fadeUp .32s var(--ease) both;
+  animation-delay: .14s;
+}
+.manage-body { padding: 14px 18px; display: flex; flex-direction: column; gap: 7px; }
+.btn-manage {
+  width: 100%; min-height: 38px; border-radius: var(--r-md);
+  background: var(--surface-3); border: 1px solid var(--border);
+  color: var(--ink-2); font-size: 12.5px; font-weight: 600;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px;
+  transition: all .15s;
+}
+.btn-manage:hover { background: var(--surface-2); }
+.btn-manage svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+.btn-cancel {
+  width: 100%; min-height: 36px; border-radius: var(--r-md);
+  background: var(--red-soft); border: 1.5px solid rgba(220,38,38,.15);
+  color: var(--red); font-size: 12px; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all .15s;
+}
+.btn-cancel:hover { background: rgba(220,38,38,.12); }
+.btn-cancel:disabled { opacity: .35; cursor: not-allowed; }
+
+.info-tip {
+  display: flex; gap: 9px; align-items: flex-start;
+  padding: 10px 14px;
+  background: var(--amber-soft);
+  border: 1px solid rgba(217,119,6,.15);
+  border-radius: var(--r-md);
+  font-size: 11px; color: var(--amber); line-height: 1.5;
+  margin: 0 18px 16px;
+}
+.info-tip svg { width: 14px; height: 14px; stroke: var(--amber); fill: none; stroke-width: 2; flex-shrink: 0; margin-top: 1px; }
+
+/* ═══════════════════════════════════════
+   DETAIL GRID
+═══════════════════════════════════════ */
+.detail-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1px; background: var(--border-2);
+  border-radius: var(--r-md); overflow: hidden;
+  border: 1px solid var(--border-2);
+}
+.detail-cell {
+  background: var(--surface-2); padding: 12px 16px;
+}
+.detail-lbl {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--ink-5); margin-bottom: 4px;
+}
+.detail-val { font-size: 13.5px; font-weight: 600; color: var(--ink-2); }
+
+/* ═══════════════════════════════════════
+   NOTE
+═══════════════════════════════════════ */
+.note-section { margin-top: 16px; }
+.note-lbl {
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--ink-4); margin-bottom: 8px;
+}
+.note-box {
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: 12px 16px;
+  font-size: 13px; color: var(--ink-3); line-height: 1.6;
+  font-style: italic;
+}
+
+/* ═══════════════════════════════════════
+   OUTPUT GROUP (compte-rendu)
+═══════════════════════════════════════ */
+.output-section { margin-top: 14px; }
+.output-section:first-child { margin-top: 0; }
+
+/* ═══════════════════════════════════════
+   DOCUMENTS
+═══════════════════════════════════════ */
+.upload-zone {
+  border: 1.5px dashed var(--border);
+  border-radius: var(--r-lg); padding: 16px;
+  background: var(--surface-2); cursor: pointer;
+  transition: border-color .15s, background .15s;
+}
+.upload-zone:hover, .upload-zone:focus-within {
+  border-color: var(--green); background: var(--green-soft);
+}
+.upload-row { display: flex; align-items: center; gap: 12px; }
+.upload-icon {
+  width: 38px; height: 38px; border-radius: var(--r-md);
+  background: var(--surface); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.upload-icon svg { width: 16px; height: 16px; stroke: var(--green); fill: none; stroke-width: 2; stroke-linecap: round; }
+.upload-title { font-size: 13px; font-weight: 700; color: var(--ink); }
+.upload-hint { font-size: 11px; color: var(--ink-4); margin-top: 1px; }
+input[type="file"] { font-size: 12px; color: var(--ink); cursor: pointer; width: 100%; margin-top: 10px; }
+input[type="file"]::file-selector-button {
+  padding: 4px 12px; border-radius: 999px;
+  border: 1.5px solid var(--border); background: var(--surface);
+  font-family: var(--font); font-size: 11.5px; font-weight: 600;
+  cursor: pointer; margin-right: 10px; color: var(--ink); transition: all .15s;
+}
+input[type="file"]::file-selector-button:hover { border-color: var(--green-border); color: var(--green); }
+.upload-footer { display: flex; justify-content: flex-end; margin-top: 12px; }
+.btn-upload {
+  background: var(--green); color: #fff;
+  border-radius: var(--r-md); border: none;
+  font-size: 12.5px; font-weight: 700;
+  cursor: pointer; padding: 0 18px; height: 36px;
+  display: inline-flex; align-items: center; gap: 6px;
+  box-shadow: 0 2px 10px var(--green-glow); transition: all .15s;
+}
+.btn-upload:hover:not(:disabled) { background: var(--green-2); transform: translateY(-1px); }
+.btn-upload:disabled { opacity: .38; cursor: not-allowed; }
+.btn-upload svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; }
+
+.docs-divider {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ink-4); margin: 20px 0 10px;
+}
+.docs-divider::before, .docs-divider::after { content: ''; flex: 1; height: 1px; background: var(--border-2); }
+
+.doc-list { display: flex; flex-direction: column; gap: 6px; }
+.doc-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px;
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: var(--r-md); transition: background .15s;
+}
+.doc-item:hover { background: var(--surface-3); }
+.doc-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: var(--green-soft); border: 1px solid var(--green-border);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.doc-icon svg { width: 13px; height: 13px; stroke: var(--green); fill: none; stroke-width: 2; stroke-linecap: round; }
+.doc-info { flex: 1; min-width: 0; }
+.doc-name { font-size: 12.5px; font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.doc-meta { font-size: 11px; color: var(--ink-4); }
+.doc-btns { display: flex; gap: 5px; flex-shrink: 0; }
+.doc-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 10px; border-radius: 999px;
+  font-size: 11px; font-weight: 600; cursor: pointer;
+  transition: all .15s; border: 1px solid; background: none;
+}
+.doc-btn-open { border-color: var(--green-border); color: var(--green); }
+.doc-btn-open:hover { background: var(--green); color: #fff; border-color: var(--green); }
+.doc-btn-del { border-color: rgba(220,38,38,.2); color: var(--red); }
+.doc-btn-del:hover { background: var(--red); color: #fff; border-color: var(--red); }
+
+/* ── ERROR BAR ── */
+.error-bar {
+  background: var(--red-soft); border: 1.5px solid rgba(220,38,38,.18);
+  border-radius: var(--r-md); padding: 12px 16px;
+  font-size: 13px; color: var(--red); font-weight: 500;
+  margin-bottom: 16px;
+}
+
+/* ── UTILITIES ── */
+.hidden { display: none !important; }
+.mt-4{margin-top:4px} .mt-8{margin-top:8px} .mt-12{margin-top:12px} .mt-16{margin-top:16px}
+input:disabled { opacity: .38; cursor: not-allowed; }
+.empty-state {
+  text-align: center; padding: 24px 16px; color: var(--ink-4); font-size: 12.5px;
+}
+.empty-icon {
+  width: 40px; height: 40px; border-radius: 12px;
+  background: var(--surface-3); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 8px;
+}
+.empty-icon svg { width: 16px; height: 16px; stroke: var(--ink-5); fill: none; stroke-width: 1.6; stroke-linecap: round; }
+
+/* ── MOBILE BAR ── */
+.mob-bar {
+  display: none;
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 600;
+  background: rgba(255,255,255,.97); backdrop-filter: blur(18px);
+  border-top: 1px solid var(--border);
+  padding: 10px 16px max(14px, env(safe-area-inset-bottom));
+  box-shadow: 0 -4px 20px rgba(12,20,32,.08);
+}
+.mob-bar-row { display: flex; align-items: center; gap: 8px; }
+.mob-cd {
+  display: flex; flex-direction: column; align-items: center;
+  background: var(--surface-3); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: 6px 12px; flex-shrink: 0; min-width: 70px;
+}
+.mob-cd-val { font-size: 16px; font-weight: 800; letter-spacing: -.04em; color: var(--ink); line-height: 1; }
+.mob-cd-val.live { color: var(--green); animation: breathe 2s ease-in-out infinite; }
+.mob-cd-lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-4); margin-top: 1px; }
+.mob-join-btn {
+  flex: 1; min-height: 46px; border-radius: var(--r-md);
+  background: linear-gradient(135deg, var(--green), var(--green-2));
+  color: #fff; font-size: 14px; font-weight: 700; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  box-shadow: 0 4px 16px var(--green-glow); transition: all .16s;
+}
+.mob-join-btn:active { transform: scale(.97); }
+.mob-join-btn:disabled { opacity: .38; cursor: not-allowed; box-shadow: none; }
+.mob-join-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+.mob-actions { display: flex; gap: 7px; margin-top: 7px; }
+.mob-action-btn {
+  flex: 1; min-height: 38px; border-radius: var(--r-md);
+  background: var(--surface-3); border: 1.5px solid var(--border);
+  font-size: 12.5px; font-weight: 600; color: var(--ink-2); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.mob-action-btn svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .page-body { grid-template-columns: 1fr 290px; padding: 22px 24px 60px; }
+}
+@media (max-width: 768px) {
+  .navbar { padding: 0 16px; }
+  .page-body {
+    grid-template-columns: 1fr;
+    padding: 16px 16px 120px;
+    gap: 14px;
+  }
+  .sidebar { order: -1; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .waiting-card { grid-column: 1/-1; }
+  .checklist-card, .device-card, .manage-card { display: none; }
+  .mob-bar { display: block; }
+  .ctx-bar { padding: 0 16px; }
+  .ctx-meta { display: none; }
+  .breadcrumb { display: none; }
+}
+@media (max-width: 520px) {
+  .detail-grid { grid-template-columns: 1fr; }
+  .sidebar { grid-template-columns: 1fr; }
+  .ctx-bar { height: 60px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     NAVBAR
+═══════════════════════════════════════ -->
+<nav class="navbar">
+  <div class="nav-left">
+    <a href="/tabibdz-homepage.html" class="logo">Tabib<em>DZ</em></a>
+    <div class="logo-sep"></div>
+    <div class="breadcrumb">
+      <a href="/dashboard/#section-rdv">Mes rendez-vous</a>
+      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9l3-3-3-3"/></svg>
+      <strong>Téléconsultation</strong>
+    </div>
+  </div>
+  <div class="nav-right">
+    <div class="status-chip chip-live">
+      <span class="live-dot"></span>Téléconsultation
+    </div>
+    <div class="status-chip chip-status" id="teleStatus">Chargement…</div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════
+     CONTEXT BAR
+═══════════════════════════════════════ -->
+<div class="ctx-bar">
+  <div class="ctx-doctor">
+    <div class="ctx-avatar" id="doctorAvatar">..</div>
+    <div>
+      <div class="ctx-doctor-name" id="doctorName">Médecin</div>
+      <div class="ctx-doctor-sub" id="doctorSub">Spécialité · Wilaya</div>
+    </div>
+  </div>
+
+  <div class="ctx-meta">
+    <div class="ctx-meta-item">
+      <span class="ctx-meta-lbl">Date &amp; heure</span>
+      <span class="ctx-meta-val" id="heroDate">—</span>
+    </div>
+    <div class="ctx-meta-item">
+      <span class="ctx-meta-lbl">Patient</span>
+      <span class="ctx-meta-val" id="heroPatient">—</span>
+    </div>
+    <div class="ctx-meta-item">
+      <span class="ctx-meta-lbl">Durée</span>
+      <span class="ctx-meta-val" id="appointmentDuration">—</span>
+    </div>
+    <div class="ctx-meta-item">
+      <span class="ctx-meta-lbl">Référence</span>
+      <span class="ctx-meta-val" id="heroRef">—</span>
+    </div>
+  </div>
+
+  <div class="ctx-actions">
+    <!-- actions rapides masquées sur mobile, gérées par mob-bar -->
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE BODY
+═══════════════════════════════════════ -->
+<div class="page-body">
+
+  <!-- ─── COLONNE PRINCIPALE ─── -->
+  <div class="main-col">
+
+    <!-- Barre d'erreur -->
+    <div id="teleError" class="error-bar hidden"></div>
+
+    <div id="teleMainLayout">
+
+      <!-- Détails du rendez-vous -->
+      <div class="card" style="animation-delay:.06s">
+        <div class="card-head">
+          <div class="card-title-group">
+            <div class="card-title">Détails du rendez-vous</div>
+            <div class="card-sub">Informations utiles avant la consultation</div>
+          </div>
+          <span class="card-badge">Rendez-vous</span>
+        </div>
+        <div class="card-body">
+          <div class="detail-grid">
+            <div class="detail-cell">
+              <div class="detail-lbl">Type de visite</div>
+              <div class="detail-val" id="appointmentVisitType">—</div>
+            </div>
+            <div class="detail-cell">
+              <div class="detail-lbl">Pour qui</div>
+              <div class="detail-val" id="appointmentRelation">—</div>
+            </div>
+            <div class="detail-cell">
+              <div class="detail-lbl">Motif</div>
+              <div class="detail-val" id="appointmentMotif">—</div>
+            </div>
+            <div class="detail-cell">
+              <div class="detail-lbl">Adresse / cabinet</div>
+              <div class="detail-val" id="doctorAddress">—</div>
+            </div>
+          </div>
+          <div class="note-section">
+            <div class="note-lbl">Note transmise au médecin</div>
+            <div class="note-box" id="appointmentTeleNotes">Aucune note transmise.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Compte-rendu médical -->
+      <div class="card hidden" id="consultationOutputsCard" style="animation-delay:.1s">
+        <div class="card-head">
+          <div class="card-title-group">
+            <div class="card-title">Compte-rendu médical</div>
+            <div class="card-sub">Saisi par votre médecin après la consultation</div>
+          </div>
+          <span class="card-badge">Post-consultation</span>
+        </div>
+        <div class="card-body">
+          <div class="detail-grid">
+            <div class="detail-cell">
+              <div class="detail-lbl">Début</div>
+              <div class="detail-val" id="consultationStartedAt">—</div>
+            </div>
+            <div class="detail-cell">
+              <div class="detail-lbl">Fin</div>
+              <div class="detail-val" id="consultationEndedAt">—</div>
+            </div>
+            <div class="detail-cell" style="grid-column:1/-1">
+              <div class="detail-lbl">Statut final</div>
+              <div class="detail-val" id="consultationOutcomeStatus">—</div>
+            </div>
+          </div>
+          <div class="note-section output-section">
+            <div class="note-lbl">Résumé médical</div>
+            <div class="note-box" id="consultationSummary">Aucun résumé disponible.</div>
+          </div>
+          <div class="note-section output-section">
+            <div class="note-lbl">Ordonnance</div>
+            <div class="note-box" id="consultationOrdonnance">Aucune ordonnance disponible.</div>
+          </div>
+          <div class="note-section output-section">
+            <div class="note-lbl">Certificat médical</div>
+            <div class="note-box" id="consultationCertificat">Aucun certificat disponible.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Documents transmis -->
+      <div class="card" style="animation-delay:.14s">
+        <div class="card-head">
+          <div class="card-title-group">
+            <div class="card-title">Documents transmis</div>
+            <div class="card-sub">Analyses, radios ou pièces utiles</div>
+          </div>
+          <span class="card-badge">Fichiers</span>
+        </div>
+        <div class="card-body">
+          <form id="documentForm" enctype="multipart/form-data">
+            <input type="hidden" id="appointmentIdField" name="appointment_id" value="">
+            <div class="upload-zone">
+              <div class="upload-row">
+                <div class="upload-icon">
+                  <svg viewBox="0 0 18 18"><path d="M9 12V4M5 8l4-4 4 4"/><path d="M3 14h12"/></svg>
+                </div>
+                <div>
+                  <div class="upload-title">Ajouter un document</div>
+                  <div class="upload-hint">PDF, JPG ou PNG · Max 10 Mo</div>
+                </div>
+              </div>
+              <input id="documentInput" type="file" name="document" accept=".pdf,.jpg,.jpeg,.png" required>
+            </div>
+            <div class="upload-footer mt-8">
+              <button class="btn-upload" id="documentSubmitBtn" type="submit">
+                <svg viewBox="0 0 16 16"><path d="M8 11V3m-4 4l4-4 4 4M3 14h10"/></svg>
+                Envoyer
+              </button>
+            </div>
+          </form>
+
+          <div class="docs-divider">Vos documents</div>
+          <div id="documentsList"></div>
+
+          <div class="docs-divider">Documents médicaux reçus</div>
+          <div id="doctorDocumentsList"></div>
+        </div>
+      </div>
+
+    </div><!-- /teleMainLayout -->
+  </div><!-- /main-col -->
+
+  <!-- ─── SIDEBAR ─── -->
+  <div class="sidebar">
+
+    <!-- Salle d'attente -->
+    <div class="waiting-card">
+      <div class="waiting-strip"></div>
+      <div class="waiting-body">
+        <div class="waiting-label">Salle d'attente</div>
+        <div class="waiting-countdown">
+          <div class="countdown-val" id="countdownBlock">--:--</div>
+          <div class="countdown-sub" id="countdownLabel">avant l'ouverture de la salle</div>
+        </div>
+        <div class="waiting-msg" id="waitingRoomMessage">Nous préparons votre consultation.</div>
+        <div class="waiting-actions">
+          <button class="btn-join" id="joinBtn" type="button" disabled>
+            <svg viewBox="0 0 16 16"><rect x="1" y="4" width="10" height="8" rx="1"/><path d="M11 7l4-2v6l-4-2"/></svg>
+            Rejoindre la consultation
+          </button>
+          <button class="btn-ghost" id="connectMeetBtn" type="button">
+            <svg viewBox="0 0 16 16"><path d="M5.5 5.5h5v5h-5z"/><path d="M10.5 2.5h3v3M9.5 6.5l4-4"/></svg>
+            Ouvrir Meet Jitsi
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Checklist -->
+    <div class="checklist-card">
+      <div class="checklist-head">Checklist</div>
+      <div class="checklist-body">
+        <div class="chk-row">
+          <div class="chk-num done">
+            <svg viewBox="0 0 12 12"><path d="M2 6l3 3 5-5"/></svg>
+          </div>
+          <div>
+            <div class="chk-title">Espace prêt</div>
+            <div class="chk-desc">Vous êtes bien connecté</div>
+          </div>
+        </div>
+        <div class="chk-row">
+          <div class="chk-num">2</div>
+          <div>
+            <div class="chk-title">Testez caméra &amp; micro</div>
+            <div class="chk-desc">Avant l'ouverture de la salle</div>
+          </div>
+        </div>
+        <div class="chk-row">
+          <div class="chk-num">3</div>
+          <div>
+            <div class="chk-title">Rejoignez la salle</div>
+            <div class="chk-desc">10 min avant l'heure prévue</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Test appareils -->
+    <div class="device-card">
+      <div class="checklist-head">Vérification technique</div>
+      <div class="device-body">
+        <button class="btn-device" id="testDeviceBtn" type="button">
+          <svg viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="9" rx="1.5"/><path d="M12 8l3-2v6l-3-2"/></svg>
+          Tester caméra / micro
+        </button>
+        <div class="device-result" id="deviceTestResult">Vérifiez caméra et micro avant d'entrer.</div>
+      </div>
+    </div>
+
+    <!-- Gérer le RDV -->
+    <div class="manage-card">
+      <div class="checklist-head">Gérer le rendez-vous</div>
+      <div class="manage-body">
+        <button class="btn-manage" id="reportBtn" type="button">
+          <svg viewBox="0 0 16 16"><path d="M1 8h14M1 4h14M1 12h8"/></svg>
+          Mes rendez-vous
+        </button>
+        <button class="btn-cancel" id="cancelBtn" type="button">Annuler ce rendez-vous</button>
+      </div>
+      <div class="info-tip">
+        <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M8 7v4M8 5.5v.01"/></svg>
+        <span>Connectez-vous à Meet Jitsi si vous êtes l'hôte, puis rejoignez quand la salle est disponible.</span>
+      </div>
+    </div>
+
+  </div><!-- /sidebar -->
+
+</div><!-- /page-body -->
+
+<!-- ─── MOBILE BAR ─── -->
+<div class="mob-bar" id="mobBottomPanel">
+  <div class="mob-bar-row">
+    <div class="mob-cd">
+      <div class="mob-cd-val" id="mobCountdown">--:--</div>
+      <div class="mob-cd-lbl" id="mobCdLabel">attente</div>
+    </div>
+    <button class="mob-join-btn" id="mobJoinBtn" disabled onclick="joinConsultation()">
+      <svg viewBox="0 0 16 16"><rect x="1" y="4" width="10" height="8" rx="1"/><path d="M11 7l4-2v6l-4-2"/></svg>
+      Rejoindre la consultation
+    </button>
+  </div>
+  <div class="mob-actions">
+    <button class="mob-action-btn" onclick="testDevices()">
+      <svg viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="9" rx="1.5"/><path d="M12 8l3-2v6l-3-2"/></svg>
+      Tester
+    </button>
+    <button class="mob-action-btn" onclick="connectMeetJitsi()">
+      <svg viewBox="0 0 16 16"><path d="M5.5 5.5h5v5h-5z"/><path d="M10.5 2.5h3v3M9.5 6.5l4-4"/></svg>
+      Meet Jitsi
+    </button>
+  </div>
+</div>
+
+<script>
+(function () {
+'use strict';
+
+const params = new URLSearchParams(window.location.search);
+const appointmentId = params.get('id');
+let currentAppointment = null;
+let waitingInterval = null;
+
+/* ── API ── */
+async function apiRequest(url, options = {}) {
+  const r = await fetch(url, {
+    credentials: 'include',
+    headers: { Accept: 'application/json', ...(options.headers || {}) },
+    ...options
+  });
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(d.error || d.message || 'Erreur serveur.');
+  return d;
+}
+
+/* ── HELPERS ── */
+function esc(s) { const d=document.createElement('div');d.textContent=s;return d.innerHTML; }
+function tof(v,fb='—') { const s=String(v||'').trim(); return s&&s!=='null'?s:fb; }
+function initials(p,n) { return ((p||'')[0]||'')+''+((n||'')[0]||''); }
+function fmtDT(s) {
+  if (!s) return '—';
+  const d = new Date(s);
+  if (isNaN(d)) return s;
+  return d.toLocaleDateString('fr-DZ',{day:'2-digit',month:'short',year:'numeric'})
+    + ' · ' + d.toLocaleTimeString('fr-DZ',{hour:'2-digit',minute:'2-digit'});
+}
+function statusLabel(s) {
+  return {confirme:'Confirmé',annule:'Annulé',termine:'Terminé',en_attente:'En attente',en_cours:'En cours'}[s]||s||'—';
+}
+function teleStatusLabel(s) {
+  return {waiting:'En attente',active:'Session active',completed:'Terminée',cancelled:'Annulée'}[s]||'';
+}
+
+/* ── ERROR ── */
+function showError(msg) {
+  const el = document.getElementById('teleError');
+  el.textContent = msg; el.classList.remove('hidden');
+}
+function clearError() { document.getElementById('teleError').classList.add('hidden'); }
+
+/* ── COUNTDOWN ── */
+function startWaitingRefresh(item) {
+  if (waitingInterval) clearInterval(waitingInterval);
+  function tick() {
+    const ts = String(item.teleconsultation_status||'').toLowerCase();
+    const el = document.getElementById('teleStatus');
+    if (el) el.textContent = teleStatusLabel(ts) || statusLabel(item.statut);
+
+    const msg    = document.getElementById('waitingRoomMessage');
+    const cVal   = document.getElementById('countdownBlock');
+    const cLbl   = document.getElementById('countdownLabel');
+    const joinBtn= document.getElementById('joinBtn');
+    const mobJoin= document.getElementById('mobJoinBtn');
+    const mobCdVal=document.getElementById('mobCountdown');
+    const mobCdLbl=document.getElementById('mobCdLabel');
+
+    if (ts === 'active') {
+      if (msg) msg.textContent = 'Session active — rejoignez maintenant.';
+      if (cVal) { cVal.textContent = 'LIVE'; cVal.className = 'countdown-val live'; }
+      if (cLbl) cLbl.textContent = 'session en cours';
+      if (mobCdVal) { mobCdVal.textContent = 'LIVE'; mobCdVal.className = 'mob-cd-val live'; }
+      if (mobCdLbl) mobCdLbl.textContent = 'en cours';
+      if (joinBtn) joinBtn.disabled = false;
+      if (mobJoin) mobJoin.disabled = false;
+      return;
+    }
+    if (ts === 'completed' || ts === 'cancelled' || item.statut === 'annule') {
+      if (cVal) cVal.textContent = '—';
+      if (joinBtn) joinBtn.disabled = true;
+      if (mobJoin) mobJoin.disabled = true;
+      return;
+    }
+    const apptTime = item.date_heure ? new Date(item.date_heure) : null;
+    if (!apptTime || isNaN(apptTime)) return;
+    const diff = apptTime - Date.now();
+    const openWindow = 10 * 60 * 1000;
+    if (diff <= openWindow && diff > 0) {
+      if (joinBtn) joinBtn.disabled = false;
+      if (mobJoin) mobJoin.disabled = false;
+    }
+    if (diff > 0) {
+      const h = Math.floor(diff/3600000);
+      const m = Math.floor((diff%3600000)/60000);
+      const s = Math.floor((diff%60000)/1000);
+      const fmt = h > 0
+        ? h+'h '+String(m).padStart(2,'0')+'m'
+        : String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+      if (cVal) { cVal.textContent = fmt; cVal.className = 'countdown-val'; }
+      if (mobCdVal) { mobCdVal.textContent = fmt; mobCdVal.className = 'mob-cd-val'; }
+      if (cLbl) cLbl.textContent = "avant l'ouverture de la salle";
+      if (mobCdLbl) mobCdLbl.textContent = 'attente';
+      if (msg) msg.textContent = 'La salle sera disponible 10 min avant le rendez-vous.';
+    } else {
+      if (cVal) { cVal.textContent = 'LIVE'; cVal.className = 'countdown-val live'; }
+      if (mobCdVal) { mobCdVal.textContent = 'LIVE'; mobCdVal.className = 'mob-cd-val live'; }
+      if (joinBtn) joinBtn.disabled = false;
+      if (mobJoin) mobJoin.disabled = false;
+      if (msg) msg.textContent = "L'heure est passée. Rejoignez si la salle est ouverte.";
+    }
+  }
+  tick();
+  waitingInterval = setInterval(tick, 1000);
+}
+
+/* ── DOCUMENTS ── */
+function documentTypeLabel(type) {
+  return {
+    patient_document:'Document patient',ordonnance:'Ordonnance',
+    certificat:'Certificat',compte_rendu:'Compte-rendu',document_medical:'Document medical'
+  }[String(type||'').trim()]||'Document';
+}
+
+function renderDocumentSections(docs) {
+  const patientEl = document.getElementById('documentsList');
+  const doctorEl  = document.getElementById('doctorDocumentsList');
+  if (!patientEl) return;
+
+  const patientDocs = (docs||[]).filter(d => String(d.uploaded_by_role||'patient') !== 'medecin');
+  const doctorDocs  = (docs||[]).filter(d => String(d.uploaded_by_role||'') === 'medecin');
+
+  const renderList = (items, allowDelete) => '<div class="doc-list">' + items.map(d => `
+    <div class="doc-item">
+      <div class="doc-icon">
+        <svg viewBox="0 0 16 16"><path d="M10 2H4a1 1 0 00-1 1v10a1 1 0 001 1h8a1 1 0 001-1V5z"/><path d="M10 2v3h3"/></svg>
+      </div>
+      <div class="doc-info">
+        <div class="doc-name">${esc(d.original_name||d.nom_fichier||d.filename||'Document')}</div>
+        <div class="doc-meta">${esc(documentTypeLabel(d.document_type))}${d.created_at?' · '+esc(fmtDT(d.created_at)):''}</div>
+      </div>
+      <div class="doc-btns">
+        ${d.file_url?`<a href="${esc(d.file_url)}" target="_blank" rel="noopener" class="doc-btn doc-btn-open">Ouvrir</a>`:''}
+        ${allowDelete?`<button class="doc-btn doc-btn-del" data-del="${esc(d.id||'')}">Supprimer</button>`:''}
+      </div>
+    </div>`).join('') + '</div>';
+
+  patientEl.innerHTML = patientDocs.length
+    ? renderList(patientDocs, true)
+    : '<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 18 18"><path d="M10 2H4a1 1 0 00-1 1v12a1 1 0 001 1h10a1 1 0 001-1V6z"/><path d="M10 2v4h4"/></svg></div>Aucun document envoyé.</div>';
+  patientEl.querySelectorAll('[data-del]').forEach(btn =>
+    btn.addEventListener('click', () => deleteDocument(btn.dataset.del)));
+
+  if (doctorEl) {
+    doctorEl.innerHTML = doctorDocs.length
+      ? renderList(doctorDocs, false)
+      : '<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 18 18"><path d="M10 2H4a1 1 0 00-1 1v12a1 1 0 001 1h10a1 1 0 001-1V6z"/><path d="M10 2v4h4"/></svg></div>Aucun document médical reçu.</div>';
+  }
+}
+
+async function loadDocuments() {
+  if (!appointmentId) return;
+  const payload = await apiRequest('/api/appointments/documents.php?appointment_id=' + encodeURIComponent(appointmentId));
+  renderDocumentSections(payload.data || []);
+}
+
+async function deleteDocument(id) {
+  if (!id || !confirm('Supprimer ce document ?')) return;
+  try {
+    const r = await fetch('/api/appointments/documents.php?id=' + encodeURIComponent(id),
+      { method:'DELETE', credentials:'include', headers:{Accept:'application/json'} });
+    const d = await r.json().catch(()=>({}));
+    if (!r.ok) throw new Error(d.error || d.message || 'Suppression impossible.');
+    await loadDocuments();
+  } catch(e) { showError(e.message || 'Suppression impossible.'); }
+}
+
+/* ── RENDER ── */
+function renderOutputs(item) {
+  const card = document.getElementById('consultationOutputsCard');
+  const ts = String(item.teleconsultation_status||'').toLowerCase();
+  const has = !!(item.teleconsultation_summary || item.teleconsultation_ordonnance_text ||
+    item.teleconsultation_certificat_text || item.teleconsultation_started_at ||
+    item.teleconsultation_ended_at || ts==='completed');
+  card.classList.toggle('hidden', !has);
+  if (!has) return;
+  document.getElementById('consultationStartedAt').textContent  = item.teleconsultation_started_at ? fmtDT(item.teleconsultation_started_at) : 'Non démarrée';
+  document.getElementById('consultationEndedAt').textContent    = item.teleconsultation_ended_at ? fmtDT(item.teleconsultation_ended_at) : 'Pas encore terminée';
+  document.getElementById('consultationOutcomeStatus').textContent = teleStatusLabel(ts) || statusLabel(item.statut);
+  document.getElementById('consultationSummary').textContent    = tof(item.teleconsultation_summary,'Aucun résumé disponible.');
+  document.getElementById('consultationOrdonnance').textContent = tof(item.teleconsultation_ordonnance_text,'Aucune ordonnance disponible.');
+  document.getElementById('consultationCertificat').textContent = tof(item.teleconsultation_certificat_text,'Aucun certificat disponible.');
+}
+
+function renderAppointment(item) {
+  currentAppointment = item;
+  const doc = item.medecin || {};
+  const pat = item.patient_profile || {};
+
+  document.getElementById('heroDate').textContent    = fmtDT(item.date_heure);
+  document.getElementById('heroPatient').textContent = tof(pat.display_name,'Patient');
+  document.getElementById('heroRef').textContent     = tof(item.confirmation_code,'—');
+  document.getElementById('appointmentIdField').value = item.id;
+
+  const avatar   = document.getElementById('doctorAvatar');
+  const photoUrl = String(doc.photo_url||'').trim();
+  avatar.innerHTML = photoUrl ? `<img src="${esc(photoUrl)}" alt="">` : initials(doc.prenom, doc.nom);
+
+  document.getElementById('doctorName').textContent    = 'Dr. ' + [doc.prenom,doc.nom].filter(Boolean).join(' ');
+  document.getElementById('doctorSub').textContent     = tof(doc.specialite,'Médecin') + (doc.wilaya?' · '+doc.wilaya:'');
+  document.getElementById('doctorAddress').textContent = tof(doc.adresse,[doc.commune,doc.wilaya].filter(Boolean).join(', ')||'—');
+  document.getElementById('appointmentVisitType').textContent = tof(item.type_visite,'Consultation');
+  document.getElementById('appointmentRelation').textContent  = tof(pat.relation,'Moi-même');
+  document.getElementById('appointmentDuration').textContent  = item.duree_min ? item.duree_min+' min' : '—';
+  document.getElementById('appointmentMotif').textContent     = tof(item.motif,'Consultation');
+  document.getElementById('appointmentTeleNotes').textContent = tof(item.teleconsultation_notes,'Aucune note transmise.');
+
+  const done = item.statut==='annule' || item.statut==='termine';
+  document.getElementById('cancelBtn').disabled        = done;
+  document.getElementById('documentInput').disabled    = done;
+  document.getElementById('documentSubmitBtn').disabled= done;
+
+  renderOutputs(item);
+  startWaitingRefresh(item);
+}
+
+/* ── ACTIONS ── */
+function buildMeetUrl(room) {
+  return 'https://meet.jit.si/' + encodeURIComponent(room) + '#config.prejoinConfig.enabled=false';
+}
+
+async function joinConsultation() {
+  if (!currentAppointment) return;
+  try {
+    clearError();
+    const d = await apiRequest('/api/teleconsultation/join.php?id=' + encodeURIComponent(currentAppointment.id), { method:'POST' });
+    if (!d.room_name) throw new Error('Lien de consultation indisponible.');
+    window.location.href = buildMeetUrl(d.room_name);
+  } catch(e) { showError(e.message || 'Impossible de rejoindre.'); }
+}
+
+async function connectMeetJitsi() {
+  if (!currentAppointment) return;
+  try {
+    clearError();
+    const d = await apiRequest('/api/teleconsultation/join.php?id=' + encodeURIComponent(currentAppointment.id), { method:'POST' });
+    if (!d.room_name) throw new Error('Salle Jitsi indisponible.');
+    window.open(buildMeetUrl(d.room_name), '_blank', 'noopener');
+  } catch(e) { showError(e.message || "Impossible d'ouvrir Meet Jitsi."); }
+}
+
+async function testDevices() {
+  const el = document.getElementById('deviceTestResult');
+  if (el) { el.textContent = 'Test en cours…'; el.style.color = ''; }
+  try {
+    if (!navigator.mediaDevices?.getUserMedia) throw new Error('Votre navigateur ne supporte pas le test média.');
+    const stream = await navigator.mediaDevices.getUserMedia({ video:true, audio:true });
+    stream.getTracks().forEach(t => t.stop());
+    if (el) { el.textContent = '✓ Caméra et micro détectés. Vous êtes prêt.'; el.style.color = 'var(--green)'; }
+  } catch(e) {
+    if (el) { el.textContent = '✗ ' + (e?.message || "Impossible d'accéder à la caméra ou au micro."); el.style.color = 'var(--red)'; }
+  }
+}
+
+async function cancelAppointment() {
+  if (!currentAppointment || !confirm('Annuler ce rendez-vous ?')) return;
+  try {
+    const r = await fetch('/api/appointments/item.php?id=' + encodeURIComponent(currentAppointment.id),
+      { method:'DELETE', credentials:'include', headers:{Accept:'application/json'} });
+    const d = await r.json().catch(()=>({}));
+    if (!r.ok) throw new Error(d.error || d.message || 'Annulation impossible');
+    window.location.href = '/dashboard/#section-rdv';
+  } catch(e) { showError(e.message || 'Annulation impossible.'); }
+}
+
+/* ── INIT ── */
+async function loadAppointment() {
+  if (!appointmentId) {
+    showError('Aucun rendez-vous fourni.');
+    document.getElementById('teleMainLayout').classList.add('hidden');
+    return;
+  }
+  try {
+    clearError();
+    const auth = await apiRequest('/api/auth/me/');
+    if (!auth.user || auth.user.role !== 'patient') throw new Error('Session patient invalide');
+    const payload = await apiRequest('/api/appointments/item.php?id=' + encodeURIComponent(appointmentId));
+    const item = payload.data || null;
+    if (!item) throw new Error('Rendez-vous introuvable.');
+    if (item.consultation_mode !== 'teleconsultation') throw new Error("Ce rendez-vous n'est pas une téléconsultation.");
+    renderAppointment(item);
+    await loadDocuments();
+  } catch(e) {
+    const next = encodeURIComponent('/teleconsultation/?id=' + encodeURIComponent(appointmentId));
+    if ((e.message||'').toLowerCase().includes('session patient invalide')) {
+      window.location.href = '/connexion/?next=' + next; return;
+    }
+    showError(e.message || 'Chargement impossible.');
+    document.getElementById('teleMainLayout').classList.add('hidden');
+  }
+}
+
+/* ── EVENTS ── */
+document.getElementById('reportBtn').addEventListener('click', () => { window.location.href = '/dashboard/#section-rdv'; });
+document.getElementById('joinBtn').addEventListener('click', joinConsultation);
+document.getElementById('connectMeetBtn').addEventListener('click', connectMeetJitsi);
+document.getElementById('testDeviceBtn').addEventListener('click', testDevices);
+document.getElementById('cancelBtn').addEventListener('click', cancelAppointment);
+document.getElementById('documentForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  try {
+    clearError();
+    const fd = new FormData(e.currentTarget);
+    fd.set('appointment_id', appointmentId);
+    const r = await fetch('/api/appointments/documents.php', {
+      method:'POST', body:fd, credentials:'include', headers:{Accept:'application/json'}
+    });
+    const d = await r.json().catch(()=>({}));
+    if (!r.ok) throw new Error(d.error || d.message || 'Upload impossible.');
+    e.currentTarget.reset();
+    await loadDocuments();
+  } catch(err) { showError(err.message || 'Upload impossible.'); }
+});
+
+document.addEventListener('DOMContentLoaded', loadAppointment);
+})();
+</script>
+</body>
+</html>

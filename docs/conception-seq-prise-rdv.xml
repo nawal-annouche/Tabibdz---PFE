@@ -1,0 +1,189 @@
+<mxGraphModel dx="1422" dy="762" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="900" pageHeight="800" math="0" shadow="0">
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+
+    
+    <mxCell id="p1" value="Patient" style="shape=mxgraph.flowchart.actor;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="1">
+      <mxGeometry x="47" y="15" width="50" height="55" as="geometry" />
+    </mxCell>
+    <mxCell id="p2" value="Navigateur" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="1">
+      <mxGeometry x="183" y="20" width="110" height="40" as="geometry" />
+    </mxCell>
+    <mxCell id="p3" value="Serveur" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="1">
+      <mxGeometry x="375" y="20" width="100" height="40" as="geometry" />
+    </mxCell>
+    <mxCell id="p4" value="Base de données" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="1">
+      <mxGeometry x="558" y="12" width="100" height="55" as="geometry" />
+    </mxCell>
+
+    
+    <mxCell id="l1" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="72" y="70" as="sourcePoint" />
+        <mxPoint x="72" y="770" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="l2" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="238" y="60" as="sourcePoint" />
+        <mxPoint x="238" y="770" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="l3" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="425" y="60" as="sourcePoint" />
+        <mxPoint x="425" y="770" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="l4" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="608" y="67" as="sourcePoint" />
+        <mxPoint x="608" y="770" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    
+
+    <mxCell id="m1" value="Rechercher un médecin (spécialité / wilaya / nom)" style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="72" y="100" as="sourcePoint" />
+        <mxPoint x="238" y="100" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    <mxCell id="m2" value="Requête recherche médecins" style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="238" y="130" as="sourcePoint" />
+        <mxPoint x="425" y="130" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    <mxCell id="m3" value="Consulter médecins disponibles" style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="425" y="158" as="sourcePoint" />
+        <mxPoint x="608" y="158" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    <mxCell id="m4" value="Liste des médecins" style="html=1;dashed=1;endArrow=open;endFill=0;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="608" y="183" as="sourcePoint" />
+        <mxPoint x="425" y="183" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    <mxCell id="m5" value="Résultats de recherche" style="html=1;dashed=1;endArrow=open;endFill=0;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="425" y="210" as="sourcePoint" />
+        <mxPoint x="238" y="210" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    <mxCell id="m6" value="Sélectionner un médecin" style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="72" y="240" as="sourcePoint" />
+        <mxPoint x="238" y="240" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    <mxCell id="m7" value="Demander les créneaux disponibles" style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="238" y="268" as="sourcePoint" />
+        <mxPoint x="425" y="268" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    <mxCell id="m8" value="Consulter créneaux du médecin" style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="425" y="295" as="sourcePoint" />
+        <mxPoint x="608" y="295" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    <mxCell id="m9" value="Créneaux libres" style="html=1;dashed=1;endArrow=open;endFill=0;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="608" y="320" as="sourcePoint" />
+        <mxPoint x="425" y="320" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    <mxCell id="m10" value="Afficher créneaux disponibles" style="html=1;dashed=1;endArrow=open;endFill=0;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="425" y="348" as="sourcePoint" />
+        <mxPoint x="238" y="348" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    <mxCell id="m11" value="Choisir créneau + saisir motif + mode de consultation" style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="72" y="378" as="sourcePoint" />
+        <mxPoint x="238" y="378" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    <mxCell id="m12" value="Soumettre demande de rendez-vous" style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="238" y="408" as="sourcePoint" />
+        <mxPoint x="425" y="408" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    
+    <mxCell id="a1box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="1">
+      <mxGeometry x="238" y="423" width="385" height="48" as="geometry" />
+    </mxCell>
+    <mxCell id="a1tag" value="alt" style="text;html=1;fontStyle=1;fontSize=11;align=left;verticalAlign=top;fillColor=none;strokeColor=none;fontColor=#000000;" vertex="1" parent="1">
+      <mxGeometry x="240" y="424" width="28" height="18" as="geometry" />
+    </mxCell>
+    <mxCell id="a1lbl" value="[Créneau plus disponible]" style="text;html=1;fontStyle=2;fontSize=10;align=left;verticalAlign=top;fillColor=none;strokeColor=none;fontColor=#000000;" vertex="1" parent="1">
+      <mxGeometry x="271" y="425" width="220" height="16" as="geometry" />
+    </mxCell>
+    <mxCell id="a1msg" value="Erreur : créneau indisponible" style="html=1;dashed=1;endArrow=open;endFill=0;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="425" y="448" as="sourcePoint" />
+        <mxPoint x="238" y="448" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    <mxCell id="m13" value="Enregistrer rendez-vous + bloquer créneau" style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="425" y="486" as="sourcePoint" />
+        <mxPoint x="608" y="486" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    <mxCell id="m14" value="Confirmation enregistrement" style="html=1;dashed=1;endArrow=open;endFill=0;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="608" y="513" as="sourcePoint" />
+        <mxPoint x="425" y="513" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    <mxCell id="m15" value="Envoyer notification de confirmation (email)" style="html=1;endArrow=open;endFill=0;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="425" y="535" as="sourcePoint" />
+        <mxPoint x="425" y="555" as="targetPoint" />
+        <Array as="points">
+          <mxPoint x="465" y="535" />
+          <mxPoint x="465" y="555" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+
+    <mxCell id="m16" value="Code de confirmation du rendez-vous" style="html=1;dashed=1;endArrow=open;endFill=0;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="425" y="575" as="sourcePoint" />
+        <mxPoint x="238" y="575" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    <mxCell id="m17" value="Afficher confirmation + code du rendez-vous" style="html=1;dashed=1;endArrow=open;endFill=0;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="238" y="603" as="sourcePoint" />
+        <mxPoint x="72" y="603" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+  </root>
+</mxGraphModel>

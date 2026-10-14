@@ -1,0 +1,128 @@
+:root {
+  --site-green: #16a163;
+  --site-green-dark: #0f7a4a;
+  --site-green-light: #e8f7f0;
+  --site-text: #0d1f14;
+  --site-text-muted: #5a7566;
+  --site-border: #d6ede1;
+  --site-bg: #ffffff;
+  --site-bg-soft: #f4faf7;
+  --site-radius-pill: 999px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "DM Sans", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.logo,
+.nav-logo,
+.footer-logo {
+  font-family: "Syne", sans-serif;
+}
+
+.btn,
+.btn-outline,
+.btn-primary {
+  border-radius: var(--site-radius-pill);
+}
+
+.btn-primary {
+  background: var(--site-green);
+  border-color: var(--site-green);
+}
+
+.btn-primary:hover {
+  background: var(--site-green-dark);
+  border-color: var(--site-green-dark);
+}
+
+.footer-links a,
+.nav-links a {
+  transition: color 0.18s ease;
+}
+
+.footer-links a:hover,
+.nav-links a:hover {
+  color: var(--site-green);
+}
+
+.site-section-tight {
+  padding-top: 32px;
+  padding-bottom: 32px;
+}
+
+.site-footer {
+  margin-top: 0;
+  border-top: 1px solid var(--site-border);
+  padding: 32px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  background: var(--site-bg-soft);
+  flex-wrap: wrap;
+}
+
+.site-footer-logo {
+  font-family: "Syne", sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  color: var(--site-text);
+}
+
+.site-footer-logo span {
+  color: var(--site-green);
+}
+
+.site-footer-links {
+  display: flex;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+
+.site-footer-links a {
+  font-size: 13px;
+  color: var(--site-text-muted);
+}
+
+.site-footer-copy {
+  font-size: 12px;
+  color: #94a89e;
+}
+
+@media (max-width: 900px) {
+  .site-footer {
+    padding: 28px 20px;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .site-footer-links {
+    justify-content: center;
+  }
+}

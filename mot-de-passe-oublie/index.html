@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TabibDZ - Mot de passe oublie</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/shared-ui.css" />
+  <link rel="stylesheet" href="/assets/auth-shell.css" />
+  <style>
+    * { box-sizing: border-box; }
+
+    :root {
+      --brand: #059669;
+      --brand-hover: #047857;
+      --brand-soft: rgba(5, 150, 105, 0.12);
+      --surface: #ffffff;
+      --page: #eef5f1;
+      --dark: #102116;
+      --dark-soft: #1b2c22;
+      --muted: #718c7d;
+      --muted-light: #b0c9bc;
+      --line: #dceae3;
+      --font-body: "DM Sans", sans-serif;
+      --font-display: "Syne", sans-serif;
+      --ease: 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    html {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font-body);
+      color: var(--dark);
+      background:
+        radial-gradient(circle at top left, rgba(52, 211, 153, 0.12), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(5, 150, 105, 0.08), transparent 28%),
+        var(--page);
+      overflow: hidden;
+      padding: 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .reset-shell {
+      grid-template-columns: minmax(300px, 0.92fr) minmax(420px, 1fr);
+    }
+
+    .reset-showcase {
+      padding: 36px 34px;
+      background: linear-gradient(160deg, #07251a 0%, #0b3223 55%, #093123 100%);
+    }
+
+    .reset-showcase::before {
+      width: 360px;
+      height: 360px;
+      right: -140px;
+      bottom: -120px;
+      background: radial-gradient(circle, rgba(52, 211, 153, 0.22), transparent 66%);
+    }
+
+    .reset-showcase::after {
+      width: 240px;
+      height: 240px;
+      top: -100px;
+      left: -90px;
+      background: radial-gradient(circle, rgba(52, 211, 153, 0.12), transparent 62%);
+    }
+
+    .reset-showcase .eyebrow {
+      margin-top: 42px;
+      padding: 9px 15px;
+      border-color: rgba(167, 243, 208, 0.22);
+      background: rgba(167, 243, 208, 0.08);
+      color: #bdf5dc;
+      letter-spacing: 0.12em;
+      font-size: 0.76rem;
+    }
+
+    .reset-showcase .eyebrow span {
+      width: 8px;
+      height: 8px;
+    }
+
+    .reset-showcase .showcase-title {
+      margin: 0 0 14px;
+      max-width: 11ch;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      line-height: 1.03;
+    }
+
+    .reset-showcase .showcase-text {
+      max-width: 39ch;
+      color: rgba(255,255,255,0.78);
+      line-height: 1.7;
+    }
+
+    .hero-card {
+      margin-top: 28px;
+      padding: 18px;
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      position: relative;
+      z-index: 1;
+    }
+    .hero-card strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+    .hero-card p {
+      font-size: 0.92rem;
+      color: rgba(255,255,255,0.72);
+    }
+
+    .reset-panel {
+      align-items: center;
+      padding: 44px 56px;
+      background: linear-gradient(180deg, #ffffff 0%, #f7faf8 100%);
+    }
+
+    .reset-card {
+      max-width: 520px;
+    }
+
+    .back-link {
+      color: #7a9488;
+      font-weight: 600;
+      font-size: 0.88rem;
+      margin-bottom: 32px;
+      transition: color .15s;
+    }
+
+    .back-link:hover { color: #15a870; }
+
+    .back-link svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .reset-card .form-title {
+      margin: 0 0 6px;
+      font-size: 2.2rem;
+      letter-spacing: -0.045em;
+      color: #0a1a10;
+    }
+
+    .panel-subtitle {
+      margin: 0 0 28px;
+      color: #718c7d;
+      line-height: 1.65;
+      font-size: 0.93rem;
+      max-width: 42ch;
+    }
+    .step { display: none; }
+    .step.active { display: block; animation: fadeIn .24s ease; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+    .field { margin-bottom: 18px; }
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .field label {
+      margin-bottom: 8px;
+      font-size: 0.85rem;
+      letter-spacing: 0.01em;
+    }
+
+    .field-wrap input {
+      border-color: #e0ece6;
+      border-radius: 14px;
+      padding: 14px 16px 14px 44px;
+      font-size: 0.95rem;
+      background: #f7fbf9;
+      transition: border-color .2s, box-shadow .2s, background .2s;
+    }
+
+    .field-wrap input:focus {
+      border-color: #15a870;
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(21,168,112,0.09);
+    }
+
+    .field-wrap input::placeholder { color: #b8cfc5; }
+
+    .field-icon {
+      left: 15px;
+      stroke: #b0c9bc;
+      stroke-width: 1.8;
+    }
+
+    .pin-input {
+      letter-spacing: 0.45em;
+      text-align: center;
+      font-size: 1.25rem;
+      font-weight: 800;
+      font-family: var(--font-body);
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .actions-secondary {
+      display: flex;
+      gap: 10px;
+    }
+
+    .actions-secondary .btn { flex: 1; }
+
+    .btn {
+      appearance: none;
+      border: 1.5px solid #dceae3;
+      border-radius: 14px;
+      padding: 13px 20px;
+      font: inherit;
+      font-size: 0.92rem;
+      font-weight: 700;
+      background: #fff;
+      color: #2d4a38;
+      cursor: pointer;
+      transition: border-color .18s, background .18s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+
+    .btn:hover { border-color: #aed0be; background: #f4faf7; }
+
+    .btn:disabled { opacity: 0.65; cursor: not-allowed; box-shadow: none; }
+
+    .muted-row {
+      margin-top: 18px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: #f0f9f4;
+      border: 1px solid #d4ece1;
+      color: #5a7a67;
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+
+    .panel-footer {
+      margin-top: 24px;
+      padding-top: 0;
+      text-align: center;
+      color: #7a9488;
+      font-size: 0.88rem;
+    }
+    .panel-footer a {
+      color: #15a870;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .panel-footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 920px) {
+      html, body { height: auto; overflow: auto; }
+      body { padding: 16px; }
+      .reset-shell { grid-template-columns: 1fr; height: auto; }
+      .reset-showcase { display: none; }
+      .reset-panel { padding: 32px 24px 40px; align-items: flex-start; }
+      .field-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 0; }
+      .reset-shell {
+        height: auto;
+        min-height: 100vh;
+        border-radius: 0;
+        box-shadow: none;
+      }
+      .reset-panel {
+        padding: 40px 18px 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-shell reset-shell">
+    <aside class="auth-showcase reset-showcase">
+      <a href="/tabibdz-homepage.html" class="brand-link tdz-brand-lockup">
+        <span class="brand-badge tdz-brand-badge">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 2H5a2 2 0 0 0-2 2v16l4-3h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/></svg>
+        </span>
+        <span class="tdz-brand-text">Tabib<em>DZ</em></span>
+      </a>
+      <div class="showcase-copy">
+        <div class="eyebrow"><span></span>Securite compte</div>
+        <h1 class="showcase-title">Reinitialisez votre mot de passe avec votre code PIN.</h1>
+        <p class="showcase-text">Un email professionnel TabibDZ vous envoie votre code PIN. Le code PIN correct est obligatoire avant tout changement de mot de passe.</p>
+      </div>
+      <div class="hero-card">
+        <strong>Important</strong>
+        <p>Le lien email vous ramene sur cette page, mais le mot de passe ne changera jamais sans le bon code PIN a 6 chiffres.</p>
+      </div>
+    </aside>
+
+    <main class="auth-panel reset-panel">
+      <div class="auth-card reset-card">
+      <a class="back-link" href="/connexion/">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/><line x1="9" y1="12" x2="21" y2="12"/></svg>
+        Retour à l'accueil
+      </a>
+
+      <h2 class="form-title">Mot de passe oublié</h2>
+      <p class="form-subtitle panel-subtitle">Saisissez votre e-mail pour recevoir un code PIN, puis définissez votre nouveau mot de passe.</p>
+
+      <div id="status" class="status tdz-feedback tdz-feedback--status info show">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+        <span id="status-text">Saisissez votre email pour recevoir votre code PIN.</span>
+      </div>
+
+      <!-- STEP 1: Email -->
+      <section id="request-step" class="step active">
+        <form id="request-form" novalidate>
+          <div class="field">
+            <label for="request-email">Adresse e-mail</label>
+            <div class="field-wrap">
+              <svg class="field-icon" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+              <input id="request-email" name="email" type="email" autocomplete="email" placeholder="vous@email.com" />
+            </div>
+          </div>
+          <div class="actions">
+            <button type="submit" id="request-btn" class="submit-btn">Envoyer le code PIN</button>
+            <div class="actions-secondary">
+              <a class="btn" href="/connexion/">← Retour connexion</a>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <!-- STEP 2: PIN + new password -->
+      <section id="reset-step" class="step">
+        <form id="reset-form" novalidate>
+          <div class="field">
+            <label for="reset-email">Adresse e-mail</label>
+            <div class="field-wrap">
+              <svg class="field-icon" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+              <input id="reset-email" name="email" type="email" autocomplete="email" placeholder="vous@email.com" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="reset-pin">Code PIN reçu par e-mail</label>
+            <div class="field-wrap">
+              <svg class="field-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <input id="reset-pin" name="pin" class="pin-input" type="text" inputmode="numeric" maxlength="6" placeholder="000000" />
+            </div>
+          </div>
+
+          <div class="field-grid">
+            <div class="field">
+              <label for="new-password">Nouveau mot de passe</label>
+              <div class="field-wrap">
+                <svg class="field-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <input id="new-password" name="new_password" type="password" autocomplete="new-password" placeholder="Minimum 8 caractères" />
+              </div>
+            </div>
+            <div class="field">
+              <label for="confirm-password">Confirmer le mot de passe</label>
+              <div class="field-wrap">
+                <svg class="field-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <input id="confirm-password" name="confirm_password" type="password" autocomplete="new-password" placeholder="Retapez votre mot de passe" />
+              </div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button type="submit" id="reset-btn" class="submit-btn">Enregistrer le nouveau mot de passe</button>
+            <div class="actions-secondary">
+              <button type="button" id="resend-btn" class="btn">↺ Renvoyer le code</button>
+              <a class="btn" href="/connexion/">← Retour</a>
+            </div>
+          </div>
+
+          <div class="muted-row">
+            🔒 Le code PIN est obligatoire et expire sous <strong>1 heure</strong>. Le lien email ne suffit pas à lui seul.
+          </div>
+        </form>
+      </section>
+
+      <div class="panel-footer">
+        Pas encore inscrit ? <a href="/inscription/">Créer un compte</a>
+      </div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="/assets/reset-password.js"></script>
+</body>
+</html>

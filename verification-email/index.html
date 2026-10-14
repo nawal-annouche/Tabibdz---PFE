@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TabibDZ - Vérification email</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      height: 100vh;
+      overflow: hidden;
+      font-family: 'DM Sans', sans-serif;
+      color: #102116;
+    }
+
+    .shell {
+      width: 100%;
+      height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(300px, 0.92fr) minmax(420px, 1fr);
+      overflow: hidden;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(160deg, #07251a 0%, #0b3223 55%, #093123 100%);
+      color: #fff;
+      padding: 36px 34px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      width: 360px; height: 360px;
+      right: -140px; bottom: -120px;
+      background: radial-gradient(circle, rgba(52,211,153,.22), transparent 66%);
+      border-radius: 999px;
+      pointer-events: none;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 240px; height: 240px;
+      top: -100px; left: -90px;
+      background: radial-gradient(circle, rgba(52,211,153,.12), transparent 62%);
+      border-radius: 999px;
+      pointer-events: none;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      text-decoration: none;
+      color: #fff;
+      position: relative;
+      z-index: 1;
+    }
+    .brand-badge {
+      width: 46px; height: 46px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #10b981, #34d399);
+      box-shadow: 0 18px 34px rgba(16,185,129,.28);
+    }
+    .brand-badge svg { width: 22px; height: 22px; fill: #fff; }
+    .brand em { color: #34d399; font-style: normal; }
+
+    .eyebrow {
+      margin: 42px 0 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 15px;
+      border-radius: 999px;
+      border: 1px solid rgba(167,243,208,.22);
+      background: rgba(167,243,208,.08);
+      color: #bdf5dc;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: .76rem;
+      font-weight: 700;
+      position: relative;
+      z-index: 1;
+      width: fit-content;
+    }
+    .eyebrow span {
+      width: 8px; height: 8px;
+      border-radius: 999px;
+      background: #34d399;
+    }
+    .hero h1 {
+      margin: 0 0 14px;
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.25rem);
+      font-weight: 800;
+      line-height: 1.02;
+      letter-spacing: -0.05em;
+      position: relative;
+      z-index: 1;
+    }
+    .hero > p {
+      max-width: 38ch;
+      color: rgba(255,255,255,.78);
+      line-height: 1.7;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-card {
+      margin-top: 28px;
+      padding: 18px;
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      position: relative;
+      z-index: 1;
+    }
+    .hero-card strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: .95rem;
+    }
+    .hero-card p {
+      font-size: .92rem;
+      color: rgba(255,255,255,.72);
+      margin: 0;
+    }
+
+    /* ── PANEL ── */
+    .panel {
+      padding: 44px 56px;
+      background: linear-gradient(180deg, #ffffff 0%, #f7faf8 100%);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow-y: auto;
+      justify-content: center;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: #7a9488;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: .88rem;
+      margin-bottom: 32px;
+      width: fit-content;
+      transition: color .15s;
+    }
+    .back-link:hover { color: #15a870; }
+    .back-link svg {
+      width: 15px; height: 15px;
+      stroke: currentColor; fill: none;
+      stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    .panel h2 {
+      margin: 0 0 6px;
+      font-family: 'Syne', sans-serif;
+      font-size: 2.2rem;
+      line-height: 1.04;
+      letter-spacing: -0.045em;
+      color: #0a1a10;
+    }
+    .panel-subtitle {
+      margin: 0 0 28px;
+      color: #718c7d;
+      line-height: 1.65;
+      font-size: .93rem;
+      max-width: 42ch;
+    }
+
+    /* Status */
+    .status {
+      display: none;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 13px 16px;
+      border-radius: 14px;
+      margin-bottom: 22px;
+      font-weight: 600;
+      font-size: .88rem;
+      line-height: 1.55;
+      border: 1px solid transparent;
+    }
+    .status.show { display: flex; }
+    .status.info    { background: rgba(59,130,246,.07);  color: #1e40af; border-color: rgba(59,130,246,.15); }
+    .status.success { background: rgba(22,161,99,.08);   color: #0f7a4a; border-color: rgba(22,161,99,.18); }
+    .status.error   { background: rgba(239,68,68,.08);   color: #b91c1c; border-color: rgba(239,68,68,.18); }
+    .status svg {
+      width: 16px; height: 16px;
+      flex: 0 0 auto;
+      stroke: currentColor; fill: none;
+      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+      margin-top: 1px;
+    }
+
+    /* Fields */
+    .field { margin-bottom: 18px; }
+    .pin-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: .85rem;
+      font-weight: 700;
+      color: #1b2c22;
+      letter-spacing: .01em;
+    }
+
+    .input-wrap { position: relative; }
+    .input-icon {
+      position: absolute;
+      left: 15px; top: 50%;
+      transform: translateY(-50%);
+      width: 16px; height: 16px;
+      stroke: #b0c9bc; fill: none;
+      stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+      pointer-events: none;
+    }
+    input {
+      width: 100%;
+      border: 1.5px solid #e0ece6;
+      border-radius: 14px;
+      padding: 14px 16px 14px 44px;
+      font: inherit;
+      font-size: .95rem;
+      color: #102116;
+      background: #f7fbf9;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s, background .2s;
+    }
+    input:focus {
+      border-color: #15a870;
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(21,168,112,.09);
+    }
+    input::placeholder { color: #b8cfc5; }
+    input[readonly] {
+      background: #f0f8f4;
+      color: #4a7060;
+      cursor: default;
+    }
+
+    .pin-input {
+      letter-spacing: .45em;
+      text-align: center;
+      font-size: 1.25rem;
+      font-weight: 800;
+    }
+
+    /* Buttons */
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .actions-secondary {
+      display: flex;
+      gap: 10px;
+    }
+    .actions-secondary .btn { flex: 1; }
+
+    .btn {
+      appearance: none;
+      border: 1.5px solid #dceae3;
+      border-radius: 14px;
+      padding: 13px 20px;
+      font: inherit;
+      font-size: .92rem;
+      font-weight: 700;
+      background: #fff;
+      color: #2d4a38;
+      cursor: pointer;
+      transition: border-color .18s, background .18s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+    .btn:hover { border-color: #aed0be; background: #f4faf7; }
+    .btn-primary {
+      border: none;
+      background: linear-gradient(135deg, #18b87c 0%, #0f8c5d 100%);
+      color: #fff;
+      border-radius: 14px;
+      padding: 15px 20px;
+      font-size: .97rem;
+      box-shadow: 0 10px 28px rgba(15,140,93,.28), 0 2px 6px rgba(15,140,93,.15);
+      transition: opacity .2s, box-shadow .2s, transform .1s;
+    }
+    .btn-primary:hover { opacity: .93; box-shadow: 0 14px 34px rgba(15,140,93,.34); }
+    .btn-primary:active { transform: scale(.99); }
+    .btn:disabled { opacity: .65; cursor: not-allowed; box-shadow: none; }
+
+    .muted-row {
+      margin-top: 18px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: #f0f9f4;
+      border: 1px solid #d4ece1;
+      color: #5a7a67;
+      font-size: .85rem;
+      line-height: 1.6;
+    }
+    .muted-row strong { color: #0f5132; }
+
+    .panel-footer {
+      margin-top: 24px;
+      text-align: center;
+      color: #7a9488;
+      font-size: .88rem;
+    }
+    .panel-footer a {
+      color: #15a870;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .panel-footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 920px) {
+      .shell { grid-template-columns: 1fr; height: auto; }
+      .hero { display: none; }
+      .panel { height: 100vh; padding: 32px 24px; justify-content: flex-start; padding-top: 48px; }
+      .pin-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+
+    <!-- LEFT: HERO -->
+    <aside class="hero">
+      <a href="/tabibdz-homepage.html" class="brand">
+        <span class="brand-badge">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 2H5a2 2 0 0 0-2 2v16l4-3h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/></svg>
+        </span>
+        Tabib<em>DZ</em>
+      </a>
+      <div class="eyebrow"><span></span>Étape vérification</div>
+      <h1>Activez votre compte avec votre code PIN.</h1>
+      <p>Nous vous avons envoyé un email de confirmation avec votre code PIN à 6 chiffres. Le code PIN est obligatoire pour finaliser l'inscription.</p>
+      <div class="hero-card">
+        <strong>Conseil</strong>
+        <p>Le lien de l'email vous ramène ici, mais la validation finale se fait toujours avec le code PIN reçu dans votre boite mail.</p>
+      </div>
+    </aside>
+
+    <!-- RIGHT: PANEL -->
+    <main class="panel">
+      <a class="back-link" href="/connexion/">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/><line x1="9" y1="12" x2="21" y2="12"/></svg>
+        Retour à la connexion
+      </a>
+
+      <h2>Vérification email</h2>
+      <p class="panel-subtitle">Confirmez votre adresse e-mail avec le code PIN reçu pour finaliser la création de votre compte.</p>
+
+      <div id="status" class="status info show">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+        <span id="status-text">Entrez votre email et votre code PIN de vérification.</span>
+      </div>
+
+      <form id="verify-form" novalidate>
+        <div class="field">
+          <label for="email">Adresse e-mail</label>
+          <div class="input-wrap">
+            <svg class="input-icon" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+            <input id="email" name="email" type="email" autocomplete="email" placeholder="vous@email.com" />
+          </div>
+        </div>
+
+        <div class="pin-grid">
+          <div class="field">
+            <label for="pin">Code PIN</label>
+            <div class="input-wrap">
+              <svg class="input-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <input id="pin" name="pin" class="pin-input" type="text" inputmode="numeric" maxlength="6" placeholder="000000" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="token">État du lien email</label>
+            <div class="input-wrap">
+              <svg class="input-icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              <input id="token" name="token" type="text" readonly />
+            </div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="submit" id="verify-btn" class="btn btn-primary">Vérifier mon email</button>
+          <div class="actions-secondary">
+            <button type="button" id="resend-btn" class="btn">↺ Renvoyer un code</button>
+            <a class="btn" id="continue-btn" href="/connexion/" style="display:none">Continuer →</a>
+          </div>
+        </div>
+
+        <div class="muted-row">
+          🔒 Le code PIN est obligatoire et expire sous <strong>24 heures</strong>. Si besoin, vous pouvez en demander un nouveau depuis cette page.
+        </div>
+      </form>
+
+      <div class="panel-footer">
+        Déjà un compte ? <a href="/connexion/">Se connecter</a>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const storedEmailKey = 'tabibdz_pending_verification_email';
+    const emailInput  = document.getElementById('email');
+    const pinInput    = document.getElementById('pin');
+    const tokenInput  = document.getElementById('token');
+    const statusBox   = document.getElementById('status');
+    const verifyBtn   = document.getElementById('verify-btn');
+    const resendBtn   = document.getElementById('resend-btn');
+    const continueBtn = document.getElementById('continue-btn');
+
+    function safeNext() {
+      const next = params.get('next') || '';
+      return typeof next === 'string' && next.startsWith('/') ? next : '';
+    }
+
+    function showStatus(message, type = 'info') {
+      const icons = {
+        info:    '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>',
+        success: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>',
+        error:   '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+      };
+      statusBox.className = `status ${type} show`;
+      statusBox.innerHTML = icons[type] + `<span>${message}</span>`;
+    }
+
+    function setLoading(button, loading, idle, busy) {
+      button.disabled = loading;
+      button.textContent = loading ? busy : idle;
+    }
+
+    async function api(path, payload) {
+      const response = await fetch(path, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || data.message || `HTTP ${response.status}`);
+      return data;
+    }
+
+    async function resolveRedirect() {
+      const directNext = safeNext();
+      if (directNext) return directNext;
+      try {
+        const response = await fetch('/api/auth/me/', { credentials: 'include', headers: { 'Accept': 'application/json' } });
+        const data = await response.json().catch(() => ({}));
+        const user = data && data.user ? data.user : null;
+        if (user && user.role === 'medecin') return '/tabibdz-espace-medecin.html';
+        if (user && user.role === 'patient') return '/tabibdz-dashboard.html';
+      } catch (_) {}
+      return '/connexion/';
+    }
+
+    async function completeVerification(payload) {
+      const result = await api('/api/auth/verify-email/', payload);
+      localStorage.removeItem(storedEmailKey);
+      showStatus(result.message || 'Email vérifié avec succès !', 'success');
+      continueBtn.href = await resolveRedirect();
+      continueBtn.style.display = 'inline-flex';
+      setTimeout(() => { window.location.href = continueBtn.href; }, 1200);
+    }
+
+    document.getElementById('verify-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const email = String(emailInput.value || '').trim();
+      const pin   = String(pinInput.value || '').replace(/\D+/g, '').slice(0, 6);
+      if (!email || pin.length !== 6) {
+        showStatus('Entrez votre email et un code PIN de 6 chiffres.', 'error');
+        return;
+      }
+      setLoading(verifyBtn, true, 'Vérifier mon email', 'Vérification…');
+      try {
+        localStorage.setItem(storedEmailKey, email);
+        await completeVerification({ email, pin });
+      } catch (error) {
+        showStatus(error.message || 'Vérification impossible.', 'error');
+      } finally {
+        setLoading(verifyBtn, false, 'Vérifier mon email', 'Vérification…');
+      }
+    });
+
+    resendBtn.addEventListener('click', async () => {
+      const email = String(emailInput.value || '').trim();
+      if (!email) {
+        showStatus('Ajoutez votre email pour recevoir un nouveau code PIN.', 'error');
+        return;
+      }
+      setLoading(resendBtn, true, 'Renvoyer un code', 'Envoi…');
+      try {
+        const result = await api('/api/auth/send-verification/', { email });
+        showStatus(result.message || 'Un nouveau code a été envoyé.', 'success');
+      } catch (error) {
+        showStatus(error.message || 'Impossible de renvoyer le code.', 'error');
+      } finally {
+        setLoading(resendBtn, false, '↺ Renvoyer un code', 'Envoi…');
+      }
+    });
+
+    pinInput.addEventListener('input', () => {
+      pinInput.value = pinInput.value.replace(/\D+/g, '').slice(0, 6);
+    });
+
+    const initialEmail = params.get('email') || localStorage.getItem(storedEmailKey) || '';
+    if (initialEmail) {
+      emailInput.value = initialEmail;
+      localStorage.setItem(storedEmailKey, initialEmail);
+    }
+
+    tokenInput.value = params.get('token') ? 'Lien email ouvert — PIN requis' : 'Code PIN requis';
+    if (params.get('token')) {
+      showStatus('Le lien email a bien ouvert la page, mais le code PIN reste obligatoire pour confirmer le compte.', 'info');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,904 @@
+\documentclass[12pt,a4paper]{report}
+
+% ─────────────────────────────────────────────
+%  ENCODAGE ET LANGUE
+% ─────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+
+% ─────────────────────────────────────────────
+%  MISE EN PAGE
+% ─────────────────────────────────────────────
+\usepackage[top=2.5cm, bottom=2.5cm, left=3cm, right=2.5cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+
+% ─────────────────────────────────────────────
+%  POLICES
+% ─────────────────────────────────────────────
+\usepackage{lmodern}
+
+% ─────────────────────────────────────────────
+%  TABLEAUX
+% ─────────────────────────────────────────────
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+
+% ─────────────────────────────────────────────
+%  IMAGES ET FLOTTANTS
+% ─────────────────────────────────────────────
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[justification=centering]{caption}
+
+% ─────────────────────────────────────────────
+%  CODE SOURCE
+% ─────────────────────────────────────────────
+\usepackage{listings}
+\usepackage{xcolor}
+\definecolor{lightgray}{RGB}{245,245,245}
+\definecolor{primaryblue}{RGB}{0,82,147}
+\lstset{
+    backgroundcolor=\color{lightgray},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    rulecolor=\color{black!30},
+    tabsize=2,
+    showstringspaces=false,
+    numbers=left,
+    numberstyle=\tiny\color{black!50},
+    numbersep=8pt,
+    xleftmargin=15pt,
+    framexleftmargin=15pt,
+}
+
+% ─────────────────────────────────────────────
+%  LIENS
+% ─────────────────────────────────────────────
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=false,
+    pdfborder={0 0 0},
+    pdftitle={TabibDZ - Chapitre 3 : Réalisation},
+}
+
+% ─────────────────────────────────────────────
+%  EN-TÊTES ET PIEDS DE PAGE
+% ─────────────────────────────────────────────
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textit{TabibDZ \textemdash\ Chapitre 3 - Réalisation }}
+\fancyhead[R]{\small\textit{M\'emoire de Licence}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% ─────────────────────────────────────────────
+%  STYLE TITRES
+% ─────────────────────────────────────────────
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{20pt}{\Huge}
+\titleformat{\section}{\normalfont\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalfont\normalsize\bfseries}{\thesubsubsection}{1em}{}
+
+\titlespacing{\chapter}{0pt}{0pt}{30pt}
+\titlespacing{\section}{0pt}{16pt}{8pt}
+\titlespacing{\subsection}{0pt}{12pt}{6pt}
+\titlespacing{\subsubsection}{0pt}{8pt}{4pt}
+
+% ─────────────────────────────────────────────
+%  LISTES
+% ─────────────────────────────────────────────
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=1.5em, itemsep=2pt, topsep=4pt}
+\setlist[enumerate]{leftmargin=1.5em, itemsep=2pt, topsep=4pt}
+
+% ─────────────────────────────────────────────
+%  COLONNES TABLEAUX
+% ─────────────────────────────────────────────
+\newcolumntype{A}{|>{\centering\arraybackslash}p{3.0cm}}
+\newcolumntype{B}{|>{\centering\arraybackslash}p{3.2cm}}
+\newcolumntype{C}{|>{\centering\arraybackslash}p{3.8cm}}
+\newcolumntype{D}{|>{\raggedright\arraybackslash}p{4.5cm}|}
+
+\newcommand{\tblheader}{%
+  \hline
+  \textbf{Champ} & \textbf{Type} & \textbf{Contraintes} & \textbf{Description} \\
+  \hline\hline
+}
+
+\newcommand{\longtblheader}{%
+  \hline
+  \textbf{Champ} & \textbf{Type} & \textbf{Contraintes} & \textbf{Description} \\
+  \hline\hline
+  \endfirsthead
+  \multicolumn{4}{l}{\small\textit{(suite)}} \\
+  \hline
+  \textbf{Champ} & \textbf{Type} & \textbf{Contraintes} & \textbf{Description} \\
+  \hline\hline
+  \endhead
+  \hline
+  \multicolumn{4}{r|}{\small\textit{suite $\rightarrow$}} \\
+  \endfoot
+  \hline
+  \endlastfoot
+}
+
+% ─────────────────────────────────────────────
+%  PLACEHOLDER IMAGE
+% ─────────────────────────────────────────────
+\newcommand{\imageplaceholder}[2]{%
+  \begin{figure}[H]
+    \centering
+    \fbox{%
+      \begin{minipage}{0.85\textwidth}
+        \centering
+        \vspace{1.5cm}
+        {\Large \textbf{[ Capture d'\'ecran ]}}\\[0.5cm]
+        {\small #1}
+        \vspace{1.5cm}
+      \end{minipage}
+    }
+    \caption{#2}
+  \end{figure}
+}
+
+\newcommand{\insertimage}[2]{%
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{images/#1}
+    \caption{#2}
+  \end{figure}
+}
+
+\usepackage{microtype}
+\usepackage{parskip}
+\setlength{\parskip}{5pt}
+
+% ═══════════════════════════════════════════════════════════════
+\begin{document}
+% ═══════════════════════════════════════════════════════════════
+
+% ─────────────────────────────────────────────
+%  PAGE DE TITRE DU CHAPITRE
+% ─────────────────────────────────────────────
+\newpage
+\thispagestyle{empty}
+\vspace*{\fill}
+
+\begin{center}
+  {\Huge\bfseries Chapitre 3}\\[0.8cm]
+  {\huge\bfseries R\'ealisation}\\[1.2cm]
+  {\large\itshape Projet TabibDZ}\\[2cm]
+  \rule{0.5\textwidth}{0.4pt}\\[1.2cm]
+  {\normalsize M\'emoire de Licence en Informatique}\\[0.3cm]
+  {\small D\'epartement Informatique}
+\end{center}
+
+\vspace*{\fill}
+\newpage
+
+% ─────────────────────────────────────────────
+%  PAGE D'INTRODUCTION
+% ─────────────────────────────────────────────
+\thispagestyle{empty}
+\vspace*{\fill}
+
+\begin{center}
+{\Huge\bfseries\color{primaryblue} Introduction}
+
+\vspace{0.3cm}
+
+{\color{primaryblue}\rule{0.5\textwidth}{1.2pt}}
+\end{center}
+
+\vspace{0.8cm}
+
+\addcontentsline{toc}{section}{Introduction}
+
+Ce chapitre pr\'esente la phase de r\'ealisation du projet \textbf{TabibDZ}, une plateforme web de sant\'e num\'erique d\'edi\'ee au contexte alg\'erien. L'objectif de cette plateforme est de permettre aux patients de rechercher des m\'edecins, de prendre des rendez-vous en ligne et d'effectuer des t\'el\'econsultations depuis leur domicile.
+
+Nous d\'ecrivons dans ce chapitre l'environnement technique mis en place, l'architecture de l'application, la structure de la base de donn\'ees, l'ensemble des interfaces r\'ealis\'ees, ainsi que les fonctionnalit\'es techniques qui les soutiennent. Nous abordons \'egalement les mesures de s\'ecurit\'e appliqu\'ees, les tests effectu\'es et les difficult\'es rencontr\'ees au cours du d\'eveloppement.
+\vspace*{\fill}
+
+\newpage
+\setcounter{page}{1}
+
+% ─────────────────────────────────────────────
+\section*{3.1. Environnement de d\'eveloppement}
+% ─────────────────────────────────────────────
+
+\subsection*{3.1.1 Syst\`eme d'exploitation et mat\'eriel}
+
+L'ensemble du d\'eveloppement de la plateforme TabibDZ a \'et\'e r\'ealis\'e sur des machines personnelles fonctionnant sous le syst\`eme d'exploitation \textbf{Windows}. Ce choix a \'et\'e motiv\'e par sa large adoption et sa compatibilit\'e avec l'ensemble des outils utilis\'es dans le cadre de ce projet.
+
+Le code source du projet est organis\'e et g\'er\'e localement dans un r\'epertoire de travail d\'edi\'e, permettant \`a chaque membre de l'\'equipe de travailler de mani\`ere autonome et structur\'ee.
+
+\subsection*{3.1.2 Outils de d\'eveloppement}
+
+\subsubsection*{- Visual Studio Code}
+
+Visual Studio Code est un \'editeur de code source open-source d\'evelopp\'e par Microsoft. Il a \'et\'e retenu comme environnement de d\'eveloppement int\'egr\'e principal, gr\^ace \`a sa l\'eg\`eret\'e, sa richesse en extensions et sa compatibilit\'e avec l'ensemble des technologies web utilis\'ees dans le projet.
+
+\subsubsection*{- XAMPP}
+
+XAMPP est une solution logicielle tout-en-un qui fournit un environnement de serveur web local complet, incluant le serveur Apache, l'interpr\'eteur PHP, le syst\`eme de gestion de base de donn\'ees MariaDB, ainsi que l'interface phpMyAdmin pour l'administration de la base de donn\'ees.
+
+\subsubsection*{- PHP}
+
+PHP est un langage de programmation c\^ot\'e serveur largement utilis\'e pour le d\'eveloppement web. Il a \'et\'e utilis\'e comme langage principal du backend de TabibDZ, assurant le traitement des requ\^etes, la logique m\'etier et la communication avec la base de donn\'ees.
+
+\subsubsection*{- MariaDB}
+
+MariaDB est un syst\`eme de gestion de base de donn\'ees relationnelle open-source, d\'eriv\'e de MySQL. Il a \'et\'e utilis\'e pour stocker et g\'erer l'ensemble des donn\'ees de la plateforme TabibDZ.
+
+\subsubsection*{- HTML / CSS / JavaScript}
+
+HTML, CSS et JavaScript sont les trois technologies fondamentales du d\'eveloppement web frontend. HTML structure le contenu des pages, CSS assure leur mise en forme visuelle, et JavaScript g\`ere l'interactivit\'e et la communication dynamique avec le backend.
+
+\subsubsection*{- GitHub Copilot (Codex)}
+
+GitHub Copilot est un assistant de programmation bas\'e sur l'intelligence artificielle, d\'evelopp\'e par GitHub et OpenAI. Il a \'et\'e utilis\'e comme outil d'aide \`a la r\'edaction du code, permettant d'acc\'el\'erer le d\'eveloppement et de sugg\'erer des solutions techniques.
+
+\subsubsection*{- Claude}
+
+Claude est un assistant conversationnel bas\'e sur l'intelligence artificielle, d\'evelopp\'e par Anthropic. Il a \'et\'e utilis\'e comme outil d'aide \`a la r\'edaction et \`a la structuration du rapport, ainsi que pour la recherche d'informations techniques tout au long du projet.
+
+\subsubsection*{- Google Docs}
+
+Google Docs est un service de traitement de texte en ligne propos\'e par Google. Il a \'et\'e utilis\'e par l'\'equipe pour la r\'edaction collaborative du rapport de projet, permettant \`a tous les membres de travailler simultan\'ement sur le m\^eme document.
+
+\subsection*{3.1.3 Outils de conception}
+
+\subsubsection*{- Figma}
+
+Figma est un outil de conception d'interfaces utilisateur bas\'e sur le cloud. Il a \'et\'e utilis\'e pour la cr\'eation des maquettes graphiques des diff\'erentes pages de la plateforme, permettant \`a l'\'equipe de d\'efinir et de valider l'aspect visuel de chaque interface avant de passer \`a l'impl\'ementation.
+
+\subsubsection*{- draw.io}
+
+draw.io est un outil de mod\'elisation et de cr\'eation de diagrammes en ligne. Il a \'et\'e utilis\'e pour la r\'ealisation des diagrammes UML du projet, notamment les diagrammes de cas d'utilisation, de classes et de s\'equences, ainsi que pour les sch\'emas d'architecture du syst\`eme.
+
+% ─────────────────────────────────────────────
+\section*{3.2 Architecture de l'application}
+% ─────────────────────────────────────────────
+
+\subsection*{3.2.1 Architecture globale}
+
+TabibDZ repose sur une architecture \textbf{client-serveur} avec une s\'eparation claire entre la couche pr\'esentation et la couche m\'etier :
+
+\begin{itemize}
+    \item Le \textbf{front-end} est constitu\'e de pages HTML/CSS/JS servies statiquement. Chaque page communique avec le serveur exclusivement via des requ\^etes HTTP vers l'API REST.
+    \item Le \textbf{back-end} est une API REST d\'evelopp\'ee en PHP pur, organis\'ee en modules ind\'ependants. Elle re\c{c}oit les requ\^etes, applique la logique m\'etier, interagit avec la base de donn\'ees et retourne des r\'eponses JSON.
+    \item La \textbf{base de donn\'ees} MariaDB stocke l'ensemble des donn\'ees persistantes : utilisateurs, rendez-vous, messages, notifications, etc.
+\end{itemize}
+
+Cette architecture facilite la maintenance, permet de faire \'evoluer le front-end et le back-end ind\'ependamment, et pr\'epare une \'eventuelle migration vers une application mobile.
+
+\subsection*{3.2.2 Structure des dossiers du projet}
+
+\begin{lstlisting}[language=bash, caption={Structure des dossiers du projet TabibDZ}]
+D:\DS\
+|-- api/                     <- API REST PHP
+|   |-- _core/               <- Noyau : config, BDD, JWT...
+|   |-- database/            <- Schema SQL, migrations, seeds
+|   |-- auth/                <- Authentification
+|   |-- appointments/        <- Gestion des rendez-vous
+|   |-- medecins/            <- Profils et recherche medecins
+|   |-- messages/            <- Messagerie interne
+|   |-- notifications/       <- Notifications in-app
+|   |-- teleconsultation/    <- Sessions de teleconsultation
+|   |-- ai/                  <- Module d'aide IA
+|-- assets/                  <- CSS et JS partages
+|-- admin/                   <- Interface d'administration
+|-- dashboard/               <- Tableau de bord patient
+|-- teleconsultation/        <- Page teleconsultation
+|-- teleconsultation-room/   <- Salle de consultation video
+|-- uploads/                 <- Fichiers envoyes par les utilisateurs
+|-- docs/                    <- Documentation technique
+\end{lstlisting}
+
+\subsection*{3.2.3 Flux de communication entre les composants}
+
+Lorsqu'un utilisateur effectue une action (ex.~: prendre un rendez-vous), le flux est le suivant :
+
+\begin{enumerate}
+    \item Le navigateur envoie une requ\^ete HTTP (GET ou POST) vers un endpoint de l'API REST.
+    \item Le fichier \texttt{bootstrap.php} initialise l'environnement (config, connexion BDD, headers CORS).
+    \item Le module concern\'e v\'erifie le token JWT dans le cookie de session.
+    \item La logique m\'etier est appliqu\'ee (validation, v\'erification du cr\'eneau, etc.).
+    \item La base de donn\'ees est interrog\'ee via PDO avec des requ\^etes pr\'epar\'ees.
+    \item Une r\'eponse JSON est retourn\'ee au navigateur.
+    \item Le JavaScript c\^ot\'e client met \`a jour l'interface sans rechargement de page.
+\end{enumerate}
+
+% ─────────────────────────────────────────────
+\section*{3.3 Base de donn\'ees}
+% ─────────────────────────────────────────────
+
+\subsection*{3.3.1 Mod\`ele relationnel}
+
+La base de donn\'ees \texttt{tabibdz} est cr\'e\'ee sous MariaDB avec l'encodage \texttt{utf8mb4\_unicode\_ci}, assurant le support complet de l'alphabet arabe et des caract\`eres sp\'eciaux. Elle comprend \textbf{25 tables} organis\'ees par domaine fonctionnel autour de la table centrale \texttt{users}.
+
+\subsection*{3.3.2 Tables principales}
+
+Les quatre tables suivantes constituent le c\oe{}ur du syst\`eme. Elles sont d\'ecrites en d\'etail ci-apr\`es.
+
+% ── TABLE USERS ──────────────────────────────
+\begin{longtable}{ABCD}
+  \caption{Table \texttt{users} --- table centrale du syst\`eme} \label{tab:users} \\
+  \longtblheader
+  id                  & INT, AUTO\_INCREMENT & PRIMARY KEY, NOT NULL  & Identifiant unique \\ \hline
+  role                & ENUM                & NOT NULL                & admin / patient / m\'edecin \\ \hline
+  prenom              & VARCHAR(100)        & NOT NULL                & Pr\'enom \\ \hline
+  nom                 & VARCHAR(100)        & NOT NULL                & Nom \\ \hline
+  email               & VARCHAR(180)        & NOT NULL, UNIQUE         & Adresse email \\ \hline
+  email\_verified\_at & DATETIME            & NULLABLE                & Date v\'erification email \\ \hline
+  is\_active          & TINYINT(1)          & NOT NULL, DEFAULT 1     & Compte actif \\ \hline
+  telephone           & VARCHAR(40)         & NULLABLE                & Num\'ero de t\'el\'ephone \\ \hline
+  password\_hash      & VARCHAR(255)        & NOT NULL                & Mot de passe chiffr\'e (bcrypt) \\ \hline
+  photo\_url          & VARCHAR(255)        & NULLABLE                & URL photo de profil \\ \hline
+  date\_naissance     & DATE                & NULLABLE                & Date de naissance \\ \hline
+  sexe                & ENUM                & NULLABLE                & Homme ou Femme \\ \hline
+  wilaya\_id          & INT                 & FOREIGN KEY, NULLABLE   & R\'ef\'erence \`a la wilaya \\ \hline
+  groupe\_sanguin     & VARCHAR(8)          & NULLABLE                & Groupe sanguin \\ \hline
+  allergies           & TEXT                & NULLABLE                & Allergies connues \\ \hline
+  created\_at         & TIMESTAMP           & DEFAULT NOW             & Date de cr\'eation \\ \hline
+  updated\_at         & TIMESTAMP           & DEFAULT NOW ON UPDATE   & Date de mise \`a jour \\ \hline
+\end{longtable}
+
+% ── TABLE MEDECIN_PROFILES ───────────────────
+\begin{table}[H]
+\centering
+\caption{Table \texttt{medecin\_profiles} --- profil \'etendu du m\'edecin}
+\label{tab:medecin_profiles}
+\begin{tabular}{ABCD}
+  \tblheader
+  user\_id          & INT            & FK, NOT NULL, UNIQUE        & R\'ef\'erence \`a \texttt{users} \\ \hline
+  specialite\_id    & INT            & FOREIGN KEY, NULLABLE       & Sp\'ecialit\'e m\'edicale \\ \hline
+  tarif             & DECIMAL(10,2)  & NOT NULL, DEFAULT 0         & Tarif de consultation (DA) \\ \hline
+  cnas              & TINYINT(1)     & NOT NULL, DEFAULT 0         & Accepte la CNAS \\ \hline
+  casnos            & TINYINT(1)     & NOT NULL, DEFAULT 0         & Accepte la CASNOS \\ \hline
+  note              & DECIMAL(3,2)   & NOT NULL, DEFAULT 0         & Note moyenne des avis \\ \hline
+  adresse           & VARCHAR(255)   & NULLABLE                    & Adresse du cabinet \\ \hline
+  bio               & TEXT           & NULLABLE                    & Biographie \\ \hline
+  secteur           & ENUM           & NOT NULL, DEFAULT 'prive'   & public / priv\'e / mixte \\ \hline
+  approval\_status  & ENUM           & NOT NULL, DEFAULT 'pending' & Statut d'approbation admin \\ \hline
+\end{tabular}
+\end{table}
+
+% ── TABLE CRENEAUX ───────────────────────────
+\begin{table}[H]
+\centering
+\caption{Table \texttt{creneaux} --- plages horaires disponibles}
+\begin{tabular}{ABCD}
+  \tblheader
+  id            & BIGINT, AUTO\_INCREMENT & PRIMARY KEY, NOT NULL & Identifiant unique \\ \hline
+  medecin\_id   & INT                     & FOREIGN KEY, NOT NULL & R\'ef\'erence au m\'edecin \\ \hline
+  start\_at     & DATETIME                & NOT NULL              & D\'ebut du cr\'eneau \\ \hline
+  end\_at       & DATETIME                & NOT NULL              & Fin du cr\'eneau \\ \hline
+  is\_available & TINYINT(1)              & NOT NULL, DEFAULT 1   & 1 = libre, 0 = r\'eserv\'e \\ \hline
+  created\_at   & TIMESTAMP               & DEFAULT NOW           & Date de cr\'eation \\ \hline
+\end{tabular}
+\end{table}
+
+% ── TABLE APPOINTMENTS ───────────────────────
+\begin{longtable}{ABCD}
+  \caption{Table \texttt{appointments} --- rendez-vous} \label{tab:appointments} \\
+  \longtblheader
+  id                    & BIGINT, AUTO\_INCREMENT & PRIMARY KEY, NOT NULL        & Identifiant unique \\ \hline
+  patient\_id           & INT                     & FOREIGN KEY, NOT NULL        & R\'ef\'erence au patient \\ \hline
+  medecin\_id           & INT                     & FOREIGN KEY, NOT NULL        & R\'ef\'erence au m\'edecin \\ \hline
+  creneau\_id           & BIGINT                  & FOREIGN KEY, NULLABLE        & R\'ef\'erence au cr\'eneau \\ \hline
+  date\_heure           & DATETIME                & NOT NULL                     & Date et heure du RDV \\ \hline
+  duree\_min            & INT                     & NOT NULL, DEFAULT 30         & Dur\'ee en minutes \\ \hline
+  motif                 & TEXT                    & NULLABLE                     & Motif de consultation \\ \hline
+  type\_visite          & ENUM                    & NOT NULL, DEFAULT 'new'      & new / suivi \\ \hline
+  consultation\_mode    & ENUM                    & NOT NULL                     & cabinet / t\'el\'econsultation \\ \hline
+  patient\_target\_type & ENUM                    & NOT NULL, DEFAULT 'self'     & self / family \\ \hline
+  family\_member\_id    & BIGINT                  & FOREIGN KEY, NULLABLE        & Membre de famille concern\'e \\ \hline
+  statut                & ENUM                    & NOT NULL, DEFAULT 'confirme' & confirm\'e / termin\'e / annul\'e \\ \hline
+  confirmation\_code    & VARCHAR(30)             & NOT NULL                     & Code unique TBZ-AAAA-XXXX \\ \hline
+  created\_at           & TIMESTAMP               & DEFAULT NOW                  & Date de cr\'eation \\ \hline
+  updated\_at           & TIMESTAMP               & DEFAULT NOW ON UPDATE        & Date de mise \`a jour \\ \hline
+\end{longtable}
+
+% ── RÉCAPITULATIF ────────────────────────────
+\subsection*{3.3.3 R\'ecapitulatif des autres tables}
+
+Les 21 tables restantes sont list\'ees dans le tableau~\ref{tab:recap} avec leur r\^ole fonctionnel.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\caption{R\'ecapitulatif des tables compl\'ementaires}
+\label{tab:recap}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|c|l|c|l|}
+\hline
+\textbf{Table} & \textbf{Domaine} & \textbf{Table} & \textbf{Domaine} \\
+\hline\hline
+wilayas                             & G\'eographique & notifications                      & Notification    \\ \hline
+communes                            & G\'eographique & notification\_preferences          & Notification    \\ \hline
+specialites                         & M\'edical      & appointment\_notification\_events  & Notification    \\ \hline
+patient\_family\_members            & Patient        & audit\_logs                        & Administration  \\ \hline
+patient\_favoris                    & Patient        & contact\_messages                  & Administration  \\ \hline
+medecin\_reviews                    & Patient        & medecin\_profile\_change\_requests & Administration  \\ \hline
+appointment\_documents              & Rendez-vous    & auth\_sessions                     & S\'ecurit\'e   \\ \hline
+message\_threads                    & Messagerie     & password\_reset\_tokens            & S\'ecurit\'e   \\ \hline
+messages                            & Messagerie     & email\_verification\_tokens        & S\'ecurit\'e   \\ \hline
+message\_attachments                & Messagerie     & rate\_limit\_events                & S\'ecurit\'e   \\ \hline
+                                    &                & schema\_migrations                 & Syst\`eme      \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+\newpage
+
+% ─────────────────────────────────────────────
+\section*{3.4 R\'ealisation des interfaces}
+% ─────────────────────────────────────────────
+
+\subsection*{3.4.1 Pages publiques}
+\medskip
+\noindent\textbf{Page d'accueil} : c'est la premi\`ere page vue par l'utilisateur. Elle contient une barre de navigation principale, un moteur de recherche de m\'edecins (par sp\'ecialit\'e, nom ou wilaya), une pr\'esentation des sp\'ecialit\'es m\'edicales disponibles, une s\'election de m\'edecins mis en avant avec leur note et tarif, ainsi que des appels \`a l'action vers l'inscription et la prise de rendez-vous.
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{PICS- tabib/public/home.png}}
+\caption{Page d'accueil de TabibDZ}
+\end{figure}
+
+\noindent\textbf{Recherche de m\'edecins} : page de r\'esultats affichant les m\'edecins correspondant aux crit\`eres de recherche. Chaque carte m\'edecin affiche la sp\'ecialit\'e, l'adresse, le tarif, la note, et les acceptances CNAS/CASNOS. Des filtres permettent d'affiner les r\'esultats.
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{PICS- tabib/search/search.png}}
+\caption{Page de recherche de m\'edecins}
+\end{figure}
+
+\noindent\textbf{Profil public d'un m\'edecin} : fiche d\'etaill\'ee du m\'edecin consultable avant toute connexion. Elle pr\'esente la biographie, les sp\'ecialit\'es, l'adresse du cabinet, les horaires de disponibilit\'e, les avis des patients et un bouton de prise de rendez-vous.
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{PICS- tabib/perise_rdv/profile.png}}
+\caption{Profil public d'un m\'edecin}
+\end{figure}
+
+\noindent\textbf{Pages institutionnelles} : la page \og{}Comment \c{c}a marche\fg{} guide le nouvel utilisateur en trois \'etapes illustr\'ees. Les pages \og{}\`A propos\fg{} et \og{}Contact\fg{} compl\`etent la pr\'esence institutionnelle de la plateforme.
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{contact.png}}
+\caption{Page Contact}
+\end{figure}
+
+
+\subsection*{3.4.2 Authentification}
+
+\noindent\textbf{Inscription} : le formulaire d'inscription collecte les informations de base (pr\'enom, nom, email, t\'el\'ephone, mot de passe) et distingue deux types de comptes --- patient et m\'edecin. Une validation c\^ot\'e serveur v\'erifie l'unicit\'e de l'adresse email et la robustesse du mot de passe avant la cr\'eation du compte. Un email de v\'erification est envoy\'e automatiquement.
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{PICS- tabib/auth/registre.png}}
+\caption{Formulaire d'inscription}
+\end{figure}
+
+\noindent\textbf{Connexion} : le formulaire de connexion accepte l'email et le mot de passe. En cas de succ\`es, le serveur g\'en\`ere un JWT et le place dans un cookie \texttt{HttpOnly} pour s\'ecuriser la session. L'utilisateur est ensuite redirig\'e vers son espace personnel selon son r\^ole.
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{PICS- tabib/auth/login.png}}
+\caption{Formulaire de connexion}
+\end{figure}
+
+\noindent\textbf{Mot de passe oubli\'e} : l'utilisateur saisit son adresse email, re\c{c}oit un lien de r\'einitialisation contenant un token \`a usage unique, et peut d\'efinir un nouveau mot de passe. Le token expire apr\`es un d\'elai configurable.
+
+\noindent\textbf{V\'erification d'email} : \`a l'inscription, un code est envoy\'e par email. L'utilisateur doit le saisir pour activer son compte, \'evitant ainsi les inscriptions avec de fausses adresses.
+
+\subsection*{3.4.3 Espace patient}
+
+\noindent\textbf{Prise de rendez-vous} : c'est le parcours fonctionnel principal de la plateforme. Il se d\'eroule en plusieurs \'etapes guid\'ees :
+
+\begin{enumerate}
+    \item S\'election du m\'edecin (depuis la recherche ou les favoris).
+    \item Consultation du profil et des disponibilit\'es.
+    \item Choix d'un cr\'eneau horaire et du mode de consultation.
+    \item Identification du patient concern\'e : soi-m\^eme ou un membre de la famille.
+    \item Saisie du motif de consultation et notes \'eventuelles.
+    \item Confirmation avec g\'en\'eration automatique d'un code de confirmation unique.
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{pr.png}}
+\caption{Interface de choix de cr\'eneau}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{cre.png}}
+\caption{Interface d'identification du patient}
+\end{figure}
+
+\noindent\textbf{Mes rendez-vous} : liste des rendez-vous avec filtres par statut (confirm\'e, termin\'e, annul\'e). Le patient peut consulter les d\'etails, t\'el\'echarger les documents joints et annuler un rendez-vous \`a venir.
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{dashp.png}}
+\caption{Liste des rendez-vous du patient}
+\end{figure}
+
+\noindent\textbf{Mon profil} : gestion des informations personnelles (date de naissance, sexe, groupe sanguin, allergies, num\'ero d'assurance CNAS/CASNOS), photo de profil et mot de passe.
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{monpro.png}}
+\caption{Page profil du patient}
+\end{figure}
+
+\newpage
+
+\noindent\textbf{Membres de la famille} : le patient peut ajouter des proches avec leurs informations m\'edicales. Ces profils sont disponibles lors de la prise de rendez-vous.
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{fam.png}}
+\caption{Gestion des membres de la famille}
+\end{figure}
+
+\noindent\textbf{Messagerie} : interface de conversation avec les m\'edecins consult\'es. Le patient voit la liste de ses fils de discussion, peut envoyer des messages texte, des images et des fichiers. Un indicateur visuel signale les messages non lus.
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{mp.png}}
+\caption{Interface de messagerie patient}
+\end{figure}
+
+\noindent\textbf{Centre de notifications} : liste chronologique des alertes re\c{c}ues (rappels de RDV, confirmations, annulations, nouveaux messages). Chaque notification peut \^etre marqu\'ee comme lue.
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{not.png}}
+\caption{Centre de notifications}
+\end{figure}
+
+
+% ── CORRECTION : numérotation 3.4.4 (anciennement 3.4.3)
+\subsection*{3.4.4 Espace m\'edecin}
+
+\noindent\textbf{Tableau de bord et agenda} : vue centrale du m\'edecin avec un agenda hebdomadaire interactif affichant ses cr\'eneaux disponibles et les rendez-vous planifi\'es. Les informations cl\'es (nombre de consultations du jour, messages non lus, note moyenne) sont affich\'ees en haut de page.
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{mdash.png}}
+\caption{Tableau de bord du m\'edecin}
+\end{figure}
+
+\noindent\textbf{Gestion des rendez-vous} : liste d\'etaill\'ee des rendez-vous avec les informations du patient (nom, motif, mode de consultation, documents joints). Le m\'edecin peut changer le statut d'un rendez-vous et ajouter des notes de consultation.
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{GSR.png}}
+\caption{Gestion des rendez-vous c\^ot\'e m\'edecin}
+\end{figure}
+
+\noindent\textbf{Gestion des cr\'eneaux horaires} : interface permettant au m\'edecin de d\'efinir ses plages de disponibilit\'e semaine par semaine. Il peut ajouter des cr\'eneaux de 30 minutes, les modifier ou les supprimer. Les cr\'eneaux d\'ej\`a r\'eserv\'es apparaissent bloqu\'es.
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{dates.png}}
+\caption{Interface de gestion des cr\'eneaux}
+\end{figure}
+
+\noindent\textbf{Messagerie avec les patients} : identique \`a la messagerie patient. Le m\'edecin voit tous ses fils de discussion actifs et peut r\'epondre aux patients, leur envoyer des documents (r\'esultats, ordonnances) et joindre des pi\`eces jointes.
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{mm.png}}
+\caption{Messagerie c\^ot\'e m\'edecin}
+\end{figure}
+
+\noindent\textbf{G\'en\'eration d'ordonnances} : le m\'edecin peut g\'en\'erer une ordonnance m\'edicale depuis l'interface, export\'ee au format Word (.docx) puis convertie en PDF gr\^ace \`a un script Python int\'egr\'e au projet.
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{ord.png}}
+\caption{Interface de g\'en\'eration d'ordonnance}
+\end{figure}
+
+
+\subsection*{3.4.5 Salle de t\'el\'econsultation}
+
+La salle de t\'el\'econsultation est l'une des interfaces les plus techniques du projet. Elle est accessible uniquement aux participants d'un rendez-vous en mode t\'el\'econsultation.
+
+\medskip
+\noindent\textbf{Page d'accueil t\'el\'econsultation} : avant d'entrer dans la salle, le patient (ou le m\'edecin) voit une page de v\'erification de ses \'equipements (cam\'era, microphone) et l'\'etat du rendez-vous.
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{tel.png}}
+\caption{Page d'accueil t\'el\'econsultation}
+\end{figure}
+
+\noindent\textbf{Salle de consultation} : l'interface de consultation comprend :
+
+\begin{itemize}
+    \item La vid\'eo principale du m\'edecin en grand format et la vid\'eo du patient en incrustation.
+    \item Une barre de contr\^oles : activer/d\'esactiver le micro, la cam\'era, partager l'\'ecran, quitter la s\'eance.
+    \item Un chat lat\'eral permettant l'\'echange de messages texte et l'envoi de fichiers pendant la consultation.
+    \item Un panneau de documents o\`u le m\'edecin peut partager directement une ordonnance ou des r\'esultats d'analyse.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{jit.png}}
+\caption{Salle de t\'el\'econsultation vid\'eo}
+\end{figure}
+
+L'acc\`es \`a la salle est s\'ecuris\'e par un token unique li\'e au rendez-vous, g\'en\'er\'e c\^ot\'e serveur via \texttt{/api/teleconsultation/join.php}.
+
+\subsection*{3.4.6 Interface d'administration}
+
+L'interface d'administration est r\'eserv\'ee aux administrateurs de la plateforme. Elle est prot\'eg\'ee par une authentification distincte et n'est pas accessible depuis la navigation publique.
+
+Elle permet de :
+
+\begin{itemize}
+    \item \textbf{G\'erer les utilisateurs} : voir la liste des patients et m\'edecins inscrits, consulter leurs informations, intervenir sur un compte.
+    \item \textbf{G\'erer les sp\'ecialit\'es m\'edicales} : ajouter, modifier ou supprimer une sp\'ecialit\'e disponible sur la plateforme.
+    \item \textbf{Consulter les statistiques globales} : nombre d'inscriptions, de rendez-vous par p\'eriode, taux d'utilisation de la t\'el\'econsultation.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{admin.png}}
+\caption{Interface d'administration}
+\end{figure}
+
+% ── NOUVELLE SECTION : Assistant IA ──────────
+\subsection*{3.4.7 Assistant IA int\'egr\'e}
+
+La plateforme int\`egre un assistant d'aide m\'edicale bas\'e sur l'intelligence artificielle, accessible directement depuis les pages publiques du site.
+
+\medskip
+\noindent\textbf{Widget de chat} : un bouton flottant \og{}Assistant IA\fg{} est affich\'e en bas \`a droite sur toutes les pages publiques (accueil, recherche, \`a propos, contact, comment \c{c}a marche). L'utilisateur n'a pas besoin d'\^etre connect\'e pour l'utiliser. Au clic, un panneau de conversation s'ouvre sans quitter la page.
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{PICS- tabib/ai/ai-widget.png}}
+\caption{Bouton de l'assistant IA sur la page d'accueil}
+\end{figure}
+
+\noindent\textbf{Interface de conversation} : le panneau de chat affiche l'historique des \'echanges et un champ de saisie. L'utilisateur peut poser des questions sur le fonctionnement de la plateforme (prise de rendez-vous, cr\'eation de compte, CNAS/CASNOS\ldots) ou d\'ecrire des sympt\^omes pour \^etre orient\'e vers la sp\'ecialit\'e m\'edicale appropri\'ee. La r\'eponse s'affiche en temps r\'eel sans rechargement de page. Le bot rappelle syst\'ematiquement qu'il ne formule aucun diagnostic et qu'il oriente uniquement.
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{PICS- tabib/ai/ai-chat.png}}
+\caption{Interface de conversation avec l'assistant IA}
+\end{figure}
+
+
+% ─────────────────────────────────────────────
+\section*{3.5 Fonctionnalit\'es techniques cl\'es}
+% ─────────────────────────────────────────────
+
+\subsection*{3.5.1 Authentification JWT}
+
+L'authentification repose sur une impl\'ementation JWT (JSON Web Token) d\'evelopp\'ee en PHP pur, sans biblioth\`eque externe. Le token est sign\'e avec l'algorithme HS256 (HMAC-SHA256) \`a partir d'un secret configurable dans le fichier \texttt{.env}.
+
+Lors de la connexion, le serveur g\'en\`ere un token contenant le r\^ole de l'utilisateur, son identifiant et une date d'expiration (24h par d\'efaut). Ce token est plac\'e dans un cookie \texttt{HttpOnly} et \texttt{SameSite=Lax}, le rendant inaccessible depuis JavaScript et prot\'egeant contre les attaques XSS et CSRF.
+
+\`A chaque requ\^ete prot\'eg\'ee, le module \texttt{auth.php} extrait et v\'erifie le token : signature HMAC, expiration, et coh\'erence de l'\'emetteur (\texttt{iss}). En cas d'\'echec, une r\'eponse HTTP 401 est retourn\'ee.
+
+\subsection*{3.5.2 Moteur de r\'eservation et gestion des cr\'eneaux}
+
+La gestion des cr\'eneaux est l'un des points les plus sensibles du projet. Pour \'eviter les double-r\'eservations, une contrainte d'unicit\'e est pos\'ee en base de donn\'ees sur la paire \texttt{(medecin\_id, start\_at)} dans la table \texttt{creneaux}.
+
+Lors d'une prise de rendez-vous, le serveur v\'erifie que le cr\'eneau est encore disponible (\texttt{is\_available = 1}), puis le marque imm\'ediatement comme r\'eserv\'e dans la m\^eme transaction. Cette approche garantit l'atomicit\'e de l'op\'eration m\^eme en cas de requ\^etes simultan\'ees.
+
+Chaque rendez-vous confirm\'e g\'en\`ere automatiquement un code de confirmation unique au format \texttt{TBZ-AAAA-XXXX} (ex.~: TBZ-2026-3412), envoy\'e par email au patient.
+
+\subsection*{3.5.3 T\'el\'econsultation avec WebRTC}
+
+La communication vid\'eo est \'etablie en pair-\`a-pair (P2P) gr\^ace au protocole \textbf{WebRTC}, sans serveur relais interm\'ediaire pour les flux m\'edias. Ce choix garantit une latence faible et \'evite la surcharge d'un serveur central.
+
+Pour contourner les probl\`emes de traversal de NAT et de pare-feu pr\'esents dans certains r\'eseaux, la configuration inclut des serveurs STUN publics (Google STUN) permettant aux deux pairs de d\'ecouvrir leurs adresses IP publiques et d'\'etablir la connexion.
+
+\subsection*{3.5.4 Syst\`eme de messagerie interne}
+
+La messagerie fonctionne sur un mod\`ele de fils de discussion : chaque paire patient-m\'edecin poss\`ede un thread unique (\texttt{message\_threads}), \'evitant la duplication des conversations.
+
+Chaque message supporte trois types de pi\`eces jointes : images, fichiers et messages audio. Les fichiers sont stock\'es dans le dossier \texttt{/uploads/} avec un nom al\'eatoire g\'en\'er\'e par \texttt{bin2hex(random\_bytes())} pour \'eviter les conflits et les attaques par traversal de chemin.
+
+\subsection*{3.5.5 Notifications in-app et emails SMTP}
+
+\noindent\textbf{Notifications in-app} : elles sont g\'en\'er\'ees automatiquement lors des \'ev\'enements cl\'es (confirmation de RDV, rappel 24h avant, annulation) et stock\'ees dans la table \texttt{notifications}. Chaque patient peut configurer ses pr\'ef\'erences via la table \texttt{notification\_preferences}.
+
+\medskip
+\noindent\textbf{Emails SMTP} : le module de mailing (\texttt{mailer.php}) est enti\`erement configurable via le fichier \texttt{.env}. Les emails envoy\'es couvrent : la confirmation d'inscription, la v\'erification d'email, la r\'einitialisation de mot de passe, la confirmation et le rappel de rendez-vous, ainsi que les notifications d'annulation.
+
+% ── NOUVELLE SECTION : Module IA ─────────────
+\subsection*{3.5.6 Module d'intelligence artificielle}
+
+Le module d'assistance IA est organis\'e en \textbf{trois niveaux de traitement successifs}, permettant de r\'epondre rapidement aux demandes courantes sans solliciter un service externe, tout en offrant un repli vers un mod\`ele de langage avanc\'e pour les questions complexes.
+
+\begin{enumerate}
+    \item \textbf{FAQ locale} : la fonction \texttt{aiFindFaqMatch()} analyse le message de l'utilisateur par correspondance de mots-cl\'es dans une base de connaissances locale (\texttt{ai\_knowledge.php}). Ce premier niveau couvre les questions fr\'equentes sur la plateforme (prise de rendez-vous, cr\'eation de compte, CNAS/CASNOS, annulation\ldots) et r\'epond instantan\'ement sans aucun appel r\'eseau.
+
+    \item \textbf{Orientation symptomatique locale} : si aucune entr\'ee FAQ ne correspond, la fonction \texttt{aiFindSymptomSpecialtyMatch()} tente de relier les sympt\^omes d\'ecrits \`a une sp\'ecialit\'e m\'edicale \`a partir d'une base locale de correspondances. La r\'eponse oriente le patient vers le sp\'ecialiste adapt\'e (cardiologue, dermatologue, p\'ediatre, etc.) sans formuler aucun diagnostic.
+
+    \item \textbf{Mod\`ele Gemini (Google)} : en l'absence de correspondance locale, la requ\^ete est transmise \`a l'API Google Gemini (\texttt{gemini-2.5-flash}) via une requ\^ete HTTPS s\'ecuris\'ee. Un prompt syst\`eme impose un comportement d'assistant m\'edical non diagnostique~: le mod\`ele sugg\`ere une sp\'ecialit\'e, signale les signes d'urgence et rappelle clairement qu'il ne confirme aucune maladie. La temp\'erature est fix\'ee \`a 0.3 et la r\'eponse est limit\'ee \`a 800 tokens pour garantir des r\'eponses concises et pr\'ecises.
+\end{enumerate}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\caption{Architecture du module IA en trois niveaux}
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\textbf{Niveau} & \textbf{M\'ecanisme} & \textbf{Cas d'usage} \\
+\hline
+1 --- FAQ locale        & \texttt{aiFindFaqMatch()}            & Questions sur la plateforme (RDV, compte, CNAS\ldots) \\
+\hline
+2 --- Sympt\^omes       & \texttt{aiFindSymptomSpecialtyMatch()} & Orientation vers une sp\'ecialit\'e m\'edicale \\
+\hline
+3 --- API Gemini        & \texttt{gemini-2.5-flash} (Google)   & Questions complexes sans correspondance locale \\
+\hline
+\end{tabularx}
+\end{table}
+
+La cl\'e API Gemini est stock\'ee dans le fichier \texttt{.env.local} et n'est jamais expos\'ee c\^ot\'e client. Le timeout de la requ\^ete HTTP est fix\'e \`a 90 secondes, avec un message de repli g\'en\'erique affich\'e \`a l'utilisateur en cas d'\'echec ou d'indisponibilit\'e du service.
+
+% ─────────────────────────────────────────────
+\section*{3.6 S\'ecurit\'e}
+% ─────────────────────────────────────────────
+
+\subsection*{3.6.1 S\'ecurisation de l'API REST}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.4}
+\caption{Mesures de s\'ecurisation de l'API REST}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Mesure} & \textbf{Mise en \oe{}uvre} \\
+\hline
+JWT HttpOnly           & Token stock\'e en cookie inaccessible depuis JavaScript \\
+\hline
+Contr\^ole des r\^oles & V\'erification du r\^ole (patient / m\'edecin / admin) sur chaque route sensible \\
+\hline
+CORS restreint         & Liste blanche des origines autoris\'ees d\'efinie dans \texttt{.env} \\
+\hline
+Tokens \`a usage unique & Liens de r\'einitialisation et v\'erification d'email avec expiration \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection*{3.6.2 Protection des donn\'ees utilisateurs}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.4}
+\caption{Mesures de protection des donn\'ees utilisateurs}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Mesure} & \textbf{Mise en \oe{}uvre} \\
+\hline
+Hachage bcrypt              & \texttt{password\_hash()} avec algorithme bcrypt (cost 10) \\
+\hline
+Requ\^etes PDO pr\'epar\'ees & Toutes les requ\^etes SQL utilisent des param\`etres li\'es, \'eliminant les injections SQL \\
+\hline
+Validation des entr\'ees    & Toutes les donn\'ees entrantes sont valid\'ees et assainies c\^ot\'e serveur \\
+\hline
+Cookie SameSite=Lax         & Protection contre les attaques CSRF \\
+\hline
+\end{tabularx}
+\end{table}
+
+\newpage
+
+\subsection*{3.6.3 S\'ecurit\'e des fichiers upload\'es}
+
+Chaque fichier soumis par un utilisateur passe par une validation stricte avant stockage : v\'erification du type MIME r\'eel (pas seulement l'extension), limitation de la taille, et renommage avec un identifiant al\'eatoire. Ces mesures pr\'eviennent l'upload de fichiers malveillants et l'ex\'ecution de code arbitraire sur le serveur.
+
+% ─────────────────────────────────────────────
+\section*{3.7 Tests et validation}
+% ─────────────────────────────────────────────
+
+\subsection*{3.7.1 Tests fonctionnels}
+
+L'ensemble des parcours utilisateur a \'et\'e test\'e manuellement sur navigateur r\'eel :
+
+\begin{itemize}
+    \item Inscription, connexion, v\'erification d'email, r\'einitialisation de mot de passe.
+    \item Recherche de m\'edecins, consultation d'un profil, ajout aux favoris.
+    \item Prise de rendez-vous au cabinet et en t\'el\'econsultation, pour soi-m\^eme et pour un membre de la famille.
+    \item Annulation d'un rendez-vous, consultation de l'historique.
+    \item Envoi et r\'eception de messages avec pi\`eces jointes.
+    \item Connexion \`a une salle de t\'el\'econsultation et test de la vid\'eo.
+    \item Utilisation de l'assistant IA : questions FAQ, description de sympt\^omes, r\'eponses Gemini.
+\end{itemize}
+
+Des cas limites ont \'egalement \'et\'e test\'es : tentative de r\'eservation sur un cr\'eneau d\'ej\`a pris, soumission d'un token expir\'e, inscription avec un email d\'ej\`a utilis\'e.
+
+\subsection*{3.7.2 Tests de l'API}
+
+Chaque endpoint de l'API REST a \'et\'e test\'e avec \textbf{Postman} :
+
+\begin{itemize}
+    \item V\'erification des codes de r\'eponse HTTP (200, 201, 400, 401, 403, 404, 409).
+    \item Validation de la structure JSON retourn\'ee.
+    \item Test des r\`egles d'autorisation : acc\`es refus\'e sans JWT, acc\`es refus\'e si le r\^ole ne correspond pas.
+    \item Test des cas d'erreur : donn\'ees manquantes, format invalide, ressource inexistante.
+\end{itemize}
+
+\newpage
+
+% ─────────────────────────────────────────────
+\section*{3.8 Difficult\'es rencontr\'ees et solutions apport\'ees}
+% ─────────────────────────────────────────────
+
+\begin{longtable}{|p{5.5cm}|p{9cm}|}
+\hline
+\textbf{Difficult\'e} & \textbf{Solution apport\'ee} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Difficult\'e} & \textbf{Solution apport\'ee} \\
+\hline
+\endhead
+\hline
+\endlastfoot
+Double-r\'eservation d'un cr\'eneau & Contrainte d'unicit\'e \texttt{(medecin\_id, start\_at)} en base de donn\'ees + v\'erification atomique c\^ot\'e serveur avant confirmation. \\
+\hline
+Impl\'ementation JWT sans biblioth\`eque & D\'eveloppement d'un module JWT l\'eger en PHP pur (HS256) g\'erant la g\'en\'eration, la v\'erification HMAC et l'expiration. \\
+\hline
+T\'el\'econsultation : traversal de NAT & Int\'egration de serveurs STUN publics (Google) dans la configuration WebRTC pour permettre la connexion entre pairs situ\'es derri\`ere des pare-feu. \\
+\hline
+Prise de RDV pour un membre de la famille & Ajout de la colonne \texttt{patient\_target\_type} et de la cl\'e \'etrang\`ere \texttt{family\_member\_id} dans \texttt{appointments} pour dissocier le compte payeur du b\'en\'eficiaire. \\
+\hline
+Emails non d\'elivr\'es ou class\'es en spam & Ajout d'en-t\^etes MIME complets et mise en place d'un journal \texttt{mailer.log} pour diagnostiquer les \'echecs. \\
+\hline
+S\'ecurit\'e des fichiers upload\'es & Validation du type MIME r\'eel c\^ot\'e serveur, limite de taille, renommage al\'eatoire via \texttt{bin2hex(random\_bytes())}. \\
+\hline
+Int\'egration des 58 wilayas alg\'eriennes & Cr\'eation de tables \texttt{wilayas} et \texttt{communes} pr\'e-remplies dans le script SQL, garantissant la coh\'erence g\'eographique. \\
+\hline
+Fiabilit\'e de l'assistant IA & Architecture en trois niveaux (FAQ locale $\rightarrow$ sympt\^omes locaux $\rightarrow$ API Gemini) avec message de repli g\'en\'erique en cas d'\'echec de l'API externe, garantissant une r\'eponse m\^eme hors ligne. \\
+\hline
+\caption{Difficult\'es rencontr\'ees et solutions apport\'ees}
+\end{longtable}
+
+\newpage
+
+\thispagestyle{empty}
+\vspace*{\fill}
+
+\begin{center}
+{\Huge\bfseries\color{primaryblue} Conclusion}
+
+\vspace{0.3cm}
+
+{\color{primaryblue}\rule{0.5\textwidth}{1.2pt}}
+\end{center}
+
+\vspace{0.8cm}
+
+\addcontentsline{toc}{section}{Conclusion}
+
+La phase de r\'ealisation a permis de concr\'etiser l'ensemble des fonctionnalit\'es imagin\'ees lors de la conception. TabibDZ est d\'esormais une plateforme web compl\`ete couvrant la recherche de m\'edecins, la prise de rendez-vous, la t\'el\'econsultation vid\'eo, la messagerie s\'ecuris\'ee, un syst\`eme de notifications multi-canal et un assistant d'orientation m\'edicale bas\'e sur l'intelligence artificielle, le tout adapt\'e au contexte alg\'erien avec sa g\'eographie et ses sp\'ecificit\'es (CNAS/CASNOS).
+
+Le choix d'une architecture PHP sans framework a d\'emontr\'e qu'il est possible de produire une application robuste et s\'ecuris\'ee en ma\^itrisant les fondamentaux du d\'eveloppement web. Les difficult\'es rencontr\'ees, notamment autour des cr\'eneaux concurrents, de l'authentification JWT, de la t\'el\'econsultation WebRTC et de l'int\'egration de l'IA, ont \'et\'e surmount\'ees gr\^ace \`a une analyse rigoureuse et \`a des solutions adapt\'ees.
+
+Ce travail ouvre des perspectives d'am\'elioration futures : int\'egration d'un module de paiement en ligne, d\'eploiement sur une infrastructure cloud, d\'eveloppement d'une application mobile, et enrichissement du module d'intelligence artificielle pour l'aide au triage m\'edical.
+
+\vspace*{\fill}
+
+\end{document}

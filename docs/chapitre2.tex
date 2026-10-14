@@ -1,0 +1,359 @@
+\documentclass[12pt,a4paper]{report}
+
+% ─────────────────────────────────────────────
+%  ENCODAGE ET LANGUE
+% ─────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+
+% ─────────────────────────────────────────────
+%  MISE EN PAGE
+% ─────────────────────────────────────────────
+\usepackage[top=2.5cm, bottom=2.5cm, left=3cm, right=2.5cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+
+% ─────────────────────────────────────────────
+%  POLICES
+% ─────────────────────────────────────────────
+\usepackage{lmodern}
+
+% ─────────────────────────────────────────────
+%  TABLEAUX
+% ─────────────────────────────────────────────
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+
+% ─────────────────────────────────────────────
+%  IMAGES ET FLOTTANTS
+% ─────────────────────────────────────────────
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[justification=centering]{caption}
+
+% ─────────────────────────────────────────────
+%  CODE SOURCE
+% ─────────────────────────────────────────────
+\usepackage{listings}
+\usepackage{xcolor}
+\definecolor{lightgray}{RGB}{245,245,245}
+\definecolor{primaryblue}{RGB}{0,82,147}
+\lstset{
+    backgroundcolor=\color{lightgray},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    rulecolor=\color{black!30},
+    tabsize=2,
+    showstringspaces=false,
+    numbers=left,
+    numberstyle=\tiny\color{black!50},
+    numbersep=8pt,
+    xleftmargin=15pt,
+    framexleftmargin=15pt,
+}
+
+% ─────────────────────────────────────────────
+%  LIENS
+% ─────────────────────────────────────────────
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=false,
+    pdfborder={0 0 0},
+    pdftitle={TabibDZ - Chapitre 2 : Analyse et conception},
+}
+
+% ─────────────────────────────────────────────
+%  EN-TÊTES ET PIEDS DE PAGE
+% ─────────────────────────────────────────────
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textit{TabibDZ \textemdash\ Chapitre 2 - Analyse et conception}}
+\fancyhead[R]{\small\textit{M\'emoire de Licence}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% ─────────────────────────────────────────────
+%  STYLE TITRES
+% ─────────────────────────────────────────────
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{20pt}{\Huge}
+\titleformat{\section}{\normalfont\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalfont\normalsize\bfseries}{\thesubsubsection}{1em}{}
+
+\titlespacing{\chapter}{0pt}{0pt}{30pt}
+\titlespacing{\section}{0pt}{16pt}{8pt}
+\titlespacing{\subsection}{0pt}{12pt}{6pt}
+\titlespacing{\subsubsection}{0pt}{8pt}{4pt}
+
+% ─────────────────────────────────────────────
+%  LISTES
+% ─────────────────────────────────────────────
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=1.5em, itemsep=2pt, topsep=4pt}
+\setlist[enumerate]{leftmargin=1.5em, itemsep=2pt, topsep=4pt}
+
+\usepackage{microtype}
+\usepackage{parskip}
+\setlength{\parskip}{5pt}
+
+% ═══════════════════════════════════════════════════════════════
+\begin{document}
+% ═══════════════════════════════════════════════════════════════
+
+% ─────────────────────────────────────────────
+%  PAGE DE TITRE DU CHAPITRE
+% ─────────────────────────────────────────────
+\newpage
+\thispagestyle{empty}
+\vspace*{\fill}
+
+\begin{center}
+  {\Huge\bfseries Chapitre 2}\\[0.8cm]
+  {\huge\bfseries Analyse et conception}\\[1.2cm]
+  {\large\itshape Projet TabibDZ}\\[2cm]
+  \rule{0.5\textwidth}{0.4pt}\\[1.2cm]
+  {\normalsize M\'emoire de Licence en Informatique}\\[0.3cm]
+  {\small D\'epartement Informatique}
+\end{center}
+
+\vspace*{\fill}
+\newpage
+
+% ─────────────────────────────────────────────
+%  PAGE D'INTRODUCTION
+% ─────────────────────────────────────────────
+\thispagestyle{empty}
+\vspace*{\fill}
+
+\begin{center}
+{\Huge\bfseries\color{primaryblue} Introduction}
+
+\vspace{0.3cm}
+
+{\color{primaryblue}\rule{0.5\textwidth}{1.2pt}}
+\end{center}
+
+\vspace{0.8cm}
+
+\addcontentsline{toc}{section}{Introduction}
+
+L'analyse et la conception constituent une \'etape essentielle dans le cycle de d\'eveloppement d'une application informatique. Elles permettent de comprendre les besoins des utilisateurs, de d\'efinir les fonctionnalit\'es attendues et de concevoir une architecture logicielle coh\'erente avant la phase de r\'ealisation. Cette \'etape vise \`a transformer les exigences fonctionnelles et non fonctionnelles en mod\`eles structur\'es facilitant le d\'eveloppement, la maintenance et l'\'evolution du syst\`eme.
+
+Dans le cadre du projet \textbf{TabibDZ}, plateforme de prise de rendez-vous m\'edicaux et de t\'el\'econsultation, l'analyse et la conception ont \'et\'e r\'ealis\'ees en s'appuyant sur la m\'ethodologie \textbf{Unified Process (UP)} et sur le langage de mod\'elisation \textbf{UML (Unified Modeling Language)}. Ces deux approches permettent de mod\'eliser les diff\'erents acteurs du syst\`eme, leurs interactions ainsi que les composants n\'ecessaires \`a la mise en \oe{}uvre de la solution.
+
+\vspace*{\fill}
+\newpage
+\setcounter{page}{1}
+
+% ─────────────────────────────────────────────
+\section*{2.1 La m\'ethode Unified Process (UP)}
+% ─────────────────────────────────────────────
+
+\subsection*{2.1.1 D\'efinition}
+
+Le \textbf{Unified Process (UP)} est un processus de conception et de d\'eveloppement logiciel orient\'e objet. Il se caract\'erise par une d\'emarche it\'erative et incr\'ementale, centr\'ee sur l'architecture et les mod\`eles UML, et pilot\'ee par des cas d'utilisation.
+
+Cette approche permet de r\'eduire les risques, d'am\'eliorer la qualit\'e du logiciel et de r\'epondre progressivement aux besoins des utilisateurs.
+
+\subsection*{2.1.2 Les phases de la m\'ethode UP}
+
+La m\'ethode UP est organis\'ee en quatre phases principales :
+
+\begin{itemize}
+    \item \textbf{Phase d'analyse des besoins}
+    \item \textbf{Phase d'\'elaboration}
+    \item \textbf{Phase de construction}
+    \item \textbf{Phase de transition}
+\end{itemize}
+
+% ─────────────────────────────────────────────
+\section*{2.2 Le langage UML}
+% ─────────────────────────────────────────────
+
+\subsection*{2.2.1 D\'efinition}
+
+Le \textbf{Unified Modeling Language (UML)} est un langage de mod\'elisation graphique normalis\'e destin\'e \`a l'analyse, \`a la conception et \`a la mod\'elisation des syst\`emes informatiques. Il permet de repr\'esenter de mani\`ere visuelle les besoins, la structure ainsi que le comportement d'une application avant sa r\'ealisation.
+
+UML constitue aujourd'hui un standard international largement utilis\'e dans le domaine de l'ing\'enierie logicielle. Il facilite la communication entre les diff\'erents acteurs d'un projet et contribue \`a une meilleure compr\'ehension du syst\`eme \`a d\'evelopper.
+
+\subsection*{2.2.2 Les diagrammes UML utilis\'es}
+
+Pour la conception du syst\`eme TabibDZ, plusieurs diagrammes UML ont \'et\'e utilis\'es :
+
+\begin{itemize}
+    \item \textbf{Diagramme de contexte}
+    \item \textbf{Diagramme de cas d'utilisation}
+    \item \textbf{Diagramme de s\'equence}
+    \item \textbf{Diagramme de classes}
+\end{itemize}
+
+% ─────────────────────────────────────────────
+\section*{2.3 Analyse}
+% ─────────────────────────────────────────────
+
+\subsection*{2.3.1 Sp\'ecification des besoins}
+
+La plateforme TabibDZ vise \`a offrir un environnement num\'erique permettant la gestion compl\`ete des consultations m\'edicales, aussi bien pour les patients que pour les m\'edecins et les administrateurs.
+
+Les besoins du syst\`eme sont divis\'es en besoins fonctionnels et besoins non fonctionnels.
+
+\subsubsection*{Besoins fonctionnels}
+
+Les principales fonctionnalit\'es de la plateforme sont :
+
+\begin{itemize}
+    \item \textbf{Gestion des comptes utilisateurs} : inscription, authentification, v\'erification de l'adresse e-mail et gestion des mots de passe.
+    \item \textbf{Gestion des patients} : gestion du profil, des proches, des favoris, des notifications et des documents m\'edicaux.
+    \item \textbf{Gestion des m\'edecins} : gestion du profil professionnel, des disponibilit\'es, des cr\'eneaux et des t\'el\'econsultations.
+    \item \textbf{Gestion des rendez-vous} : recherche de m\'edecins, r\'eservation, annulation, report et consultation des rendez-vous.
+    \item \textbf{T\'el\'econsultation} : r\'eservation, partage de documents, acc\`es \`a une salle virtuelle et g\'en\'eration d'un compte-rendu m\'edical.
+    \item \textbf{Messagerie} : \'echanges s\'ecuris\'es entre patients et m\'edecins avec possibilit\'e d'ajouter des pi\`eces jointes.
+    \item \textbf{Gestion des avis} : publication et modification des \'evaluations des m\'edecins.
+    \item \textbf{Administration} : validation des m\'edecins, gestion des utilisateurs, des rendez-vous, des t\'el\'econsultations et des demandes de support.
+\end{itemize}
+
+\subsubsection*{Besoins non fonctionnels}
+
+La plateforme doit \'egalement r\'epondre aux exigences suivantes :
+
+\begin{itemize}
+    \item \textbf{S\'ecurit\'e} : authentification s\'ecuris\'ee, gestion des r\^oles et protection des donn\'ees m\'edicales.
+    \item \textbf{Performance} : temps de r\'eponse rapide et disponibilit\'e \'elev\'ee du syst\`eme.
+    \item \textbf{Fiabilit\'e} : validation des donn\'ees et pr\'evention des conflits de r\'eservation.
+    \item \textbf{Ergonomie} : interface intuitive et adapt\'ee aux diff\'erents appareils.
+    \item \textbf{Maintenabilit\'e} : architecture modulaire facilitant les \'evolutions futures.
+    \item \textbf{Interop\'erabilit\'e} : int\'egration avec les services Email, SMS, Jitsi Meet et les services de calendrier (ICS).
+\end{itemize}
+
+% ─────────────────────────────────────────────
+\section*{2.4 Identification des acteurs}
+% ─────────────────────────────────────────────
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\caption{Acteurs du syst\`eme TabibDZ}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Acteur} & \textbf{Description} \\
+\hline
+Visiteur & Utilisateur non authentifi\'e pouvant consulter les pages publiques, rechercher des m\'edecins et acc\'eder aux informations g\'en\'erales. \\ \hline
+Patient & Utilisateur authentifi\'e pouvant r\'eserver des rendez-vous, g\'erer son profil, ses proches, ses favoris et participer aux t\'el\'econsultations. \\ \hline
+M\'edecin & Professionnel de sant\'e pouvant g\'erer son profil, ses disponibilit\'es, ses rendez-vous et ses t\'el\'econsultations. \\ \hline
+Administrateur & Responsable de la gestion globale du syst\`eme, de la validation des m\'edecins et du contr\^ole des activit\'es de la plateforme. \\ \hline
+Service Email & Service externe utilis\'e pour l'envoi des codes PIN et notifications. \\ \hline
+Jitsi Meet & Service externe permettant la r\'ealisation des t\'el\'econsultations. \\ \hline
+Service Calendrier (ICS) & Service externe permettant l'ajout des rendez-vous dans les calendriers num\'eriques. \\ \hline
+Service SMS & Service externe charg\'e de l'envoi des rappels et notifications par SMS. \\ \hline
+Formspree & Service externe utilis\'e pour la gestion du formulaire de contact public. \\ \hline
+\end{tabularx}
+\end{table}
+
+% ─────────────────────────────────────────────
+\section*{2.5 Les diagrammes}
+% ─────────────────────────────────────────────
+
+\subsection*{2.5.1 Diagramme de contexte}
+
+Le diagramme de contexte est une repr\'esentation graphique qui permet de situer le syst\`eme \'etudi\'e dans son environnement. Il met en \'evidence les diff\'erents acteurs externes ainsi que les \'echanges d'informations entre ces acteurs et le syst\`eme. Ce diagramme offre une vision globale du projet et facilite la compr\'ehension de son p\'erim\`etre fonctionnel.
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{diag-contexte.png}}
+\caption{Diagramme de contexte}
+\end{figure}
+
+\subsection*{2.5.2 Diagramme de cas d'utilisation}
+
+Le diagramme de cas d'utilisation (Use Case Diagram) est un diagramme UML qui permet de repr\'esenter les fonctionnalit\'es offertes par un syst\`eme ainsi que les interactions entre les diff\'erents acteurs et ce syst\`eme. Il offre une vue globale des besoins fonctionnels et facilite la compr\'ehension des services que le syst\`eme doit fournir.
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{diag-usecase.png}}
+\caption{Diagramme de cas d'utilisation}
+\end{figure}
+
+\subsection*{2.5.3 Diagrammes de s\'equence}
+
+Le diagramme de s\'equence est un diagramme comportemental UML qui repr\'esente les interactions entre les acteurs et le syst\`eme selon un ordre chronologique. Il illustre l'\'echange de messages entre les diff\'erents objets ou composants pour accomplir un sc\'enario pr\'ecis, permettant ainsi de visualiser le d\'eroulement dynamique des fonctionnalit\'es du syst\`eme.
+
+Afin de mod\'eliser le comportement dynamique de la plateforme TabibDZ, plusieurs diagrammes de s\'equence ont \'et\'e r\'ealis\'es pour repr\'esenter les principaux sc\'enarios d'interaction (Inscription, V\'erification Email, Connexion, Mot de passe oubli\'e, R\'eservation cabinet, R\'eservation pour un proche, R\'eservation T\'el\'econsultation, Annulation, Report RDV, Messagerie, Gestion des cr\'eneaux, Validation admin). Toutefois, afin de pr\'eserver la lisibilit\'e du rapport, seuls les diagrammes les plus repr\'esentatifs sont pr\'esent\'es ci-dessous.
+
+\medskip
+\noindent\textbf{a. Diagramme de s\'equence --- Inscription}
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{diag-seq-inscription.png}}
+\caption{Diagramme de s\'equence --- Inscription}
+\end{figure}
+
+\noindent\textbf{b. Diagramme de s\'equence --- Connexion}
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{diag-seq-connexion.png}}
+\caption{Diagramme de s\'equence --- Connexion}
+\end{figure}
+
+\noindent\textbf{c. Diagramme de s\'equence --- Prise de rendez-vous}
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{diag-seq-rdv.png}}
+\caption{Diagramme de s\'equence --- Prise de rendez-vous}
+\end{figure}
+
+\noindent\textbf{d. Diagramme de s\'equence --- T\'el\'econsultation}
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{diag-seq-teleconsultation.png}}
+\caption{Diagramme de s\'equence --- T\'el\'econsultation}
+\end{figure}
+
+\subsection*{2.5.4 Diagramme de classes}
+
+Le diagramme de classes est un diagramme UML qui repr\'esente la structure statique d'un syst\`eme en d\'ecrivant les classes, leurs attributs, leurs m\'ethodes ainsi que les relations qui existent entre elles. Il constitue la base de la conception orient\'ee objet et permet de mod\'eliser l'organisation des donn\'ees et des fonctionnalit\'es du syst\`eme.
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{diag-classes.png}}
+\caption{Diagramme de classes}
+\end{figure}
+
+% ─────────────────────────────────────────────
+%  PAGE DE CONCLUSION
+% ─────────────────────────────────────────────
+\pagenumbering{gobble}
+\newpage
+
+\thispagestyle{empty}
+\vspace*{\fill}
+
+\begin{center}
+{\Huge\bfseries\color{primaryblue} Conclusion}
+
+\vspace{0.3cm}
+
+{\color{primaryblue}\rule{0.5\textwidth}{1.2pt}}
+\end{center}
+
+\vspace{0.8cm}
+
+\addcontentsline{toc}{section}{Conclusion}
+
+Au cours de ce chapitre, nous avons pr\'esent\'e la m\'ethode de conception adopt\'ee pour la r\'ealisation de la plateforme TabibDZ ainsi que les diff\'erents diagrammes UML utilis\'es pour mod\'eliser le syst\`eme. Ces diagrammes nous ont permis de mieux comprendre son fonctionnement, les interactions entre les diff\'erents acteurs et les principales fonctionnalit\'es offertes par la plateforme.
+
+\vspace*{\fill}
+
+\end{document}

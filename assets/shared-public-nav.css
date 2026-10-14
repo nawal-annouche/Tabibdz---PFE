@@ -1,0 +1,251 @@
+.nav-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.nav-actions .btn,
+.nav-actions .btn-primary,
+.nav-actions .btn-soft,
+.nav-actions .btn-ghost,
+.nav-actions .btn-outline,
+.nav-actions .btn-solid,
+.nav-drawer-actions .btn,
+.nav-drawer-actions .btn-primary,
+.nav-drawer-actions .btn-soft,
+.nav-drawer-actions .btn-ghost,
+.nav-drawer-actions .btn-outline,
+.nav-drawer-actions .btn-solid {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border-radius: 999px;
+  border: 1.5px solid transparent;
+  padding: 9px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+}
+
+.nav-actions .btn,
+.nav-actions .btn-outline,
+.nav-drawer-actions .btn,
+.nav-drawer-actions .btn-outline {
+  background: var(--public-nav-surface, var(--bg, var(--surface, #ffffff)));
+  border-color: var(--public-nav-border, var(--border, #d8ebdf));
+  color: var(--public-nav-text, var(--text, #102116));
+}
+
+.nav-actions .btn:hover,
+.nav-actions .btn-outline:hover,
+.nav-drawer-actions .btn:hover,
+.nav-drawer-actions .btn-outline:hover {
+  background: var(--public-nav-hover-bg, var(--bg-hover, #f9fdfa));
+  border-color: var(--public-nav-hover-border, var(--border-hover, var(--border-strong, #bddcc8)));
+  color: var(--public-nav-accent, var(--green, var(--accent, #15a870)));
+}
+
+.nav-actions .btn-primary,
+.nav-actions .btn-soft,
+.nav-actions .btn-solid,
+.nav-drawer-actions .btn-primary,
+.nav-drawer-actions .btn-soft,
+.nav-drawer-actions .btn-solid {
+  color: #fff;
+}
+
+.nav-actions .btn-primary,
+.nav-actions .btn-solid,
+.nav-drawer-actions .btn-primary,
+.nav-drawer-actions .btn-solid {
+  background: var(--public-nav-accent, var(--green, var(--accent, #15a870)));
+  border-color: var(--public-nav-accent, var(--green, var(--accent, #15a870)));
+  box-shadow: 0 4px 16px rgba(21, 168, 112, 0.22);
+}
+
+.nav-actions .btn-primary:hover,
+.nav-actions .btn-solid:hover,
+.nav-drawer-actions .btn-primary:hover,
+.nav-drawer-actions .btn-solid:hover {
+  background: var(--public-nav-accent-dark, var(--green-dark, var(--accent2, #0f7d4c)));
+  border-color: var(--public-nav-accent-dark, var(--green-dark, var(--accent2, #0f7d4c)));
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.nav-actions .btn-ghost,
+.nav-drawer-actions .btn-ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--public-nav-icon, var(--text-muted, #5a7566));
+  padding: 9px 12px;
+}
+
+.nav-actions .btn-ghost:hover,
+.nav-drawer-actions .btn-ghost:hover {
+  color: var(--public-nav-text, var(--text, #102116));
+  background: var(--public-nav-hover-bg, var(--surface-soft, #f1f8f4));
+}
+
+.nav-actions .btn-soft,
+.nav-drawer-actions .btn-soft {
+  background: var(--public-nav-soft-bg, var(--green-soft, #e7f8ef));
+  border-color: var(--public-nav-soft-border, rgba(24, 164, 101, 0.18));
+  color: var(--public-nav-accent-dark, var(--green-dark, var(--accent2, #0f7d4c)));
+}
+
+.nav-actions .btn-soft:hover,
+.nav-drawer-actions .btn-soft:hover {
+  background: var(--public-nav-soft-hover, #d5f4e6);
+}
+
+.nav-actions .btn[disabled],
+.nav-actions .btn-primary[disabled],
+.nav-actions .btn-soft[disabled],
+.nav-actions .btn-ghost[disabled],
+.nav-actions .btn-outline[disabled],
+.nav-actions .btn-solid[disabled],
+.nav-drawer-actions .btn[disabled],
+.nav-drawer-actions .btn-primary[disabled],
+.nav-drawer-actions .btn-soft[disabled],
+.nav-drawer-actions .btn-ghost[disabled],
+.nav-drawer-actions .btn-outline[disabled],
+.nav-drawer-actions .btn-solid[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.nav-user-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px 5px 6px;
+  border-radius: 50px;
+}
+
+.nav-user-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--public-nav-avatar-bg, var(--green-light, #e8f7f0));
+  color: var(--public-nav-avatar-fg, var(--green-dark, #0f7a4a));
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--public-nav-avatar-border, var(--green-mid, #6ed4a8));
+}
+
+.nav-user-caret {
+  font-size: 11px;
+  color: var(--public-nav-icon, var(--text-muted, #5a7566));
+  margin-left: 2px;
+}
+
+.nav-notif-btn {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--public-nav-icon, var(--text-muted, #5a7566));
+}
+
+.nav-notif-btn svg {
+  width: 18px;
+  height: 18px;
+  color: inherit;
+  display: block;
+  flex-shrink: 0;
+}
+
+.nav-notif-btn svg * {
+  stroke: currentColor !important;
+  fill: none !important;
+}
+
+.nav-notif-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: var(--public-nav-badge-bg, var(--green, var(--accent, #15a870)));
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+  border: 2px solid #fff;
+}
+
+.nav-notif-badge.show {
+  display: inline-flex;
+}
+
+.nav-drawer-actions {
+  margin-top: auto;
+  padding: 16px 20px 28px;
+  border-top: 1px solid var(--public-nav-border, var(--border, #d8ebdf));
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--public-nav-surface, var(--bg, var(--surface, #ffffff)));
+}
+
+.nav-drawer-actions .btn,
+.nav-drawer-actions .btn-primary,
+.nav-drawer-actions .btn-soft,
+.nav-drawer-actions .btn-ghost,
+.nav-drawer-actions .btn-outline,
+.nav-drawer-actions .btn-solid {
+  width: 100%;
+  justify-content: center;
+  padding: 11px 20px;
+  font-size: 14px;
+}
+
+.nav-drawer-actions .nav-notif-btn {
+  width: 50px;
+  height: 50px;
+  padding: 0;
+  border-radius: 50%;
+  align-self: flex-start;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+
+.nav-drawer-actions .nav-notif-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.nav-drawer-actions .nav-user-chip {
+  width: 100%;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 999px;
+}
+
+.nav-drawer-actions .nav-user-chip .nav-user-avatar {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+}
+
+.nav-drawer-actions .nav-user-chip .nav-user-caret {
+  margin-left: auto;
+}

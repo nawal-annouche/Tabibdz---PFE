@@ -1,0 +1,315 @@
+<mxGraphModel dx="1422" dy="762" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1100" pageHeight="1000" math="0" shadow="0">
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+
+    <!-- ═══ PARTICIPANTS ═══ -->
+    <mxCell id="p1" value="Patient" style="shape=mxgraph.flowchart.actor;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="1">
+      <mxGeometry x="47" y="15" width="50" height="55" as="geometry" />
+    </mxCell>
+    <mxCell id="p2" value="Médecin" style="shape=mxgraph.flowchart.actor;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="1">
+      <mxGeometry x="183" y="15" width="50" height="55" as="geometry" />
+    </mxCell>
+    <mxCell id="p3" value="API Join&#xa;(/api/teleconsultation/join.php)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="358" y="18" width="150" height="48" as="geometry" />
+    </mxCell>
+    <mxCell id="p4" value="Base de données" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="1">
+      <mxGeometry x="578" y="12" width="100" height="55" as="geometry" />
+    </mxCell>
+    <mxCell id="p5" value="Serveur STUN&#xa;(Google)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="758" y="20" width="110" height="40" as="geometry" />
+    </mxCell>
+
+    <!-- ═══ LIFELINES ═══ -->
+    <mxCell id="l1" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="72" y="70" as="sourcePoint" />
+        <mxPoint x="72" y="970" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="l2" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="208" y="70" as="sourcePoint" />
+        <mxPoint x="208" y="970" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="l3" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="433" y="66" as="sourcePoint" />
+        <mxPoint x="433" y="970" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="l4" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="628" y="67" as="sourcePoint" />
+        <mxPoint x="628" y="970" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="l5" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="813" y="60" as="sourcePoint" />
+        <mxPoint x="813" y="970" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- PHASE 1 : PRISE DE RDV (ref) -->
+    <!-- ═══════════════════════════════════════ -->
+    <mxCell id="ph1sep" value="Phase 1 — Prise de rendez-vous (consultation_mode = teleconsultation)" style="text;html=1;strokeColor=none;fillColor=#f0f0f0;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="55" y="82" width="780" height="22" as="geometry" />
+    </mxCell>
+
+    <!-- ref box -->
+    <mxCell id="ref1" value="ref" style="text;html=1;fontStyle=1;fontSize=11;align=left;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+      <mxGeometry x="57" y="107" width="28" height="18" as="geometry" />
+    </mxCell>
+    <mxCell id="ref1box" value="Même flux que Diagramme Prise RDV&#xa;POST /api/appointments/ avec consultation_mode=&#39;teleconsultation&#39;&#xa;→ Retour : 201 + confirmation_code TBZ-AAAA-XXXX" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontStyle=2;fontSize=10;align=left;spacingLeft=8;" vertex="1" parent="1">
+      <mxGeometry x="55" y="107" width="760" height="55" as="geometry" />
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- PHASE 2 : REJOINDRE LA SALLE (PATIENT) -->
+    <!-- ═══════════════════════════════════════ -->
+    <mxCell id="ph2sep" value="Phase 2 — Rejoindre la salle (Patient)" style="text;html=1;strokeColor=none;fillColor=#f0f0f0;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="55" y="175" width="780" height="22" as="geometry" />
+    </mxCell>
+
+    <!-- Note: fenêtre temporelle -->
+    <mxCell id="note1" value="[Au plus tôt 10 min avant le RDV, au plus tard 90 min après]" style="text;html=1;strokeColor=#000000;fillColor=#ffffff;align=center;verticalAlign=middle;fontSize=10;fontStyle=2;" vertex="1" parent="1">
+      <mxGeometry x="150" y="200" width="420" height="22" as="geometry" />
+    </mxCell>
+
+    <!-- 1. Patient → API Join -->
+    <mxCell id="m1" value="POST /api/teleconsultation/join.php?id=X" style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="72" y="232" as="sourcePoint" />
+        <mxPoint x="433" y="232" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    <!-- 2. API Join → BDD -->
+    <mxCell id="m2" value="SELECT appointment (id + patient_id + mode + statut)" style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="433" y="260" as="sourcePoint" />
+        <mxPoint x="628" y="260" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="m3" value="Données rendez-vous" style="html=1;dashed=1;endArrow=open;endFill=0;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="628" y="285" as="sourcePoint" />
+        <mxPoint x="433" y="285" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    <!-- ── ALT a : mode ≠ téléconsultation ── -->
+    <mxCell id="a1box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="1">
+      <mxGeometry x="72" y="300" width="375" height="42" as="geometry" />
+    </mxCell>
+    <mxCell id="a1tag" value="alt" style="text;html=1;fontStyle=1;fontSize=11;align=left;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+      <mxGeometry x="74" y="301" width="28" height="18" as="geometry" />
+    </mxCell>
+    <mxCell id="a1lbl" value="[consultation_mode ≠ teleconsultation]" style="text;html=1;fontStyle=2;fontSize=10;align=left;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+      <mxGeometry x="105" y="302" width="280" height="16" as="geometry" />
+    </mxCell>
+    <mxCell id="a1msg" value="422 Ce rendez-vous n'est pas une téléconsultation" style="html=1;dashed=1;endArrow=open;endFill=0;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="433" y="323" as="sourcePoint" />
+        <mxPoint x="72" y="323" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    <!-- ── ALT b : statut annulé/terminé ── -->
+    <mxCell id="a2box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="1">
+      <mxGeometry x="72" y="350" width="375" height="42" as="geometry" />
+    </mxCell>
+    <mxCell id="a2tag" value="alt" style="text;html=1;fontStyle=1;fontSize=11;align=left;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+      <mxGeometry x="74" y="351" width="28" height="18" as="geometry" />
+    </mxCell>
+    <mxCell id="a2lbl" value="[statut = annulé OU terminé]" style="text;html=1;fontStyle=2;fontSize=10;align=left;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+      <mxGeometry x="105" y="352" width="240" height="16" as="geometry" />
+    </mxCell>
+    <mxCell id="a2msg" value="409 Consultation inaccessible" style="html=1;dashed=1;endArrow=open;endFill=0;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="433" y="373" as="sourcePoint" />
+        <mxPoint x="72" y="373" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    <!-- ── ALT c : trop tôt ── -->
+    <mxCell id="a3box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="1">
+      <mxGeometry x="72" y="400" width="375" height="42" as="geometry" />
+    </mxCell>
+    <mxCell id="a3tag" value="alt" style="text;html=1;fontStyle=1;fontSize=11;align=left;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+      <mxGeometry x="74" y="401" width="28" height="18" as="geometry" />
+    </mxCell>
+    <mxCell id="a3lbl" value="[now &lt; RDV − 10 min]" style="text;html=1;fontStyle=2;fontSize=10;align=left;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+      <mxGeometry x="105" y="402" width="200" height="16" as="geometry" />
+    </mxCell>
+    <mxCell id="a3msg" value="409 Salle pas encore ouverte + opens_at" style="html=1;dashed=1;endArrow=open;endFill=0;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="433" y="423" as="sourcePoint" />
+        <mxPoint x="72" y="423" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    <!-- ── ALT d : fenêtre dépassée ── -->
+    <mxCell id="a4box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="1">
+      <mxGeometry x="72" y="450" width="375" height="42" as="geometry" />
+    </mxCell>
+    <mxCell id="a4tag" value="alt" style="text;html=1;fontStyle=1;fontSize=11;align=left;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+      <mxGeometry x="74" y="451" width="28" height="18" as="geometry" />
+    </mxCell>
+    <mxCell id="a4lbl" value="[now &gt; RDV + 90 min]" style="text;html=1;fontStyle=2;fontSize=10;align=left;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+      <mxGeometry x="105" y="452" width="200" height="16" as="geometry" />
+    </mxCell>
+    <mxCell id="a4msg" value="409 Fenêtre de consultation dépassée" style="html=1;dashed=1;endArrow=open;endFill=0;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="433" y="473" as="sourcePoint" />
+        <mxPoint x="72" y="473" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    <!-- 4. UPDATE teleconsultation_status -->
+    <mxCell id="m4" value="UPDATE appointments SET teleconsultation_status='in_progress'" style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="433" y="500" as="sourcePoint" />
+        <mxPoint x="628" y="500" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    <!-- 5. API Join → Patient: room_name + join_url -->
+    <mxCell id="m5" value="room_name, join_url (/teleconsultation-room/?id=X)" style="html=1;dashed=1;endArrow=open;endFill=0;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="433" y="525" as="sourcePoint" />
+        <mxPoint x="72" y="525" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- PHASE 2b : REJOINDRE LA SALLE (MÉDECIN) -->
+    <!-- ═══════════════════════════════════════ -->
+    <mxCell id="ph2bsep" value="Phase 2b — Rejoindre la salle (Médecin, mêmes vérifications)" style="text;html=1;strokeColor=none;fillColor=#f0f0f0;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="55" y="545" width="780" height="22" as="geometry" />
+    </mxCell>
+
+    <!-- Médecin → API Join -->
+    <mxCell id="m6" value="POST /api/teleconsultation/join.php?id=X" style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="208" y="575" as="sourcePoint" />
+        <mxPoint x="433" y="575" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    <!-- ref vérifications médecin -->
+    <mxCell id="ref2" value="ref" style="text;html=1;fontStyle=1;fontSize=11;align=left;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+      <mxGeometry x="208" y="592" width="28" height="18" as="geometry" />
+    </mxCell>
+    <mxCell id="ref2box" value="[Mêmes vérifications : mode, statut, fenêtre temporelle]" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontStyle=2;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="208" y="592" width="437" height="28" as="geometry" />
+    </mxCell>
+
+    <!-- API Join → BDD: UPDATE médecin side -->
+    <mxCell id="m7" value="UPDATE appointments SET teleconsultation_status='in_progress'" style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="433" y="630" as="sourcePoint" />
+        <mxPoint x="628" y="630" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    <!-- API Join → Médecin: room_name -->
+    <mxCell id="m8" value="room_name, join_url (/teleconsultation-room/?id=X)" style="html=1;dashed=1;endArrow=open;endFill=0;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="433" y="655" as="sourcePoint" />
+        <mxPoint x="208" y="655" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- PHASE 3 : NÉGOCIATION WebRTC + SÉANCE  -->
+    <!-- ═══════════════════════════════════════ -->
+    <mxCell id="ph3sep" value="Phase 3 — Négociation WebRTC et séance vidéo" style="text;html=1;strokeColor=none;fillColor=#f0f0f0;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="55" y="672" width="780" height="22" as="geometry" />
+    </mxCell>
+
+    <!-- Patient → STUN -->
+    <mxCell id="m9" value="Requête ICE candidates (adresse IP publique)" style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="72" y="702" as="sourcePoint" />
+        <mxPoint x="813" y="702" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="m10" value="Adresse IP publique + port (ICE)" style="html=1;dashed=1;endArrow=open;endFill=0;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="813" y="727" as="sourcePoint" />
+        <mxPoint x="72" y="727" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    <!-- Médecin → STUN -->
+    <mxCell id="m11" value="Requête ICE candidates (adresse IP publique)" style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="208" y="752" as="sourcePoint" />
+        <mxPoint x="813" y="752" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="m12" value="Adresse IP publique + port (ICE)" style="html=1;dashed=1;endArrow=open;endFill=0;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="813" y="777" as="sourcePoint" />
+        <mxPoint x="208" y="777" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    <!-- ALT: P2P établie -->
+    <mxCell id="a5box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="1">
+      <mxGeometry x="72" y="793" width="760" height="80" as="geometry" />
+    </mxCell>
+    <mxCell id="a5tag" value="alt" style="text;html=1;fontStyle=1;fontSize=11;align=left;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+      <mxGeometry x="74" y="794" width="28" height="18" as="geometry" />
+    </mxCell>
+    <mxCell id="a5lbl1" value="[Connexion P2P établie via NAT traversal]" style="text;html=1;fontStyle=2;fontSize=10;align=left;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+      <mxGeometry x="105" y="795" width="300" height="16" as="geometry" />
+    </mxCell>
+    <mxCell id="a5m1" value="Connexion WebRTC P2P directe (sans serveur relais)" style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="72" y="815" as="sourcePoint" />
+        <mxPoint x="208" y="815" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="a5m2" value="Flux vidéo / audio en temps réel (P2P)" style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="72" y="840" as="sourcePoint" />
+        <mxPoint x="208" y="840" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="a5sep" value="" style="html=1;endArrow=none;dashed=1;strokeColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="72" y="857" as="sourcePoint" />
+        <mxPoint x="832" y="857" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="a5lbl2" value="[Échec NAT traversal]" style="text;html=1;fontStyle=2;fontSize=10;align=left;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+      <mxGeometry x="74" y="859" width="180" height="16" as="geometry" />
+    </mxCell>
+    <mxCell id="a5m3" value="Erreur connexion vidéo (affichage message utilisateur)" style="html=1;dashed=1;endArrow=open;endFill=0;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="208" y="872" as="sourcePoint" />
+        <mxPoint x="72" y="872" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+    <!-- Fin de séance -->
+    <mxCell id="m13" value="Quitter la salle (Patient ou Médecin)" style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="72" y="915" as="sourcePoint" />
+        <mxPoint x="433" y="915" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="m14" value="UPDATE appointments SET statut='termine'" style="html=1;endArrow=block;endFill=1;strokeColor=#000000;fontColor=#000000;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="433" y="940" as="sourcePoint" />
+        <mxPoint x="628" y="940" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+
+  </root>
+</mxGraphModel>

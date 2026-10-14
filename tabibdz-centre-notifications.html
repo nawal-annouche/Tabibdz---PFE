@@ -1,0 +1,702 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TabibDZ - Centre de notifications</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/shared-public-nav.css">
+<style>
+  :root {
+    --bg:            #f5fbf7;
+    --surface:       #ffffff;
+    --surface-soft:  #f1f8f4;
+    --text:          #102116;
+    --text-muted:    #5f7567;
+    --text-soft:     #8da091;
+    --border:        #d8ebdf;
+    --border-strong: #bddcc8;
+    --green:         #18a465;
+    --green-dark:    #0f7d4c;
+    --green-soft:    #e7f8ef;
+    --green-glow:    rgba(24,164,101,.14);
+    --red:           #dc2626;
+    --red-soft:      #fff1f2;
+    --public-nav-badge-bg: var(--red);
+    --radius-sm:     10px;
+    --radius-md:     16px;
+    --radius-lg:     22px;
+    --shadow-sm:     0 2px 12px rgba(15,90,50,.06);
+    --shadow-md:     0 8px 28px rgba(15,90,50,.10);
+    --font-body:     "DM Sans", sans-serif;
+    --font-display:  "Syne", sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; cursor: pointer; }
+
+  /* â”€â”€ NAVBAR â”€â”€ */
+  .navbar {
+    position: sticky; top: 0; z-index: 100;
+    height: 66px; padding: 0 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(255,255,255,.94);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-family: var(--font-display);
+    font-size: 22px; font-weight: 800; letter-spacing: -.5px;
+  }
+  .logo span { color: var(--green); }
+
+  .nav-links { display: flex; gap: 34px; align-items: center; }
+  .nav-links a { font-size: 14px; font-weight: 500; color: var(--text-muted); transition: color .18s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--green); }
+
+  /* â”€â”€ PAGE LAYOUT â”€â”€ */
+  .page {
+    max-width: 1080px; margin: 0 auto; padding: 36px 24px 64px;
+    display: grid; grid-template-rows: auto 1fr; gap: 28px;
+  }
+
+  /* â”€â”€ PAGE HEADER â”€â”€ */
+  .page-header {
+    display: flex; align-items: flex-end; justify-content: space-between; gap: 20px;
+    flex-wrap: wrap;
+  }
+  .page-header-left { display: flex; flex-direction: column; gap: 6px; }
+  .page-eyebrow {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 12px; font-weight: 700; color: var(--green-dark);
+    text-transform: uppercase; letter-spacing: .6px;
+  }
+  .dot-live {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--green);
+    box-shadow: 0 0 0 4px rgba(24,164,101,.15);
+    animation: pulse 2.2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(24,164,101,.15); }
+    50%       { box-shadow: 0 0 0 7px rgba(24,164,101,.06); }
+  }
+  .page-title {
+    font-family: var(--font-display);
+    font-size: 28px; font-weight: 800; letter-spacing: -.8px; line-height: 1;
+  }
+  .page-sub { font-size: 13.5px; color: var(--text-muted); margin-top: 2px; }
+  .page-header-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+  /* â”€â”€ STATS BAR â”€â”€ */
+  .stats-bar {
+    display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 0;
+  }
+  .stat-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 16px; border-radius: var(--radius-sm);
+    background: var(--surface); border: 1px solid var(--border);
+    font-size: 13px; font-weight: 600; color: var(--text-muted);
+  }
+  .stat-chip strong { color: var(--text); font-size: 15px; }
+  .stat-chip.accent { background: var(--green-soft); border-color: rgba(24,164,101,.2); color: var(--green-dark); }
+  .stat-chip.accent strong { color: var(--green-dark); }
+
+  /* â”€â”€ MAIN AREA â”€â”€ */
+  .main-layout {
+    display: grid; grid-template-columns: 1fr 280px; gap: 20px; align-items: start;
+  }
+
+  /* â”€â”€ NOTIFICATIONS PANEL â”€â”€ */
+  .notifications-panel {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  .notifications-panel-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 18px 22px 16px; border-bottom: 1px solid var(--border);
+  }
+  .panel-label { font-size: 14px; font-weight: 700; }
+  .panel-count {
+    font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 999px;
+    background: var(--surface-soft); color: var(--text-soft);
+  }
+  .panel-count.has-unread { background: var(--green-soft); color: var(--green-dark); }
+
+  /* â”€â”€ NOTIFICATION ITEMS â”€â”€ */
+  .notification-list { display: flex; flex-direction: column; }
+  .notification-item {
+    padding: 18px 22px; border-bottom: 1px solid var(--border);
+    display: grid; grid-template-columns: 36px 1fr auto; gap: 0 14px;
+    align-items: start; transition: background .14s;
+    animation: slideIn .22s ease both;
+  }
+  .notification-item:last-child { border-bottom: none; }
+  .notification-item:hover { background: #fafdfb; }
+  .notification-item.unread { background: linear-gradient(to right, rgba(24,164,101,.03), transparent); }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  .notif-icon {
+    width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--green-soft); color: var(--green-dark);
+    border: 1px solid rgba(24,164,101,.15); margin-top: 2px;
+  }
+  .notif-icon svg { width: 16px; height: 16px; }
+  .notif-icon.unread-icon { background: var(--green); color: #fff; border-color: var(--green); }
+
+  .notif-content { min-width: 0; }
+  .notif-top { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .notif-title { font-size: 14px; font-weight: 700; line-height: 1.3; }
+  .unread-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--green);
+    flex-shrink: 0;
+  }
+  .notif-body { font-size: 13px; color: var(--text-muted); line-height: 1.6; white-space: pre-wrap; }
+  .notif-time { font-size: 11.5px; color: var(--text-soft); margin-top: 6px; }
+
+  .notif-action { padding-top: 4px; }
+  .mark-read-btn {
+    background: transparent; border: none; padding: 4px 6px;
+    border-radius: 6px; color: var(--text-soft); font-size: 12px; font-weight: 600;
+    transition: all .14s; cursor: pointer; white-space: nowrap;
+  }
+  .mark-read-btn:hover { background: var(--green-soft); color: var(--green-dark); }
+  .read-badge {
+    font-size: 11.5px; font-weight: 600; color: var(--text-soft);
+    background: var(--surface-soft); padding: 3px 8px; border-radius: 6px;
+  }
+
+  /* â”€â”€ EMPTY / INFO STATES â”€â”€ */
+  .state-box {
+    padding: 48px 28px; text-align: center;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+  }
+  .state-icon-wrap {
+    width: 52px; height: 52px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--green-soft); color: var(--green-dark);
+    border: 1px solid rgba(24,164,101,.16); margin-bottom: 4px;
+  }
+  .state-icon-wrap svg { width: 22px; height: 22px; }
+  .state-title { font-size: 16px; font-weight: 800; }
+  .state-sub { font-size: 13px; color: var(--text-muted); max-width: 340px; line-height: 1.65; }
+  .state-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 6px; }
+
+  /* â”€â”€ SIDEBAR â”€â”€ */
+  .sidebar { display: flex; flex-direction: column; gap: 16px; }
+  #accountCard { display: none !important; }
+
+  .side-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  .side-card-head {
+    padding: 14px 18px 12px; border-bottom: 1px solid var(--border);
+    font-size: 13px; font-weight: 700; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: .5px;
+  }
+  .side-card-body { padding: 14px 18px; display: flex; flex-direction: column; gap: 10px; }
+
+  /* account card */
+  .account-info { display: flex; align-items: center; gap: 12px; }
+  .account-avatar {
+    width: 42px; height: 42px; border-radius: 50%;
+    background: var(--green-soft); color: var(--green-dark);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 800; border: 2px solid rgba(24,164,101,.2);
+  }
+  .account-name { font-size: 15px; font-weight: 700; }
+  .account-role { font-size: 12px; color: var(--text-soft); margin-top: 1px; }
+
+  /* quick links */
+  .quick-link {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border); font-size: 13px; font-weight: 600;
+    color: var(--text-muted); transition: all .14s; background: var(--surface);
+  }
+  .quick-link:hover { border-color: var(--border-strong); color: var(--text); background: #fafdfb; }
+  .quick-link svg { width: 15px; height: 15px; color: var(--green); flex-shrink: 0; }
+
+  /* pref list */
+  .pref-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 9px 0; border-bottom: 1px solid var(--border);
+  }
+  .pref-row:last-of-type { border-bottom: none; padding-bottom: 0; }
+  .pref-row-name { font-size: 13px; font-weight: 600; }
+  .pref-row-sub { font-size: 11.5px; color: var(--text-soft); margin-top: 1px; }
+  .tag { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+  .tag-on  { background: var(--green-soft); color: var(--green-dark); }
+  .tag-off { background: #f3f4f6; color: #9ca3af; }
+
+  /* â”€â”€ RESPONSIVE â”€â”€ */
+  @media (max-width: 860px) {
+    .navbar { padding: 0 20px; }
+    .nav-links { display: none; }
+    .main-layout { grid-template-columns: 1fr; }
+    .sidebar { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  }
+  @media (max-width: 600px) {
+    .page { padding: 20px 14px 48px; }
+    .page-header { flex-direction: column; align-items: flex-start; }
+    .sidebar { grid-template-columns: 1fr; }
+    .notification-item { grid-template-columns: 32px 1fr; }
+    .notif-action { display: none; }
+  }
+
+  /* ── HEADER ACTION BUTTONS ── */
+  .page-header-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .page-header-actions .btn,
+  .page-header-actions .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 16px;
+    height: 38px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all .18s cubic-bezier(.4,0,.2,1);
+    white-space: nowrap;
+    font-family: var(--font-body);
+    border: none;
+  }
+
+  /* Bouton "Préférences" — lien */
+  .page-header-actions a.btn {
+    background: var(--surface);
+    color: var(--text-muted);
+    border: 1.5px solid var(--border);
+    box-shadow: 0 1px 4px rgba(15,90,50,.05);
+  }
+  .page-header-actions a.btn:hover {
+    background: var(--surface-soft);
+    border-color: var(--border-strong);
+    color: var(--text);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(15,90,50,.08);
+  }
+
+  /* Bouton "Actualiser" — button */
+  .page-header-actions button.btn {
+    background: var(--surface);
+    color: var(--text-muted);
+    border: 1.5px solid var(--border);
+    box-shadow: 0 1px 4px rgba(15,90,50,.05);
+  }
+  .page-header-actions button.btn:hover {
+    background: var(--green-soft);
+    border-color: rgba(24,164,101,.25);
+    color: var(--green-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px var(--green-glow);
+  }
+  .page-header-actions button.btn svg {
+    transition: transform .42s ease;
+  }
+  .page-header-actions button.btn:hover svg {
+    transform: rotate(360deg);
+  }
+
+  /* Bouton "Tout marquer comme lu" */
+  .page-header-actions .btn-primary {
+    background: var(--green);
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(24,164,101,.28);
+    letter-spacing: -.01em;
+  }
+  .page-header-actions .btn-primary:hover:not(:disabled) {
+    background: var(--green-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(24,164,101,.38);
+  }
+  .page-header-actions .btn-primary:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 1px 4px rgba(24,164,101,.2);
+  }
+  .page-header-actions .btn-primary:disabled {
+    opacity: .38;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="/tabibdz-homepage.html" class="logo">Tabib<span>DZ</span></a>
+  <div class="nav-links">
+    <a href="/tabibdz-homepage.html">Accueil</a>
+    <a href="/tabibdz-recherche.html">Médecins</a>
+    <a href="/tabibdz-a-propos.html">À propos</a>
+    <a href="/tabibdz-contact.html">Contact</a>
+    <a href="/tabibdz-comment-ca-marche.html">Comment ça marche</a>
+  </div>
+  <div class="nav-actions" id="navActions">
+    <a href="/connexion/?next=%2Ftabibdz-centre-notifications.html" class="btn">Connexion</a>
+    <a href="/inscription/?next=%2Ftabibdz-centre-notifications.html" class="btn-primary">S'inscrire</a>
+  </div>
+</nav>
+
+<!-- PAGE -->
+<main class="page">
+
+  <!-- HEADER -->
+  <div>
+    <div class="page-header">
+      <div class="page-header-left">
+        <div class="page-eyebrow"><span class="dot-live"></span>Centre de notifications</div>
+        <h1 class="page-title">Notifications</h1>
+        <p class="page-sub" id="pageSub">Rappels, confirmations et alertes de votre compte.</p>
+      </div>
+      <div class="page-header-actions">
+        <a class="btn" href="/tabibdz-dashboard.html#notifications">Préférences</a>
+        <button class="btn" type="button" onclick="loadNotifications()">
+          <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M4 4v5h5M20 20v-5h-5M4.93 14A8 8 0 1 0 6.34 6.34" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Actualiser
+        </button>
+        <button class="btn-primary" type="button" id="markAllBtn" onclick="markAllAsRead()" disabled>Tout marquer comme lu</button>
+      </div>
+    </div>
+
+    <!-- STATS BAR -->
+    <div class="stats-bar" style="margin-top:18px">
+      <div class="stat-chip accent">
+        <strong id="summaryUnread">0</strong> non lues
+      </div>
+      <div class="stat-chip">
+        <strong id="summaryTotal">0</strong> total
+      </div>
+      <div class="stat-chip" id="accountChip">
+        <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span id="summaryAccount">Visiteur</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN LAYOUT -->
+  <div class="main-layout">
+
+    <!-- NOTIFICATIONS LIST -->
+    <div class="notifications-panel">
+      <div class="notifications-panel-head">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="panel-label">Flux de notifications</span>
+          <span class="panel-count" id="panelCount">—</span>
+        </div>
+      </div>
+      <div class="notification-list" id="notificationsContainer"></div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+      <!-- Account -->
+      <div class="side-card" id="accountCard">
+        <div class="side-card-head">Mon compte</div>
+        <div class="side-card-body">
+          <div class="account-info">
+            <div class="account-avatar" id="sideAvatarText">?</div>
+            <div>
+              <div class="account-name" id="sideAccountName">Visiteur</div>
+              <div class="account-role" id="sideAccountRole">Non connecté</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preferences -->
+      <div class="side-card" id="prefCard">
+        <div class="side-card-head">Préférences actives</div>
+        <div class="side-card-body" id="preferencesContainer">
+          <div style="font-size:13px;color:var(--text-soft)">Chargement...</div>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+</main>
+
+<script src="/assets/shared-toast.js"></script>
+<script>
+  const state = { authUser: null, notifications: [], unreadCount: 0, preferences: null };
+
+  function esc(v) {
+    return String(v ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+
+  function safeNext(path) {
+    if (typeof path !== 'string') return '/tabibdz-centre-notifications.html';
+    return path.startsWith('/') ? path : '/tabibdz-centre-notifications.html';
+  }
+
+  async function api(url, opts = {}) {
+    const res = await fetch(url, { credentials: 'include', headers: { Accept: 'application/json', ...opts.headers }, ...opts });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || data.message || `HTTP ${res.status}`);
+    return data;
+  }
+
+  const toast = (msg, type = 'success') => window.showToast(msg, type);
+
+  function roleDash(r) {
+    if (r === 'medecin') return '/tabibdz-espace-medecin.html';
+    if (r === 'admin')   return '/admin/tabibdz-dashboard.html';
+    return '/tabibdz-dashboard.html';
+  }
+
+  function fmtDate(iso) {
+    const d = new Date(iso);
+    if (isNaN(d)) return '';
+    return new Intl.DateTimeFormat('fr-FR', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' }).format(d);
+  }
+
+  function updateUI() {
+    // Stats
+    document.getElementById('summaryUnread').textContent = state.unreadCount;
+    document.getElementById('summaryTotal').textContent  = state.notifications.length;
+    document.getElementById('panelCount').className = 'panel-count' + (state.unreadCount ? ' has-unread' : '');
+    document.getElementById('panelCount').textContent = state.unreadCount ? `${state.unreadCount} nouvelle${state.unreadCount > 1 ? 's' : ''}` : `${state.notifications.length} notification${state.notifications.length !== 1 ? 's' : ''}`;
+
+    // Mark all btn
+    const btn = document.getElementById('markAllBtn');
+    btn.disabled = !state.authUser || state.authUser.role !== 'patient' || !state.unreadCount;
+
+    // page sub
+    if (state.authUser?.role === 'patient') {
+      document.getElementById('pageSub').textContent =
+        `${state.notifications.length} notification${state.notifications.length !== 1 ? 's' : ''} · ${state.unreadCount} non lue${state.unreadCount !== 1 ? 's' : ''}`;
+    }
+
+    // account info
+    const u = state.authUser;
+    if (u) {
+      const prenom = u.prenom || '', nom = u.nom || '';
+      const initials = `${(prenom[0]||'').toUpperCase()}${(nom[0]||'').toUpperCase()}` || 'U';
+      const fullName = u.role === 'medecin' ? 'Dr. ' + [prenom, nom].filter(Boolean).join(' ')
+                      : u.role === 'admin'  ? 'Administrateur'
+                      : [prenom, nom].filter(Boolean).join(' ') || 'Patient';
+      const roleLabel = u.role === 'medecin' ? 'Compte médecin' : u.role === 'admin' ? 'Compte administrateur' : 'Compte patient';
+      const sideAvatar = document.getElementById('sideAvatarText');
+      const sideName = document.getElementById('sideAccountName');
+      const sideRole = document.getElementById('sideAccountRole');
+      if (sideAvatar) sideAvatar.textContent = initials;
+      if (sideName) sideName.textContent = fullName;
+      if (sideRole) sideRole.textContent = roleLabel;
+      document.getElementById('summaryAccount').textContent = prenom || fullName;
+    }
+  }
+
+  function updateNavAuthUI() {
+    const nav = document.getElementById('navActions');
+    const next = encodeURIComponent(safeNext(window.location.pathname + window.location.search));
+    if (!state.authUser) {
+      nav.innerHTML = `
+        <a href="/connexion/?next=${next}" class="btn">Connexion</a>
+        <a href="/inscription/?next=${next}" class="btn-primary">S'inscrire</a>`;
+      return;
+    }
+    const prenom = state.authUser.prenom || '';
+    const nom    = state.authUser.nom    || '';
+    const initials = `${(prenom[0]||'').toUpperCase()}${(nom[0]||'').toUpperCase()}` || 'U';
+    const shortName = state.authUser.role === 'medecin' ? 'Espace médecin'
+                    : state.authUser.role === 'admin'   ? 'Administration'
+                    : `${prenom} ${(nom[0]||'').toUpperCase()}.`.trim();
+    const navbarLabel = state.authUser.role === 'medecin' ? 'Espace medecin' : shortName;
+    nav.innerHTML = `
+      <a href="/tabibdz-centre-notifications.html" class="btn nav-notif-btn" aria-label="Notifications">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M15 17H9M18 8A6 6 0 1 0 6 8c0 7-3 8-3 8h18s-3-1-3-8M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="nav-notif-badge${state.unreadCount > 0 ? ' show' : ''}">${state.unreadCount > 99 ? '99+' : state.unreadCount}</span>
+      </a>
+      <a href="${roleDash(state.authUser.role)}" class="btn nav-user-chip">
+        <span class="nav-user-avatar">${esc(initials)}</span>
+        <span>${esc(navbarLabel)}</span>
+        <span class="nav-user-caret">v</span>
+      </a>`;
+  }
+
+  function renderNotifications() {
+    const c = document.getElementById('notificationsContainer');
+    if (!state.notifications.length) {
+      c.innerHTML = `
+        <div class="state-box">
+          <div class="state-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M15 17H9M18 8A6 6 0 1 0 6 8c0 7-3 8-3 8h18s-3-1-3-8M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="state-title">Aucune notification</div>
+          <div class="state-sub">Les rappels et confirmations liés à votre compte apparaîtront ici.</div>
+        </div>`;
+      return;
+    }
+    c.innerHTML = state.notifications.map(item => {
+      const unread = !Number(item.is_read);
+      return `
+        <div class="notification-item${unread ? ' unread' : ''}">
+          <div class="notif-icon${unread ? ' unread-icon' : ''}">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M15 17H9M18 8A6 6 0 1 0 6 8c0 7-3 8-3 8h18s-3-1-3-8M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="notif-content">
+            <div class="notif-top">
+              ${unread ? '<span class="unread-dot"></span>' : ''}
+              <span class="notif-title">${esc(item.title || 'Notification')}</span>
+            </div>
+            <div class="notif-body">${esc(item.body || '')}</div>
+            <div class="notif-time">${esc(fmtDate(item.created_at))}</div>
+          </div>
+          <div class="notif-action">
+            ${unread
+              ? `<button class="mark-read-btn" onclick="markOneAsRead(${Number(item.id)})">Marquer lu</button>`
+              : `<span class="read-badge">Lu</span>`}
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function renderGuestState() {
+    document.getElementById('notificationsContainer').innerHTML = `
+      <div class="state-box">
+        <div class="state-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M15 17H9M18 8A6 6 0 1 0 6 8c0 7-3 8-3 8h18s-3-1-3-8M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="state-title">Connexion requise</div>
+        <div class="state-sub">Connectez-vous avec un compte patient pour accéder à vos notifications.</div>
+        <div class="state-actions">
+          <a class="btn-primary" href="/connexion/?next=%2Ftabibdz-centre-notifications.html">Se connecter</a>
+          <a class="btn" href="/inscription/?next=%2Ftabibdz-notifications.html">Créer un compte</a>
+        </div>
+      </div>`;
+  }
+
+  function renderNonPatientState() {
+    document.getElementById('notificationsContainer').innerHTML = `
+      <div class="state-box">
+        <div class="state-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 8v4M12 16h.01M10.29 3.86l-7.4 12.82A1 1 0 0 0 3.75 18h16.5a1 1 0 0 0 .86-1.5l-7.4-12.82a1 1 0 0 0-1.72 0z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="state-title">Notifications patient uniquement</div>
+        <div class="state-sub">Cette page est réservée aux comptes patient.</div>
+        <div class="state-actions">
+          <a class="btn-primary" href="${roleDash(state.authUser.role)}">Mon espace</a>
+        </div>
+      </div>`;
+  }
+
+  const prefLabels = {
+    sms_24h:         ['SMS 24h avant',    'Rappel la veille du rendez-vous.'],
+    sms_2h:          ['SMS 2h avant',     'Rappel rapide avant la consultation.'],
+    email_24h:       ['Email 24h avant',  'Email avec les infos du rendez-vous.'],
+    email_2h:        ['Email 2h avant',   'Dernier rappel par email.'],
+    sms_annulation:  ['SMS annulation',   "Alerte en cas d'annulation."],
+    email_annulation:['Email annulation', 'Confirmation des changements.'],
+  };
+
+  function renderPreferences() {
+    const c = document.getElementById('preferencesContainer');
+    if (!state.authUser || state.authUser.role !== 'patient' || !state.preferences) {
+      c.innerHTML = `<div style="font-size:13px;color:var(--text-soft)">${!state.authUser ? 'Connectez-vous pour voir vos préférences.' : !state.preferences ? 'Chargement...' : 'Réglages patient uniquement.'}</div>`;
+      return;
+    }
+    c.innerHTML = Object.entries(state.preferences).map(([k, v]) => {
+      const [name, desc] = prefLabels[k] || [k, ''];
+      return `
+        <div class="pref-row">
+          <div>
+            <div class="pref-row-name">${esc(name)}</div>
+            <div class="pref-row-sub">${esc(desc)}</div>
+          </div>
+          <span class="tag ${v ? 'tag-on' : 'tag-off'}">${v ? 'Actif' : 'Off'}</span>
+        </div>`;
+    }).join('') + `<a class="btn" href="/tabibdz-dashboard.html#notifications" style="margin-top:6px;width:100%;justify-content:center">Modifier</a>`;
+  }
+
+  async function loadNotifications() {
+    updateUI(); updateNavAuthUI(); renderPreferences();
+    if (!state.authUser) { renderGuestState(); return; }
+    if (state.authUser.role !== 'patient') { renderNonPatientState(); return; }
+
+    document.getElementById('notificationsContainer').innerHTML = `
+      <div class="state-box">
+        <div class="state-sub" style="color:var(--text-soft)">Chargement des notifications...</div>
+      </div>`;
+
+    try {
+      const payload = await api('/api/notifications/');
+      state.notifications = Array.isArray(payload.items) ? payload.items : [];
+      state.unreadCount   = Number(payload.unread_count || 0);
+      updateUI(); updateNavAuthUI(); renderNotifications();
+    } catch (err) {
+      document.getElementById('notificationsContainer').innerHTML = `
+        <div class="state-box">
+          <div class="state-title">Chargement impossible</div>
+          <div class="state-sub">${esc(err.message || 'Une erreur est survenue.')}</div>
+          <div class="state-actions"><button class="btn-primary" onclick="loadNotifications()">Réessayer</button></div>
+        </div>`;
+      toast(err.message || 'Erreur de chargement.', 'error');
+    }
+  }
+
+  async function markOneAsRead(id) {
+    try {
+      const payload = await api('/api/notifications/', { method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ id }) });
+      state.notifications = state.notifications.map(n => Number(n.id) === id ? { ...n, is_read: 1 } : n);
+      state.unreadCount   = Number(payload.unread_count || 0);
+      updateUI(); updateNavAuthUI(); renderNotifications();
+      toast('Notification marquée comme lue.');
+    } catch (err) { toast(err.message || 'Action impossible.', 'error'); }
+  }
+
+  async function markAllAsRead() {
+    if (!state.unreadCount) return;
+    try {
+      const payload = await api('/api/notifications/', { method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ mark_all: true }) });
+      state.notifications = state.notifications.map(n => ({ ...n, is_read: 1 }));
+      state.unreadCount   = Number(payload.unread_count || 0);
+      updateUI(); updateNavAuthUI(); renderNotifications();
+      toast('Toutes les notifications marquées comme lues.');
+    } catch (err) { toast(err.message || 'Action impossible.', 'error'); }
+  }
+
+  async function init() {
+    try {
+      const payload = await api('/api/auth/me/');
+      state.authUser = payload?.user || null;
+    } catch (_) { state.authUser = null; }
+
+    updateUI(); updateNavAuthUI();
+
+    if (state.authUser?.role === 'patient') {
+      try { state.preferences = await api('/api/patient/preferences-notifications/'); } catch (_) {}
+    }
+    renderPreferences();
+    await loadNotifications();
+  }
+
+  init().catch(err => toast(err.message || 'Initialisation impossible.', 'error'));
+</script>
+</body>
+</html>

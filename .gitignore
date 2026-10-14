@@ -1,0 +1,7 @@
+node_modules/
+api/.env
+api/.env.local
+uploads/
+api/storage/logs/
+.claude/
+*.log

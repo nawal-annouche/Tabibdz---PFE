@@ -1,0 +1,710 @@
+﻿﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TabibDZ Admin — Connexion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #08110d;
+      --text: #1e3328;
+      --muted: #5a7a68;
+      --line: rgba(22,161,99,.18);
+      --green: #16a163;
+      --green-deep: #0b6e44;
+      --green-mid: #12895a;
+      --green-glow: rgba(22,161,99,.22);
+      --green-soft: rgba(22,161,99,.08);
+      --red: #e04a52;
+      --red-soft: rgba(224,74,82,.09);
+      --white: #ffffff;
+      --card-bg: rgba(255,255,255,.72);
+      --shadow-card: 0 32px 80px rgba(8,24,14,.13), 0 2px 8px rgba(8,24,14,.06);
+      --shadow-btn: 0 8px 28px rgba(22,161,99,.38);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      background: #f0f8f3;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* ── Background mesh ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 12% 8%, rgba(22,161,99,.18) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 80% at 92% 88%, rgba(11,110,68,.14) 0%, transparent 50%),
+        radial-gradient(ellipse 50% 40% at 55% 50%, rgba(22,161,99,.06) 0%, transparent 60%),
+        linear-gradient(170deg, #eef8f2 0%, #e5f3ec 50%, #dff0e8 100%);
+      z-index: 0;
+    }
+
+    /* ── Decorative grid lines ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(22,161,99,.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(22,161,99,.055) 1px, transparent 1px);
+      background-size: 48px 48px;
+      z-index: 0;
+      mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, black 30%, transparent 80%);
+    }
+
+    .shell {
+      position: relative;
+      z-index: 1;
+      width: min(1100px, 100%);
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 20px;
+      align-items: center;
+      animation: fadeUp .7s cubic-bezier(.22,.9,.36,1) both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─────────────── HERO ─────────────── */
+    .hero {
+      padding: 52px 48px;
+      background: rgba(255,255,255,.55);
+      border: 1px solid rgba(255,255,255,.9);
+      border-radius: 32px;
+      backdrop-filter: blur(24px) saturate(160%);
+      box-shadow: var(--shadow-card), inset 0 1px 0 rgba(255,255,255,.85);
+      position: relative;
+      overflow: hidden;
+      align-self: stretch;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .hero-accent {
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(22,161,99,.22) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-accent-2 {
+      position: absolute;
+      bottom: -40px;
+      left: -40px;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(22,161,99,.13) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Logo mark */
+    .logomark {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 40px;
+    }
+    .logomark-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--green);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 4px 14px rgba(22,161,99,.4);
+    }
+    .logomark-icon svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: white;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .logomark-text {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.15rem;
+      color: var(--ink);
+      letter-spacing: -.03em;
+    }
+    .logomark-text span { color: var(--green); }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px 6px 8px;
+      border-radius: 999px;
+      background: var(--green-soft);
+      border: 1px solid rgba(22,161,99,.2);
+      color: var(--green-mid);
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .eyebrow-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2.4s ease infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .55; transform: scale(.75); }
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(2.4rem, 3.8vw, 3.8rem);
+      line-height: .93;
+      letter-spacing: -.06em;
+      color: var(--ink);
+      max-width: 10ch;
+      margin-bottom: 20px;
+    }
+    h1 em {
+      font-style: normal;
+      color: var(--green);
+    }
+
+    .hero-desc {
+      color: var(--muted);
+      font-size: .97rem;
+      line-height: 1.8;
+      max-width: 50ch;
+      margin-bottom: 36px;
+      font-weight: 400;
+    }
+
+    .features {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 13px;
+    }
+    .feature-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: rgba(22,161,99,.1);
+      border: 1px solid rgba(22,161,99,.18);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .feature-icon svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: var(--green-mid);
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .feature-text {
+      font-size: .9rem;
+      line-height: 1.65;
+      color: var(--text);
+      padding-top: 6px;
+    }
+
+    /* ─────────────── CARD ─────────────── */
+    .card {
+      background: rgba(255,255,255,.82);
+      border: 1px solid rgba(255,255,255,.95);
+      border-radius: 32px;
+      backdrop-filter: blur(28px) saturate(160%);
+      box-shadow: var(--shadow-card), inset 0 1px 0 rgba(255,255,255,.9);
+      padding: 44px 40px;
+      position: relative;
+      overflow: hidden;
+      animation: fadeUp .7s .12s cubic-bezier(.22,.9,.36,1) both;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--green) 40%, var(--green-mid) 60%, transparent);
+      border-radius: 32px 32px 0 0;
+    }
+
+    .card-header {
+      margin-bottom: 30px;
+    }
+
+    h2 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 2rem;
+      letter-spacing: -.05em;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+
+    .card-sub {
+      color: var(--muted);
+      font-size: .92rem;
+      line-height: 1.7;
+    }
+
+    /* Flash */
+    .flash {
+      display: none;
+      margin-bottom: 20px;
+      padding: 13px 16px;
+      border-radius: 14px;
+      font-size: .88rem;
+      font-weight: 600;
+      align-items: center;
+      gap: 10px;
+    }
+    .flash.show { display: flex; }
+    .flash.error {
+      background: var(--red-soft);
+      border: 1px solid rgba(224,74,82,.2);
+      color: var(--red);
+    }
+    .flash-icon {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    /* Fields */
+    .field {
+      display: grid;
+      gap: 7px;
+      margin-bottom: 16px;
+    }
+
+    .label {
+      font-size: .75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      color: var(--muted);
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+    .input-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 17px;
+      height: 17px;
+      color: var(--muted);
+      pointer-events: none;
+      transition: color .18s;
+    }
+    .input-icon svg {
+      width: 100%;
+      height: 100%;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .input {
+      width: 100%;
+      border: 1.5px solid rgba(215,235,224,.9);
+      border-radius: 16px;
+      padding: 14px 16px 14px 46px;
+      background: rgba(255,255,255,.7);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .97rem;
+      outline: none;
+      transition: border-color .18s, box-shadow .18s, background .18s;
+      -webkit-appearance: none;
+    }
+    .input::placeholder { color: rgba(109,132,121,.5); }
+    .input:focus {
+      border-color: rgba(22,161,99,.5);
+      box-shadow: 0 0 0 4px rgba(22,161,99,.1);
+      background: rgba(255,255,255,.95);
+    }
+    .input:focus + .input-icon,
+    .input-wrap:focus-within .input-icon { color: var(--green); }
+
+    /* Button */
+    .btn {
+      appearance: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      border-radius: 16px;
+      transition: transform .15s ease, box-shadow .15s ease, background .15s;
+    }
+    .btn:active { transform: scale(.98) !important; }
+
+    .btn-primary {
+      width: 100%;
+      padding: 15px 20px;
+      font-size: 1rem;
+      background: linear-gradient(135deg, var(--green) 0%, var(--green-mid) 100%);
+      color: #fff;
+      box-shadow: var(--shadow-btn);
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      letter-spacing: .01em;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 36px rgba(22,161,99,.48);
+    }
+    .btn-primary:disabled {
+      opacity: .65;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    .btn-arrow {
+      display: inline-flex;
+      transition: transform .2s ease;
+    }
+    .btn-primary:hover .btn-arrow { transform: translateX(3px); }
+
+    /* Spinner */
+    .spinner {
+      display: none;
+      width: 18px;
+      height: 18px;
+      border: 2.5px solid rgba(255,255,255,.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .65s linear infinite;
+    }
+    .btn-primary.loading .spinner { display: block; }
+    .btn-primary.loading .btn-label,
+    .btn-primary.loading .btn-arrow { display: none; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 22px 0 18px;
+      color: var(--muted);
+      font-size: .78rem;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+
+    /* Footer */
+    .footer-note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: .84rem;
+      line-height: 1.65;
+    }
+    .footer-note code {
+      font-size: .78rem;
+      background: rgba(22,161,99,.08);
+      border: 1px solid rgba(22,161,99,.15);
+      color: var(--green-mid);
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    .link {
+      color: var(--green-mid);
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: color .15s;
+    }
+    .link:hover { color: var(--green); }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 22px;
+      font-size: .88rem;
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color .15s;
+    }
+    .back-link:hover { color: var(--green-mid); }
+    .back-link svg {
+      width: 14px;
+      height: 14px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 860px) {
+      .shell {
+        grid-template-columns: 1fr;
+        max-width: 480px;
+      }
+      .hero {
+        padding: 36px 32px;
+        border-radius: 26px;
+      }
+      h1 { font-size: clamp(2.2rem, 8vw, 2.8rem); }
+      .card {
+        padding: 36px 30px;
+        border-radius: 26px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 16px; }
+      .hero { padding: 28px 22px; }
+      .card { padding: 28px 22px; }
+      h1 { font-size: 2.1rem; }
+      h2 { font-size: 1.7rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+
+    <!-- ── Hero ── -->
+    <section class="hero">
+      <div class="hero-accent"></div>
+      <div class="hero-accent-2"></div>
+
+      <div class="logomark">
+        <div class="logomark-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <span class="logomark-text">Tabib<span>DZ</span></span>
+      </div>
+
+      <div class="eyebrow">
+        <span class="eyebrow-dot"></span>
+        Admin access only
+      </div>
+
+      <h1>Connexion <em>admin</em> TabibDZ</h1>
+
+      <p class="hero-desc">
+        Cette page est réservée à l'équipe qui vérifie les dossiers médecins, 
+        suit la modération et valide les profils avant publication sur la plateforme.
+      </p>
+
+      <div class="features">
+        <div class="feature">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <p class="feature-text">Accès séparé du site public pour éviter toute confusion de parcours.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
+          </div>
+          <p class="feature-text">Connexion orientée vérification, approbation et traçabilité des décisions admin.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/></svg>
+          </div>
+          <p class="feature-text">Redirection automatique vers l'espace admin dès qu'une session valide existe.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Card ── -->
+    <section class="card">
+      <div class="card-header">
+        <h2>Se connecter</h2>
+        <p class="card-sub">Entrez vos identifiants admin pour accéder à la console de validation.</p>
+      </div>
+
+      <div id="flash" class="flash error">
+        <svg class="flash-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span id="flash-text"></span>
+      </div>
+
+      <form id="loginForm" autocomplete="on">
+        <div class="field">
+          <label class="label" for="email">Email admin</label>
+          <div class="input-wrap">
+            <input class="input" id="email" name="email" type="email"
+              autocomplete="username"
+              placeholder="admin@tabibdz.local"
+              required />
+            <span class="input-icon">
+              <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label" for="password">Mot de passe</label>
+          <div class="input-wrap">
+            <input class="input" id="password" name="password" type="password"
+              autocomplete="current-password"
+              placeholder="Votre mot de passe"
+              required />
+            <span class="input-icon">
+              <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </span>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" id="submitBtn" type="submit">
+          <span class="btn-label">Accéder à l'espace admin</span>
+          <span class="btn-arrow">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </span>
+          <span class="spinner"></span>
+        </button>
+      </form>
+
+      <div class="divider">Informations</div>
+
+      <p class="footer-note">
+        Pas encore de compte admin ? Créez-le via
+        <code>/api/database/set-admin-password.php</code>
+        puis revenez ici.
+      </p>
+
+      <a class="back-link" href="/">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Retour au site public
+      </a>
+    </section>
+
+  </div>
+
+  <script>
+    async function api(url, options = {}) {
+      const response = await fetch(url, {
+        credentials: 'include',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          ...(options.headers || {}),
+        },
+        ...options,
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || 'Erreur API');
+      return data;
+    }
+
+    function showError(message) {
+      const flash = document.getElementById('flash');
+      const flashText = document.getElementById('flash-text');
+      flashText.textContent = message;
+      flash.className = 'flash error show';
+    }
+
+    async function checkAdminSession() {
+      try {
+        const payload = await api('/api/auth/me/');
+        if (payload.user && payload.user.role === 'admin') {
+          window.location.replace('/admin/');
+        }
+      } catch (error) {}
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.classList.add('loading');
+
+      const flash = document.getElementById('flash');
+      flash.className = 'flash error';
+
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      try {
+        const payload = await api('/api/auth/login/', {
+          method: 'POST',
+          body: JSON.stringify({ email, password }),
+        });
+
+        if (!payload.user || payload.user.role !== 'admin') {
+          await api('/api/auth/logout/', { method: 'POST' }).catch(() => {});
+          throw new Error('Ce compte n\'est pas un compte admin.');
+        }
+
+        window.location.replace('/admin/');
+      } catch (error) {
+        showError(error.message || 'Connexion impossible.');
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('loading');
+      }
+    });
+
+    checkAdminSession();
+  </script>
+</body>
+</html>
